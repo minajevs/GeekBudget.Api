@@ -14,5 +14,7 @@ namespace GeekBudget.Models
         { }
 
         public DbSet<User> Users { get; set; }
+        public DbSet<Tab> Tabs { get; set; }
+        public DbSet<Operation> Operations { get; set; }
     }
 }
