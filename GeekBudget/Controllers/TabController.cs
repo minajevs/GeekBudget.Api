@@ -15,6 +15,23 @@ namespace GeekBudget.Controllers
     {
         public TabController(GeekBudgetContext context) : base(context) { }
 
+        // GET api/values
+        [HttpGet]
+        public IActionResult GetAll()
+        {
+            return Ok(_context.Tabs.ToList());
+        }
+
+        [HttpGet("{id}")]
+        public IActionResult Get(int id)
+        {
+            var tab = _context.Tabs.FirstOrDefault(t => t.Id == id);
+            if (tab == null)
+                return NotFound(null);
+            else
+                return Ok(tab);
+        }
+
         // GET: api/values
         [HttpGet]
         public IActionResult Add([FromBody]Tab value)
@@ -43,23 +60,24 @@ namespace GeekBudget.Controllers
             return Ok(true);
         }
 
-        // GET api/values
-        [HttpGet]
-        public IActionResult GetAll()
+        [HttpPost("{id}")]
+        public IActionResult Update(int id, [FromBody]Tab value)
         {
-            return Ok(_context.Tabs.ToList());
-        }
+            if(value == null)
+                return BadRequest("Can't update with null value!");
+            TryValidateModel(value);
+            if (!ModelState.IsValid) //If model is wrong
+                return BadRequest(ModelState);
 
-        // POST api/values
-        [HttpPost]
-        public void Post([FromBody]string value)
-        {
-        }
+            var updateTab = _context.Tabs.FirstOrDefault(t => t.Id == id);
 
-        // PUT api/values/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
-        {
+            if (updateTab == null) //If entry by id exist
+                return BadRequest("No Tab with this id was found!");
+
+            updateTab.MapNewValues(value); //TODO: change to Attach update to not query db before update
+
+            _context.SaveChanges();
+            return Ok(true);
         }
     }
 }
