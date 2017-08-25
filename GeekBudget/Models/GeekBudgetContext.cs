@@ -9,12 +9,13 @@ namespace GeekBudget.Models
 {
     public class GeekBudgetContext : DbContext, IGeekBudgetContext
     {
+        public GeekBudgetContext() { }
         public GeekBudgetContext(DbContextOptions<GeekBudgetContext> options)
             :base(options)
         { }
 
-        public DbSet<User> Users { get; set; }
-        public DbSet<Tab> Tabs { get; set; }
-        public DbSet<Operation> Operations { get; set; }
+        public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<Tab> Tabs { get; set; }
+        public virtual DbSet<Operation> Operations { get; set; }
     }
 }

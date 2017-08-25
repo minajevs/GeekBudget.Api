@@ -12,6 +12,9 @@ using System.IdentityModel.Tokens.Jwt;
 using GeekBudget.Middleware;
 using Microsoft.EntityFrameworkCore;
 using GeekBudget.Models;
+using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Http;
+using System.Text;
 
 namespace GeekBudget
 {
@@ -32,6 +35,7 @@ namespace GeekBudget
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
             // Add framework services.
             services.AddMvc();
 
@@ -53,6 +57,7 @@ namespace GeekBudget
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
+            //Authentication
             app.UseMiddleware<UserKeyValidator>();
 
             app.UseMvc();
