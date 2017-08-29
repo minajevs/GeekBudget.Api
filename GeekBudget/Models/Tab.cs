@@ -12,7 +12,7 @@ namespace GeekBudget.Models
         public string Name { get; set; }
         public decimal? Amount { get; set; }
         public string Currency { get; set; } = "EUR";
-        public IEnumerable<Operation> Operations { get; set; }
+        public List<Operation> Operations { get; set; }
 
         public Tab MapNewValues(Tab values)
         {
