@@ -19,14 +19,16 @@ namespace GeekBudget.Controllers
             return Ok(_context.Operations.ToList());
         }
 
-        [HttpGet("{id}")]
-        public IActionResult Get(int id)
+        [HttpGet]
+        public IActionResult Get([FromBody]OperationFilter filter)
         {
-            var tab = _context.Tabs.FirstOrDefault(t => t.Id == id);
-            if (tab == null)
-                return NotFound(null);
+            var query = filter.CreateQuery(_context.Operations);
+            var data = filter.CreateQuery(_context.Operations).ToList();
+
+            if (!data.Any())
+                return NotFound(0);
             else
-                return Ok(tab);
+                return Ok(data);
         }
 
         // GET: api/values

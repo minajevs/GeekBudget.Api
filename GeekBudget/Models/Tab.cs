@@ -8,6 +8,7 @@ namespace GeekBudget.Models
 {
     public class Tab
     {
+        [Key]
         public int Id { get; set; }
         public string Name { get; set; }
         public decimal? Amount { get; set; }

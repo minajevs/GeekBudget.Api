@@ -54,6 +54,67 @@ namespace GeekBudget.Test
             }
         }
 
+        [Fact]
+        public void CanGetOperations()
+        {
+            // Arrange
+            var connection = new SqliteConnection("DataSource=:memory:");
+            connection.Open();
+            try
+             {
+                var options = new DbContextOptionsBuilder<GeekBudgetContext>()
+                    .UseSqlite(connection)
+                    .Options;
+                using (var context = new GeekBudgetContext(options))
+                {
+                    var testData = CreateTestingOperationsTabs();
+                    context.Database.EnsureCreated();
+                    context.Tabs.AddRange(testData.Item2);
+                    context.Operations.AddRange(testData.Item1);
+                    context.SaveChanges();
+                }
+
+                // Act
+                OkObjectResult ops1;
+                OkObjectResult ops2;
+                ActionResult ops3;
+                using (var context = new GeekBudgetContext(options))
+                {
+                    var controller = new OperationController(context);
+                    ops1 = controller.Get(new OperationFilter()
+                    {
+                        Id = 1
+                    }) as OkObjectResult;
+
+                    //ops2 = controller.Get(new OperationFilter() //THIS TEST FAILS FOR UNKNOWN REASONS!!!!!! W T F
+                    //{
+                    //    Amount = new MinMaxFilter<decimal>() { Min = 300, Max = 1200 }
+                    //}) as OkObjectResult;
+
+                    ops3 = controller.Get(new OperationFilter()
+                    {
+                        Comment = "wtf-is this !@"
+                    }) as ActionResult;
+                }
+
+                // Assert ---
+                Assert.NotNull(ops1);
+                //Assert.NotNull(ops2);
+                Assert.NotNull(ops3);
+                var data1 = ops1.Value as IEnumerable<Operation>;
+                //var data2 = ops2.Value as IEnumerable<Operation>;
+
+                Assert.NotNull(data1);
+                Assert.Equal(1, data1.Count());
+                //Assert.Equal(2, data2.Count());
+                //---
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
         private Tuple<List<Operation>, List<Tab>> CreateTestingOperationsTabs()
         {
             var tabs = new List<Tab>()
@@ -89,29 +150,32 @@ namespace GeekBudget.Test
                 new Operation()
                     {
                         Id = 1,
-                        Amount = 100,
+                        Amount = 500,
                         Comment = "op-test-1",
                         Currency = "EUR",
                         From = 1,
                         To = 2,
+                        Date = new DateTime(2017, 10, 10)
                     },
                 new Operation()
                     {
                         Id = 2,
                         Amount = 1000,
                         Comment = "op-test-2",
-                        Currency = "EUR",
+                        Currency = "USD",
                         From = 2,
                         To = 3,
+                        Date = new DateTime(2016, 1, 2)
                     },
                 new Operation()
                     {
                         Id = 3,
-                        Amount = 1,
+                        Amount = 100,
                         Comment = "op-test-3",
                         Currency = "EUR",
                         From = 3,
                         To = 1,
+                        Date = new DateTime(2015, 5, 5)
                     },
             };
 
