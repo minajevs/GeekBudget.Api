@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.26730.10
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeekBudget", "GeekBudget\GeekBudget.csproj", "{D0448296-CA47-44EB-B2FA-40EE4877DF85}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeekBudget.Test", "GeekBudget.Test\GeekBudget.Test.csproj", "{872F06EA-729A-4A9B-A19F-58BEA4E513DF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeekBudget.Tests", "GeekBudget.Test\GeekBudget.Tests.csproj", "{872F06EA-729A-4A9B-A19F-58BEA4E513DF}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{45F1A7AC-12DE-4B9F-935B-84D4E381263A}"
 	ProjectSection(SolutionItems) = preProject
