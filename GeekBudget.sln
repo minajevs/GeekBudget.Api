@@ -10,7 +10,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{45F1A7AC-12DE-4B9F-935B-84D4E381263A}"
 	ProjectSection(SolutionItems) = preProject
 		.travis.yml = .travis.yml
-		Build.sh = Build.sh
 	EndProjectSection
 EndProject
 Global

@@ -4,4 +4,6 @@ sudo: required
 mono: none
 dotnet: 2.0.0
 script:
-  - ./build.sh --quiet verify
+  - dotnet restore
+  - dotnet build
+  - dotnet test
