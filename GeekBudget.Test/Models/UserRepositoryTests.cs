@@ -6,8 +6,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Xunit;
+using User = GeekBudget.Models.User;
 
-namespace GeekBudget.Test
+namespace GeekBudget.Test.Models
 {
     public class TestUserRepository
     {
@@ -31,18 +32,29 @@ namespace GeekBudget.Test
                 }
 
                 string retKey;
+                bool gotError = false;
 
                 // Create new user repo
                 using (var context = new GeekBudgetContext(options))
                 {
                     var userRepo = new UserRepository(context);
                     retKey = userRepo.Add("testinguser");
+
+                    try
+                    {
+                        userRepo.Add("testinguser"); //Again
+                    }
+                    catch (Exception e)
+                    {
+                        gotError = true;
+                    }
                 }
 
                 // Use a separate instance of the context to verify correct data was saved to database
                 using (var context = new GeekBudgetContext(options))
                 {
                     Assert.NotNull(retKey);
+                    Assert.True(gotError);
                     Assert.Equal(1, context.Users.Count());
                     Assert.Equal("testinguser", context.Users.FirstOrDefault().Username);
                 }
@@ -71,19 +83,19 @@ namespace GeekBudget.Test
                 using (var context = new GeekBudgetContext(options))
                 {
                     context.Database.EnsureCreated();
-                    var users = new List<Model.User>()
+                    var users = new List<User>()
                     {
-                        new Model.User()
+                        new User()
                         {
                             Key = "testkey1",
                             Username = "testname1"
                         },
-                        new Model.User()
+                        new User()
                         {
                             Key = "testkey2",
                             Username = "testname2"
                         },
-                        new Model.User()
+                        new User()
                         {
                             Key = "testkey3",
                             Username = "testname3"
@@ -137,19 +149,19 @@ namespace GeekBudget.Test
                 using (var context = new GeekBudgetContext(options))
                 {
                     context.Database.EnsureCreated();
-                    var users = new List<Model.User>()
+                    var users = new List<User>()
                     {
-                        new Model.User()
+                        new User()
                         {
                             Key = "testkey1",
                             Username = "testname1"
                         },
-                        new Model.User()
+                        new User()
                         {
                             Key = "testkey2",
                             Username = "testname2"
                         },
-                        new Model.User()
+                        new User()
                         {
                             Key = "testkey3",
                             Username = "testname3"
@@ -180,6 +192,54 @@ namespace GeekBudget.Test
         }
 
         [Fact]
+        public void CanCheckValidUser()
+        {
+            // In-memory database only exists while the connection is open
+            var connection = new SqliteConnection("DataSource=:memory:");
+            connection.Open();
+
+            try
+            {
+                var options = new DbContextOptionsBuilder<GeekBudgetContext>()
+                    .UseSqlite(connection)
+                    .Options;
+
+                // Create the schema in the database
+                using (var context = new GeekBudgetContext(options))
+                {
+                    context.Database.EnsureCreated();
+                    var users = new List<User>()
+                    {
+                        new User()
+                        {
+                            Key = "testkey1",
+                            Username = "testname1"
+                        }
+                    };
+                    context.Users.AddRange(users.ToArray());
+                    context.SaveChanges();
+                }
+
+                bool existingUserValid = false;
+                bool nonExistingUserIsInvalid= false;
+
+                using (var context = new GeekBudgetContext(options))
+                {
+                    var userRepo = new UserRepository(context);
+                    existingUserValid = userRepo.CheckValidUserKey("testkey1");
+                    nonExistingUserIsInvalid = !userRepo.CheckValidUserKey("testkeynotexisting");
+                }
+
+                Assert.True(existingUserValid);
+                Assert.True(nonExistingUserIsInvalid);
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+        [Fact]
         public void CanRemoveUser()
         {
             // In-memory database only exists while the connection is open
@@ -196,19 +256,19 @@ namespace GeekBudget.Test
                 using (var context = new GeekBudgetContext(options))
                 {
                     context.Database.EnsureCreated();
-                    var users = new List<Model.User>()
+                    var users = new List<User>()
                     {
-                        new Model.User()
+                        new User()
                         {
                             Key = "testkey1",
                             Username = "testname1"
                         },
-                        new Model.User()
+                        new User()
                         {
                             Key = "testkey2",
                             Username = "testname2"
                         },
-                        new Model.User()
+                        new User()
                         {
                             Key = "testkey3",
                             Username = "testname3"
@@ -258,19 +318,19 @@ namespace GeekBudget.Test
                 using (var context = new GeekBudgetContext(options))
                 {
                     context.Database.EnsureCreated();
-                    var users = new List<Model.User>()
+                    var users = new List<User>()
                     {
-                        new Model.User()
+                        new User()
                         {
                             Key = "testkey1",
                             Username = "testname1"
                         },
-                        new Model.User()
+                        new User()
                         {
                             Key = "testkey2",
                             Username = "testname2"
                         },
-                        new Model.User()
+                        new User()
                         {
                             Key = "testkey3",
                             Username = "testname3"

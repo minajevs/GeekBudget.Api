@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using Xunit;
 
-namespace GeekBudget.Test
+namespace GeekBudget.Test.Models
 {
     public class OperationFilterTests
     {
@@ -291,7 +291,6 @@ namespace GeekBudget.Test
                         Amount = 500,
                         Currency = "EUR",
                         Name = "income-test-1",
-                        Operations = new List<Operation>()
                     },
                 new Tab()
                     {
@@ -299,7 +298,6 @@ namespace GeekBudget.Test
                         Amount = 1000,
                         Currency = "USD",
                         Name = "income-test-2",
-                        Operations = new List<Operation>()
                     },
                 new Tab()
                     {
@@ -307,7 +305,6 @@ namespace GeekBudget.Test
                         Amount = 100,
                         Currency = "LVL",
                         Name = "income-test-3",
-                        Operations = new List<Operation>()
                     },
             };
 
@@ -319,8 +316,8 @@ namespace GeekBudget.Test
                         Amount = 500,
                         Comment = "op-test-1",
                         Currency = "EUR",
-                        From = 1,
-                        To = 2,
+                        From = tabs[0],
+                        To = tabs[1],
                         Date = new DateTime(2017, 10, 10)
                     },
                 new Operation()
@@ -329,8 +326,8 @@ namespace GeekBudget.Test
                         Amount = 1000,
                         Comment = "op-test-2",
                         Currency = "USD",
-                        From = 2,
-                        To = 3,
+                        From = tabs[1],
+                        To = tabs[2],
                         Date = new DateTime(2016, 1, 2)
                     },
                 new Operation()
@@ -339,13 +336,13 @@ namespace GeekBudget.Test
                         Amount = 100,
                         Comment = "op-test-3",
                         Currency = "EUR",
-                        From = 3,
-                        To = 1,
+                        From = tabs[2],
+                        To = tabs[0],
                         Date = new DateTime(2015, 5, 5)
                     },
             };
 
-            tabs[0].Operations.Add(operations[0]);
+            tabs[0].OperationsFrom.Add(operations[0]);
             tabs[0].Operations.Add(operations[2]);
             tabs[1].Operations.Add(operations[0]);
             tabs[1].Operations.Add(operations[1]);

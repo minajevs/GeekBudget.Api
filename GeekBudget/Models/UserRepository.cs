@@ -1,5 +1,4 @@
 ﻿using GeekBudget.Middleware;
-using GeekBudget.Model;
 using GeekBudget.Models;
 using System;
 using System.Collections.Generic;
@@ -11,9 +10,9 @@ namespace GeekBudget.Models
 {
     public class UserRepository : IUserRepository
     {
-        private Models.GeekBudgetContext _context;
+        private GeekBudgetContext _context;
 
-        public UserRepository(Models.GeekBudgetContext context)
+        public UserRepository(GeekBudgetContext context)
         {
             this._context = context;
         }

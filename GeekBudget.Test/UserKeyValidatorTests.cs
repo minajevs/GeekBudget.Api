@@ -14,6 +14,8 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
+using User = GeekBudget.Models.User;
+
 
 namespace GeekBudget.Test
 {
@@ -36,19 +38,19 @@ namespace GeekBudget.Test
                 using (var context = new GeekBudgetContext(options))
                 {
                     context.Database.EnsureCreated();
-                    var users = new List<Model.User>()
+                    var users = new List<User>()
                     {
-                        new Model.User()
+                        new User()
                         {
                             Key = "testkey1",
                             Username = "testname1"
                         },
-                        new Model.User()
+                        new User()
                         {
                             Key = "testkey2",
                             Username = "testname2"
                         },
-                        new Model.User()
+                        new User()
                         {
                             Key = "testkey3",
                             Username = "testname3"

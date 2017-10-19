@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using GeekBudget.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using GeekBudget.Models;
+using GeekBudget.Models.ViewModels;
 
 namespace GeekBudget.Controllers
 {
@@ -16,51 +18,82 @@ namespace GeekBudget.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            return Ok(_context.Operations.ToList());
+            return Ok(_context
+                .Operations
+                .Include(o => o.From)
+                .Include(o => o.To)
+                .Select(o => OperationViewModel.FromEntity(o))
+                .ToList()
+            );
         }
 
         [HttpGet]
         public IActionResult Get([FromBody]OperationFilter filter)
         {
-            var query = filter.CreateQuery(_context.Operations);
-            var data = filter.CreateQuery(_context.Operations).ToList();
+            var data = filter.CreateQuery(_context.Operations);
 
             if (!data.Any())
-                return NotFound(0);
+                return NotFound();
             else
-                return Ok(data);
+                return Ok(data
+                    .Include(o => o.From)
+                    .Include(o => o.To)
+                    .Select(o => OperationViewModel.FromEntity(o))
+                    .ToList()
+                    );
         }
 
         // GET: api/values
         [HttpGet]
-        public IActionResult Add([FromBody]Tab value)
+        public IActionResult Add([FromBody]OperationViewModel value)
         {
             TryValidateModel(value);
+
+            if (value.From == null)
+                ModelState.AddModelError("From", "'From' id can't be null!");
+
+            if (value.To == null)
+                ModelState.AddModelError("To", "'To' id can't be null!");
+
+            if (value.From == value.To) //no need to check for null first.
+                ModelState.AddModelError("Tabs", "'From' tab and 'To' tab are same!");
+
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            _context.Tabs.Add(value);
+            var tabFrom = _context.Tabs.SingleOrDefault(x => x.Id == value.From);
+            var tabTo = _context.Tabs.SingleOrDefault(x => x.Id == value.To);
+
+            if (tabFrom == null || tabTo == null)
+                return BadRequest("Can't find tab with provided Id!");
+
+
+            var operation = value
+                .MapToEntity()
+                .UpdateTab(Enums.TabType.From, tabFrom)
+                .UpdateTab(Enums.TabType.To, tabTo);
+            var newOperation = _context.Operations.Add(operation).Entity;
             _context.SaveChanges();
 
-            return Ok(value.Id);
+            return Ok(newOperation.Id);
         }
 
         // DELETE api/values/5
         [HttpPost("{id}")]
         public IActionResult Remove(int id)
         {
-            if (!_context.Tabs.Any(t => t.Id == id)) //If entry by id exist
-                return BadRequest(String.Format("No Tab with id '{0}' was found!", id));
+            if (!_context.Operations.Any(o=> o.Id == id)) //If entry by id exist
+                return BadRequest(String.Format("No Operation with id '{0}' was found!", id));
 
-            var removeTab = new Tab() { Id = id };
-            _context.Tabs.Attach(removeTab);
-            _context.Tabs.Remove(removeTab);
+            var removeOperation = new Operation() { Id = id };
+            _context.Operations.Attach(removeOperation);
+            _context.Operations.Remove(removeOperation);
             _context.SaveChanges();
-            return Ok(true);
+            return Ok();
         }
 
         [HttpPost("{id}")]
-        public IActionResult Update(int id, [FromBody]Tab value)
+        public IActionResult Update([FromBody]OperationViewModel value)
         {
             if (value == null)
                 return BadRequest("Can't update with null value!");
@@ -68,15 +101,51 @@ namespace GeekBudget.Controllers
             if (!ModelState.IsValid) //If model is wrong
                 return BadRequest(ModelState);
 
-            var updateTab = _context.Tabs.FirstOrDefault(t => t.Id == id);
+            Operation updateOperation = null;
+            Tab newTabFrom = null;
+            Tab newTabTo = null;
 
-            if (updateTab == null) //If entry by id exist
-                return BadRequest("No Tab with this id was found!");
+            //Check if operation exsits (to save db transaction costs)
+            if (!_context.Operations.Any(o => o.Id == value.Id))
+                return BadRequest("No Operation with this id was found!");
 
-            updateTab.MapNewValues(value); //TODO: change to Attach update to not query db before update
+            //Get operation to update
+            updateOperation = _context
+                .Operations
+                    .Include(o => o.From)
+                    .Include(o => o.To)
+                .SingleOrDefault(t => t.Id == value.Id);
+            
 
+            //Get new tab From
+            if (value.From != null)
+            {
+                newTabFrom = _context.Tabs.SingleOrDefault(t => t.Id == value.From);
+                if (newTabFrom == null) //If Tab by id does not exist
+                    return BadRequest("No Tab with this id was found!");
+            }
+
+            //Get new tab To
+            if (value.To != null)
+            {
+                newTabTo = _context.Tabs.SingleOrDefault(t => t.Id == value.From);
+                if (newTabTo == null) //If Tab by id does not exist
+                    return BadRequest("No Tab with this id was found!");
+            }
+
+            //Update operation
+            updateOperation
+                .MapNewValues(value)
+                .UpdateTab(Enums.TabType.From, newTabFrom)
+                .UpdateTab(Enums.TabType.To, newTabTo);  //TODO: change to Attach update to not query db before update
             _context.SaveChanges();
-            return Ok(true);
+
+            //Can't happen. Argument exception raises only from Add/Remove op, and all conditions are checked before!
+            //catch (ArgumentException ex)
+            //{
+            //    return BadRequest(ex.Message);
+            //}
+            return Ok();
         }
 
     }

@@ -38,10 +38,10 @@ namespace GeekBudget.Models
                 query = query.Where(x => x.Currency == this.Currency); //TODO: must work with any case?
 
             if (this.From != null)
-                query = query.Where(x => x.From == this.From);
+                query = query.Where(x => x.From.Id == this.From);
 
             if (this.To != null)
-                query = query.Where(x => x.To == this.To);
+                query = query.Where(x => x.To.Id == this.To);
 
             if (this.Date != null) //TODO: Add possibility to add nullable Min/Max values
                 query = query.Where(x =>

@@ -15,6 +15,7 @@ using GeekBudget.Models;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using System.Text;
+using Newtonsoft.Json;
 
 namespace GeekBudget
 {
@@ -37,12 +38,17 @@ namespace GeekBudget
         {
 
             // Add framework services.
-            services.AddMvc();
+            services.AddMvc().AddJsonOptions(options => {
+                //This option enables loop-reference-serialization problems. For example if we Parent-Child relationship with navigation probperties on both, serializing it to JSON won't throw an exception
+                //options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+            });
 
             //Dependency injection
 
-            //register dbcontext
-            services.AddDbContext<GeekBudgetContext>(options => options.UseSqlite("Data Source=GeekBudget.db"));
+            //register dbcontext as a singleton
+            services.AddDbContext<GeekBudgetContext>(
+                options => options.UseSqlite("Data Source=GeekBudget.db"),
+                ServiceLifetime.Singleton);
 
             //register geekcontext
             services.AddSingleton<IGeekBudgetContext, GeekBudgetContext>();
