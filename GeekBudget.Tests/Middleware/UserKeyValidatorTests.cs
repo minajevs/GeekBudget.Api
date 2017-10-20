@@ -19,6 +19,7 @@ namespace GeekBudget.Test.Middleware
             var nextAuthorizedRequestCalled = false;
             var userRepoMock = new Mock<IUserRepository>();
             userRepoMock.Setup(r => r.CheckValidUserKey(It.IsAny<string>())).Returns(true);  //Validates to true
+            userRepoMock.Setup(r => r.AreContactsEmpty()).Returns(false);                    //Contacts are not empty
 
             var userKeyValidator = new UserKeyValidator(next: async (innerHttpContext) =>
             {
@@ -44,6 +45,7 @@ namespace GeekBudget.Test.Middleware
             var nextAuthorizedRequestCalled = false;
             var userRepoMock = new Mock<IUserRepository>();
             userRepoMock.Setup(r => r.CheckValidUserKey(It.IsAny<string>())).Returns(false);  //Validates to false
+            userRepoMock.Setup(r => r.AreContactsEmpty()).Returns(false);                    //Contacts are not empty
 
             var userKeyValidator = new UserKeyValidator(next: async (innerHttpContext) =>
             {
@@ -69,6 +71,7 @@ namespace GeekBudget.Test.Middleware
             var nextAuthorizedRequestCalled = false;
             var userRepoMock = new Mock<IUserRepository>();
             userRepoMock.Setup(r => r.CheckValidUserKey(It.IsAny<string>())).Returns(false);  //Validates to false
+            userRepoMock.Setup(r => r.AreContactsEmpty()).Returns(false);                    //Contacts are not empty
 
             var userKeyValidator = new UserKeyValidator(next: async (innerHttpContext) =>
             {
@@ -85,6 +88,32 @@ namespace GeekBudget.Test.Middleware
             //Assert
             Assert.Equal(400, requestContext.Response.StatusCode);
             Assert.False(nextAuthorizedRequestCalled);
+        }
+
+        [Fact]
+        public async void DoNotCheckAuthIfNoUsersExists()
+        {
+            //Arrange
+            var nextAuthorizedRequestCalled = false;
+            var userRepoMock = new Mock<IUserRepository>();
+            userRepoMock.Setup(r => r.CheckValidUserKey(It.IsAny<string>())).Returns(false);  //Validates to false
+            userRepoMock.Setup(r => r.AreContactsEmpty()).Returns(true);                      //Contacts are empty
+
+            var userKeyValidator = new UserKeyValidator(next: async (innerHttpContext) =>
+            {
+                nextAuthorizedRequestCalled = true;
+                await innerHttpContext.Response.WriteAsync("authorized body");
+            }, _repo: userRepoMock.Object);
+
+            var requestContext = new DefaultHttpContext();
+            requestContext.Request.Headers.Add(new KeyValuePair<string, StringValues>("user-key", "password"));
+
+            //Act
+            await userKeyValidator.Invoke(requestContext);
+
+            //Assert
+            Assert.Equal(200, requestContext.Response.StatusCode);
+            Assert.True(nextAuthorizedRequestCalled);
         }
     }
 }

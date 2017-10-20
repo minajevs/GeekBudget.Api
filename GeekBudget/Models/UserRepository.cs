@@ -20,7 +20,7 @@ namespace GeekBudget.Models
         public string Add(string username)
         {
             if(this._context.Users.Any(x => x.Username.Equals(username, StringComparison.OrdinalIgnoreCase)))
-                throw new Exception("This username already exists!");
+                throw new InvalidOperationException("This username already exists!");
 
             var key = new byte[32];
             using (var generator = RandomNumberGenerator.Create())
@@ -36,6 +36,11 @@ namespace GeekBudget.Models
             this._context.Users.Add(newUser);
             this._context.SaveChanges();
             return apiKey;
+        }
+
+        public bool AreContactsEmpty()
+        {
+            return !this._context.Users.Any();
         }
 
         public bool CheckValidUserKey(string key)

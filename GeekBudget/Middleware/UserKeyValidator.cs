@@ -22,19 +22,22 @@ namespace GeekBudget.Middleware
 
         public async Task Invoke(HttpContext context)
         {
-            if (!context.Request.Headers.Keys.Contains("user-key"))
+            if (!UsersRepo.AreContactsEmpty()) //Do not check login if there are no users!
             {
-                context.Response.StatusCode = 400; //Bad Request                
-                await context.Response.WriteAsync("User Key is missing");
-                return;
-            }
-            else
-            {
-                if (!UsersRepo.CheckValidUserKey(context.Request.Headers["user-key"]))
+                if (!context.Request.Headers.Keys.Contains("user-key"))
                 {
-                    context.Response.StatusCode = 401; //UnAuthorized
-                    await context.Response.WriteAsync("Invalid User Key");
+                    context.Response.StatusCode = 400; //Bad Request                
+                    await context.Response.WriteAsync("User Key is missing");
                     return;
+                }
+                else
+                {
+                    if (!UsersRepo.CheckValidUserKey(context.Request.Headers["user-key"]))
+                    {
+                        context.Response.StatusCode = 401; //UnAuthorized
+                        await context.Response.WriteAsync("Invalid User Key");
+                        return;
+                    }
                 }
             }
 

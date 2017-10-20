@@ -15,5 +15,6 @@ namespace GeekBudget.Models
         void Update(User item);
 
         bool CheckValidUserKey(string reqkey);
+        bool AreContactsEmpty();
     }
 }

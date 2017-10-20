@@ -370,5 +370,51 @@ namespace GeekBudget.Test.Models
                 connection.Close();
             }
         }
+
+        [Fact]
+        public void CanCheckIfThereAreNoUsers()
+        {
+            // In-memory database only exists while the connection is open
+            var connection = new SqliteConnection("DataSource=:memory:");
+            connection.Open();
+
+            try
+            {
+                var options = new DbContextOptionsBuilder<GeekBudgetContext>()
+                    .UseSqlite(connection)
+                    .Options;
+
+                // Create the schema in the database
+                using (var context = new GeekBudgetContext(options))
+                {
+                    context.Database.EnsureCreated();
+                    var users = new List<User>()
+                    {
+                        new User()
+                        {
+                            Key = "testkey1",
+                            Username = "testname1"
+                        }
+                    };
+                    context.Users.AddRange(users.ToArray());
+                    context.SaveChanges();
+                }
+
+                bool contactsEmpty = true;
+
+                using (var context = new GeekBudgetContext(options))
+                {
+                    var userRepo = new UserRepository(context);
+                    contactsEmpty = userRepo.AreContactsEmpty();
+                }
+
+                Assert.False(contactsEmpty);
+            }
+            finally
+            {
+                connection.Close();
+            }
+
+        }
     }
 }
