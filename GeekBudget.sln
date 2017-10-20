@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.10
+VisualStudioVersion = 15.0.27004.2005
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeekBudget", "GeekBudget\GeekBudget.csproj", "{D0448296-CA47-44EB-B2FA-40EE4877DF85}"
 EndProject
@@ -11,6 +11,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeekBudget.Tests", "GeekBudget.Tests\GeekBudget.Tests.csproj", "{B6357802-EF27-4681-9481-6EEB87A9A7C2}"
+EndProject
+Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "GeekBudget.Web", "GeekBudget.Web\GeekBudget.Web.njsproj", "{A7DF062F-B0A2-485E-9EB8-83A50AE69051}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,6 +28,10 @@ Global
 		{B6357802-EF27-4681-9481-6EEB87A9A7C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B6357802-EF27-4681-9481-6EEB87A9A7C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B6357802-EF27-4681-9481-6EEB87A9A7C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A7DF062F-B0A2-485E-9EB8-83A50AE69051}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A7DF062F-B0A2-485E-9EB8-83A50AE69051}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A7DF062F-B0A2-485E-9EB8-83A50AE69051}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A7DF062F-B0A2-485E-9EB8-83A50AE69051}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
