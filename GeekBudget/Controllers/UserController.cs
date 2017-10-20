@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GeekBudget.Controllers
 {
+    [Route("api/[controller]")]
     public class UserController : BaseController
     {
         private UserRepository _userRepository { get;}
