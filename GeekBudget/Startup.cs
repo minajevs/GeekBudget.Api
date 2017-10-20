@@ -47,7 +47,7 @@ namespace GeekBudget
 
             //register dbcontext as a singleton
             services.AddDbContext<GeekBudgetContext>(
-                options => options.UseSqlite("Data Source=GeekBudget.db"),
+                options => options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")),
                 ServiceLifetime.Singleton);
 
             //register geekcontext
@@ -63,6 +63,8 @@ namespace GeekBudget
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
+            InitializeDatabase(app);
+
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
@@ -70,6 +72,14 @@ namespace GeekBudget
             app.UseMiddleware<UserKeyValidator>();
 
             app.UseMvc();
+        }
+
+        private void InitializeDatabase(IApplicationBuilder app)
+        {
+            using (var scope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
+            {
+                scope.ServiceProvider.GetRequiredService<GeekBudgetContext>().Database.Migrate();
+            }
         }
     }
 }
