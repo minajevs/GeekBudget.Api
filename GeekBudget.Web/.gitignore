@@ -7,8 +7,7 @@
 /coverage
 
 # production
-# /build
-# build folder neede for deployments to Azure
+/build
 
 # misc
 .DS_Store
