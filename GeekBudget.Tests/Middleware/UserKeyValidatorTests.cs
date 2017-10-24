@@ -115,5 +115,32 @@ namespace GeekBudget.Test.Middleware
             Assert.Equal(200, requestContext.Response.StatusCode);
             Assert.True(nextAuthorizedRequestCalled);
         }
+
+        [Fact]
+        public async void DoNotCheckAuthIfRequestIsCorsOptions()
+        {
+            //Arrange
+            var nextAuthorizedRequestCalled = false;
+            var userRepoMock = new Mock<IUserRepository>();
+            userRepoMock.Setup(r => r.CheckValidUserKey(It.IsAny<string>())).Returns(false);  //Validates to true
+            userRepoMock.Setup(r => r.AreContactsEmpty()).Returns(false);                      //Contacts arent empty
+
+            var userKeyValidator = new UserKeyValidator(next: async (innerHttpContext) =>
+            {
+                nextAuthorizedRequestCalled = true;
+                await innerHttpContext.Response.WriteAsync("authorized body");
+            }, _repo: userRepoMock.Object);
+
+            var requestContext = new DefaultHttpContext();
+            requestContext.Request.Method = "OPTIONS";
+            requestContext.Request.Headers.Add(new KeyValuePair<string, StringValues>("user-key", "password"));
+
+            //Act
+            await userKeyValidator.Invoke(requestContext);
+
+            //Assert
+            Assert.Equal(200, requestContext.Response.StatusCode);
+            Assert.True(nextAuthorizedRequestCalled);
+        }
     }
 }

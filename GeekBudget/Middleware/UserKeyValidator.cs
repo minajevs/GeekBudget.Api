@@ -22,7 +22,8 @@ namespace GeekBudget.Middleware
 
         public async Task Invoke(HttpContext context)
         {
-            if (!UsersRepo.AreContactsEmpty()) //Do not check login if there are no users!
+            if (context.Request.Method != "OPTIONS" && //Do not check if it is preflight cors request
+                !UsersRepo.AreContactsEmpty()) //Do not check login if there are no users!
             {
                 if (!context.Request.Headers.Keys.Contains("user-key"))
                 {

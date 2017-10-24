@@ -36,6 +36,8 @@ namespace GeekBudget
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //register cors
+            services.AddCors();
 
             // Add framework services.
             services.AddMvc().AddJsonOptions(options => {
@@ -70,6 +72,12 @@ namespace GeekBudget
 
             //Authentication
             app.UseMiddleware<UserKeyValidator>();
+
+            //Enable CORS
+            app.UseCors(builder => builder
+                .AllowAnyOrigin()           //TODO: setup allowed urls
+                .AllowAnyMethod()           
+                .WithHeaders("user-key"));  //Allow only authorized cors requests
 
             app.UseMvc();
         }
