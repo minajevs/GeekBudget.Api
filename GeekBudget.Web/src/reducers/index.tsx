@@ -1,7 +1,9 @@
 import { combineReducers } from 'redux';
 
-import handleActions from './testReducers';
+import { tabReducers } from './tabReducers';
 
-export const rootReducer = combineReducers({
-	handleActions
+import { StoreState, TabState } from '../types';
+
+export const rootReducer = combineReducers<StoreState>({
+    tabs: tabReducers
 });

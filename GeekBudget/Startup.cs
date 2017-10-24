@@ -77,7 +77,7 @@ namespace GeekBudget
             app.UseCors(builder => builder
                 .AllowAnyOrigin()           //TODO: setup allowed urls
                 .AllowAnyMethod()           
-                .WithHeaders("user-key"));  //Allow only authorized cors requests
+                .WithHeaders("user-key", "Content-Type"));  //Allow only authorized cors requests
 
             app.UseMvc();
         }

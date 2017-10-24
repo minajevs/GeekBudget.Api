@@ -5,22 +5,16 @@ import registerServiceWorker from './registerServiceWorker';
 import Api from './api';
 
 // Redux
-import { Store, createStore } from 'redux'
+import thunk from 'redux-thunk';
+import { Store, createStore, applyMiddleware  } from 'redux'
 import { Provider } from 'react-redux';
 import { StoreState, initialState } from './types';
 import { rootReducer } from './reducers';
+import { getAllTabs, removeTab } from './actions/tabActions';
 
-const store: Store<StoreState> = createStore(rootReducer, initialState);
+const store: Store<StoreState> = createStore(rootReducer, initialState, applyMiddleware(thunk));
 
-Api.getAllTabs();
-
-// Redux
-import { Store, createStore } from 'redux'
-import { Provider } from 'react-redux';
-import { initialState, StoreState } from './types';
-import handleActions from './reducers/testReducers';
-
-const store: Store<StoreState> = createStore(handleActions, initialState);
+store.dispatch(getAllTabs());
 
 ReactDOM.render(
 	<Provider store={store}>

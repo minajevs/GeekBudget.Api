@@ -5,17 +5,12 @@ import { handleActions, Action } from 'redux-actions';
 import Tab from '../../models/Tab';
 
 export const tabReducers = handleActions<TabState, Tab[]|Tab|string|number|void>({
-	[constants.REQUEST_ALL_TABS]: (state:TabState): TabState => {
-        state.isFetching = true;
-        //
-        return state;
-    },
-    [constants.RECEIVE_ALL_TABS]: (state:TabState, action:Action<Tab[]>): TabState => {
-        state.isFetching = false;
-        state.items = action.payload || state.items;
-        //
-        return state;
-    },
+	[constants.REQUEST_ALL_TABS]: (state:TabState): TabState => ({...state, isFetching: true}),
+    [constants.RECEIVE_ALL_TABS]: (state:TabState, action:Action<Tab[]>): TabState => ({
+        ...state,
+        isFetching: false,
+        items: action.payload || state.items
+    }),
 
     [constants.REQUEST_TAB]: (state:TabState, action:Action<number>): TabState => {
         state.isFetching = true;

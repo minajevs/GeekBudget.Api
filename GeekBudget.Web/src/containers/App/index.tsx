@@ -5,11 +5,11 @@ import './style.css';
 //Redux
 import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
-import * as actions from '../../actions';
+import { tabActions } from '../../actions';
 import { StoreState } from '../../types/index';
 
 //Components
-import TestBool from '../../components/TestBool';
+import Tab from '../../components/Tab';
 
 interface Props{
 	dispatch: Dispatch<{}>;
@@ -25,11 +25,21 @@ class App extends React.Component<Props> {
 	  <div className="App">
 		<div className="App-header">
 		  <img src={logo} className="App-logo" alt="logo" />
-		  <h2>Welcome to React</h2>
 		</div>
-		<TestBool 
-			testBool={store.testBool}
-			onSet={() => dispatch(actions.setTestBool())}/>
+        <br/>
+        <button onClick={() => dispatch(tabActions.getAllTabs())}>Reload</button>
+        <p>
+            Fetching: <strong>{store.tabs.isFetching.toString()}</strong> 
+            Tabs count: <strong>{store.tabs.items.length}</strong>
+        </p>
+        {store.tabs.items.map(t => {
+            return <Tab 
+                tab={t} 
+                key={t.id}
+                onRemove={() => dispatch(tabActions.removeTab(t.id))} 
+                onSave={(tab) => dispatch(tabActions.updateTab(tab))}
+                />
+        })}
 	  </div>
 	);
   }

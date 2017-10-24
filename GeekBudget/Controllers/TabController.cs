@@ -59,17 +59,16 @@ namespace GeekBudget.Controllers
         [HttpPost("Remove/{id}")]
         public IActionResult Remove(int id)
         {
-            if (!_context.Tabs.Any(t => t.Id == id)) //If entry by id exist
+            var tab = _context.Tabs.FirstOrDefault(t => t.Id == id);
+            if (tab == null) //If entry by id exist
                 return BadRequest(String.Format("No Tab with id '{0}' was found!", id));
 
-            var removeTab = new Tab() { Id = id };
-            _context.Tabs.Attach(removeTab);
-            _context.Tabs.Remove(removeTab);
+            _context.Entry(tab).State = EntityState.Deleted;
             _context.SaveChanges();
             return Ok();
         }
 
-        [HttpPost("Update/{id}")]
+        [HttpPost("Update")]
         public IActionResult Update([FromBody]TabViewModel value)
         {
             if(value == null)
