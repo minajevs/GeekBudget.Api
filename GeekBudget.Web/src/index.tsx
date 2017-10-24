@@ -14,6 +14,14 @@ const store: Store<StoreState> = createStore(rootReducer, initialState);
 
 Api.getAllTabs();
 
+// Redux
+import { Store, createStore } from 'redux'
+import { Provider } from 'react-redux';
+import { initialState, StoreState } from './types';
+import handleActions from './reducers/testReducers';
+
+const store: Store<StoreState> = createStore(handleActions, initialState);
+
 ReactDOM.render(
 	<Provider store={store}>
 		<App />

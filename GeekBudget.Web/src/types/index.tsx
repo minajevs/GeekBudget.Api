@@ -1,22 +1,9 @@
-import Tab from '../models/Tab';
-
 export interface StoreState{
-    testBool: boolean;
-    tabs: TabState;
+	testBool: boolean;
+	testString: string;
 }
 
-export interface TabState{
-    isFetching: boolean;
-    items: Tab[];
-    // filter: TabFilter,
-    // etc.
-
-}
-
-export const initialState : StoreState = {
-    testBool: false,
-    tabs: {
-        isFetching: false,
-        items: []  
-    }
+export const initialState: StoreState = {
+	testBool: false,
+	testString: ""
 }
