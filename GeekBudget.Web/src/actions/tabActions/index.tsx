@@ -13,6 +13,7 @@ export function getAllTabs(){
         try{
             const tabs = await Api.getAllTabs();
             dispatch(receiveAllTabs(tabs));
+            dispatch(requestResponseTab('success'));
         } catch(e){
             dispatch(requestResponseTab(e.toString()));
         }
@@ -21,6 +22,22 @@ export function getAllTabs(){
 
 export const requestTab = createAction<number>(constants.REQUEST_TAB);
 export const receiveTab = createAction<Tab>(constants.RECEIVE_TAB);
+
+export const requestAddTab = createAction<Tab>(constants.REQUEST_ADD_TAB);
+export const responseAddTab = createAction<number>(constants.RESPONSE_ADD_TAB);
+export function addTab(tab:Tab){
+    return async function (dispatch:any){
+        dispatch(requestAddTab(tab));
+        try{
+            const newId = await Api.addTab(tab);    //Add tab, get its ID
+            await getAllTabs()(dispatch);           //Reload alltabs
+            dispatch(responseAddTab(newId));        //When its done dispatch success response
+            dispatch(requestResponseTab('success'));
+        } catch(e){
+            dispatch(requestResponseTab(e));
+        }
+    }
+}
 
 export const requestRemoveTab = createAction<number>(constants.REQUEST_REMOVE_TAB);
 export function removeTab(id:number){

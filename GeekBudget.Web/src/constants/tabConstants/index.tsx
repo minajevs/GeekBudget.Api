@@ -16,6 +16,9 @@ export type RECEIVE_TAB = typeof RECEIVE_TAB;
 export const REQUEST_ADD_TAB = 'REQUEST_ADD_TAB';
 export type REQUEST_ADD_TAB = typeof REQUEST_ADD_TAB;
 
+export const RESPONSE_ADD_TAB = 'RESPONSE_ADD_TAB';
+export type RESPONSE_ADD_TAB = typeof RESPONSE_ADD_TAB;
+
 // Remove
 export const REQUEST_REMOVE_TAB = 'REQUEST_REMOVE_TAB';
 export type REQUEST_REMOVE_TAB = typeof REQUEST_REMOVE_TAB;

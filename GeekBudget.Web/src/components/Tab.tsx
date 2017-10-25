@@ -26,7 +26,7 @@ export default class TabView extends React.Component<Props, State> {
         super(props);
         this.state = {
             edit: false,
-            innerTab: Object.assign({}, props.tab)
+            innerTab: props.tab
         }
     }
 
@@ -47,9 +47,9 @@ export default class TabView extends React.Component<Props, State> {
                 style={{ border: '1px solid', width: '300px', margin: '2px', display: 'inline-block', cursor: 'pointer' }}>
                 <ul>
                     <li>id: {tab.id}</li>
-                    <li>name: {textOrEdit(edit, tab.name.toString(), this.handleChange.bind(this, 'name'))}</li>
-                    <li>amount: {textOrEdit(edit, tab.amount.toString(), this.handleChange.bind(this, 'amount'))}</li>
-                    <li>currency: {textOrEdit(edit, tab.currency.toString(), this.handleChange.bind(this, 'currency'))}</li>
+                    <li>name: {textOrEdit(edit, (tab.name || '').toString(), this.handleChange.bind(this, 'name'))}</li>
+                    <li>amount: {textOrEdit(edit, (tab.amount || '').toString(), this.handleChange.bind(this, 'amount'))}</li>
+                    <li>currency: {textOrEdit(edit, (tab.currency || '').toString(), this.handleChange.bind(this, 'currency'))}</li>
                 </ul>
                 {edit  
                     ? <button onClick={this.onSave.bind(this)}>save</button>

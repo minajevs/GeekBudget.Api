@@ -10,6 +10,7 @@ import { StoreState } from '../../types/index';
 
 //Components
 import Tab from '../../components/Tab';
+import TabModel from '../../models/Tab';
 
 interface Props{
 	dispatch: Dispatch<{}>;
@@ -27,6 +28,7 @@ class App extends React.Component<Props> {
 		  <img src={logo} className="App-logo" alt="logo" />
 		</div>
         <br/>
+        <button onClick={() => dispatch(tabActions.addTab(new TabModel()))}>Add new</button>
         <button onClick={() => dispatch(tabActions.getAllTabs())}>Reload</button>
         <p>
             Fetching: <strong>{store.tabs.isFetching.toString()}</strong> 

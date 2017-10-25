@@ -23,6 +23,20 @@ export default class Api{
         }
     }
 
+    public static async addTab(tab:Tab):Promise<number>{
+        const url = this._url + this._tabUrl + '/add';
+        const options = this.createRequestOptions("POST", tab);
+        try{
+            const response = await fetch(url, options);
+            const data = await response.json() as number;
+            console.log("Fetch succeed.");
+            console.log(data);
+            return data;
+        } catch (e){
+            throw `Fetch failed! Reason: ${e}`
+        }
+    }
+
     public static async removeTab(id:number):Promise<boolean>{
         const url = this._url + this._tabUrl + '/remove' + '/' + id;
         const options = this.createRequestOptions("POST");
@@ -37,8 +51,7 @@ export default class Api{
 
     public static async updateTab(tab:Tab):Promise<boolean>{
         const url = this._url + this._tabUrl + '/update';
-        const options = this.createRequestOptions("POST");
-        options.body = JSON.stringify(tab);
+        const options = this.createRequestOptions("POST", tab);
         try{
             const response = await fetch(url, options);
             console.log("Fetch succeed.");
@@ -48,7 +61,7 @@ export default class Api{
         }
     }    
 
-    private static createRequestOptions(method:string, body = null):RequestInit{
+    private static createRequestOptions(method:string, body:any = null):RequestInit{
         const headers = new Headers({
             "user-key": this._accessKey,
             "Content-Type": "application/json"
@@ -57,10 +70,10 @@ export default class Api{
         const init:RequestInit = {
             headers: headers,
             method: method,
-            body: body,
+            body: body == null ? null : JSON.stringify(body),
             mode: 'cors'
         };
-
+        
         return init;
     }
 
