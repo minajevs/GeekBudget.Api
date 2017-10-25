@@ -21,7 +21,7 @@ const textOrEdit = function (edit: boolean, value: string, onChange: any) {
     }
 }
 
-export default class TestBool extends React.Component<Props, State> {
+export default class TabView extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
         this.state = {

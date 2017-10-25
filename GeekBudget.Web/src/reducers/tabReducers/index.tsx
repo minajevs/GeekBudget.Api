@@ -5,11 +5,12 @@ import { handleActions, Action } from 'redux-actions';
 import Tab from '../../models/Tab';
 
 export const tabReducers = handleActions<TabState, Tab[]|Tab|string|number|void>({
-	[constants.REQUEST_ALL_TABS]: (state:TabState): TabState => ({...state, isFetching: true}),
+	[constants.REQUEST_ALL_TABS]: (state:TabState): TabState => ({...state, isFetching: true, items: []}),
     [constants.RECEIVE_ALL_TABS]: (state:TabState, action:Action<Tab[]>): TabState => ({
         ...state,
         isFetching: false,
-        items: action.payload || state.items
+        items: (action.payload as Tab[]).slice()  || state.items //Next line does not force state reload!
+        //items: action.payload  || state.items                     
     }),
 
     [constants.REQUEST_TAB]: (state:TabState, action:Action<number>): TabState => {
