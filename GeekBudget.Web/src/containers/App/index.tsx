@@ -8,47 +8,53 @@ import { connect } from 'react-redux';
 import { tabActions } from '../../actions';
 import { StoreState } from '../../types/index';
 
+//Router
+import { Route, Link, withRouter } from 'react-router-dom';
+
 //Components
 import Tab from '../../components/Tab';
 import TabModel from '../../models/Tab';
 
-interface Props{
-	dispatch: Dispatch<{}>;
-	store: StoreState;
+import TabsContainer from '../../containers/Tabs'; 
+
+interface Props {
+    dispatch: Dispatch<{}>;
+    store: StoreState;
 }
 
 const logo = require('./logo.svg');
 
-class App extends React.Component<Props> {
-  render() {
-    const { dispatch, store } = this.props;
-	return (
-	  <div className="App">
-		<div className="App-header">
-		  <img src={logo} className="App-logo" alt="logo" />
-		</div>
-        <br/>
-        <button onClick={() => dispatch(tabActions.addTab(new TabModel()))}>Add new</button>
-        <button onClick={() => dispatch(tabActions.getAllTabs())}>Reload</button>
-        <p>
-            Fetching: <strong>{store.tabs.isFetching.toString()}</strong> 
-            Tabs count: <strong>{store.tabs.items.length}</strong>
-        </p>
-        {store.tabs.items.map(t => {
-            return <Tab 
-                tab={t} 
-                key={t.id}
-                onRemove={() => dispatch(tabActions.removeTab(t.id))} 
-                onSave={(tab) => dispatch(tabActions.updateTab(tab))}
-                />
-        })}
-	  </div>
-	);
-  }
+const styles = {
+    link: {
+        backgroundColor: '#fff', 
+        margin: '10px'
+    }
 }
 
-const mapStateToProps = (state:StoreState) => ({
-	store: state
+class App extends React.Component<Props> {
+    render() {
+        const { dispatch, store } = this.props;
+        return (
+            <div className="App">
+                <div className="App-header">
+                    <Link to={'/'}>
+                        <img src={logo} className="App-logo" alt="logo" />
+                    </Link>
+                    <br/>
+                    <Link to={'/tabs'} style={styles.link}>Tabs</Link>
+                    <Link to={'/operations'} style={styles.link}>Operations</Link>
+                </div>
+                <br />
+                <Route exact path={'/'} render={() => (<h1>Welcome!</h1>)}/>
+                <Route path={'/tabs'} render={() => (<TabsContainer />)} />
+                <Route path={'/operations'} render={() => (<h1>OPEARTIONS PAGE</h1>)} />
+            </div>
+        );
+    }
+}
+
+const mapStateToProps = (state: StoreState) => ({
+    store: state
 });
 
-export default connect(mapStateToProps)(App);
+export default withRouter(connect(mapStateToProps)(App));
