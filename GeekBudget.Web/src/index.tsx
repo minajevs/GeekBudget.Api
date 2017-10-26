@@ -1,8 +1,6 @@
+// React
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
-import App from './containers/App'
-import registerServiceWorker from './registerServiceWorker'
-import Api from './api'
 
 // Router
 import createHistory from 'history/createBrowserHistory'
@@ -17,16 +15,23 @@ import { StoreState, initialState } from './types'
 import { rootReducer } from './reducers'
 import { getAllTabs, removeTab } from './actions/tabActions'
 
+// Other
+import App from './containers/App'
+import registerServiceWorker from './registerServiceWorker'
+import Api from './api'
+
+// Setup router and redux-router
 const history = createHistory();
 const historyMiddleware = routerMiddleware(history)
 
+// Create redux store
 const store:Store<StoreState> = createStore(
     rootReducer, 
     initialState,
     applyMiddleware(historyMiddleware, thunk)
 );
 
-//Init app with tabs
+// Init app with tabs
 store.dispatch(getAllTabs());
 
 ReactDOM.render(
