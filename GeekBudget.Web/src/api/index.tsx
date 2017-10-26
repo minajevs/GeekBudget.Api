@@ -2,15 +2,7 @@ import Tab from '../models/Tab';
 
 import { createApiUrl, createRequestOptions } from './helpers';
 
-export default class Api{
-    private static readonly _url:string = "https://geekbudgetapitest.azurewebsites.net/api";
-
-    //private static readonly _url:string = "http://localhost:47570/api";
-    private static readonly _tabUrl:string = "/tab";
-
-    private static _accessKey:string = "cmMUou9gBdkAzqgOccS+OdoRscmKwjc/tTV+PDLaEWY=";
-    //private static _accessKey:string = "admin";
-    
+export default class Api{    
     public static async getAllTabs():Promise<Tab[]>{
         const url = createApiUrl('tab', 'getall')
         const options = createRequestOptions("GET");
