@@ -1,5 +1,7 @@
 import Tab from '../models/Tab';
 
+import { createApiUrl, createRequestOptions } from './helpers';
+
 export default class Api{
     private static readonly _url:string = "https://geekbudgetapitest.azurewebsites.net/api";
 
@@ -10,8 +12,8 @@ export default class Api{
     //private static _accessKey:string = "admin";
     
     public static async getAllTabs():Promise<Tab[]>{
-        const url = this._url + this._tabUrl + '/getall';
-        const options = this.createRequestOptions("GET");
+        const url = createApiUrl('tab', 'getall')
+        const options = createRequestOptions("GET");
         try{
             const response = await fetch(url, options);
             const data = await response.json() as Tab[];
@@ -24,8 +26,8 @@ export default class Api{
     }
 
     public static async addTab(tab:Tab):Promise<number>{
-        const url = this._url + this._tabUrl + '/add';
-        const options = this.createRequestOptions("POST", tab);
+        const url = createApiUrl('tab', 'add')
+        const options = createRequestOptions("POST", tab);
         try{
             const response = await fetch(url, options);
             const data = await response.json() as number;
@@ -38,8 +40,8 @@ export default class Api{
     }
 
     public static async removeTab(id:number):Promise<boolean>{
-        const url = this._url + this._tabUrl + '/remove' + '/' + id;
-        const options = this.createRequestOptions("POST");
+        const url = createApiUrl('tab', 'remove', id.toString())
+        const options = createRequestOptions("POST");
         try{
             const response = await fetch(url, options);
             console.log("Fetch succeed.");
@@ -50,8 +52,8 @@ export default class Api{
     }
 
     public static async updateTab(tab:Tab):Promise<boolean>{
-        const url = this._url + this._tabUrl + '/update';
-        const options = this.createRequestOptions("POST", tab);
+        const url = createApiUrl('tab', 'update')
+        const options = createRequestOptions("POST", tab);
         try{
             const response = await fetch(url, options);
             console.log("Fetch succeed.");
@@ -60,21 +62,4 @@ export default class Api{
             throw `Fetch failed! Reason: ${e}`
         }
     }    
-
-    private static createRequestOptions(method:string, body:any = null):RequestInit{
-        const headers = new Headers({
-            "user-key": this._accessKey,
-            "Content-Type": "application/json"
-        });
-
-        const init:RequestInit = {
-            headers: headers,
-            method: method,
-            body: body == null ? null : JSON.stringify(body),
-            mode: 'cors'
-        };
-        
-        return init;
-    }
-
 }
