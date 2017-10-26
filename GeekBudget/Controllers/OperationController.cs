@@ -15,7 +15,7 @@ namespace GeekBudget.Controllers
     {
         public OperationController(GeekBudgetContext context) : base(context) { }
 
-        [HttpGet]
+        [HttpGet("GetAll")]
         public IActionResult GetAll()
         {
             return Ok(_context
@@ -27,7 +27,7 @@ namespace GeekBudget.Controllers
             );
         }
 
-        [HttpGet]
+        [HttpPost("Get")]
         public IActionResult Get([FromBody]OperationFilter filter)
         {
             var data = filter.CreateQuery(_context.Operations);
@@ -44,7 +44,7 @@ namespace GeekBudget.Controllers
         }
 
         // GET: api/values
-        [HttpGet]
+        [HttpPost("Add")]
         public IActionResult Add([FromBody]OperationViewModel value)
         {
             TryValidateModel(value);
@@ -79,7 +79,7 @@ namespace GeekBudget.Controllers
         }
 
         // DELETE api/values/5
-        [HttpPost("{id}")]
+        [HttpPost("Remove/{id}")]
         public IActionResult Remove(int id)
         {
             if (!_context.Operations.Any(o=> o.Id == id)) //If entry by id exist
@@ -92,7 +92,7 @@ namespace GeekBudget.Controllers
             return Ok();
         }
 
-        [HttpPost("{id}")]
+        [HttpPost("Update")]
         public IActionResult Update([FromBody]OperationViewModel value)
         {
             if (value == null)

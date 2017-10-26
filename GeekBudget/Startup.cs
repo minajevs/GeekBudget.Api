@@ -34,7 +34,7 @@ namespace GeekBudget
         public IConfigurationRoot Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+        public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             //register cors
             services.AddCors();
@@ -49,23 +49,26 @@ namespace GeekBudget
 
             //register dbcontext as a singleton
             services.AddDbContext<GeekBudgetContext>(
-                options => options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")),
-                ServiceLifetime.Singleton);
+                options => options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
 
             //register geekcontext
-            services.AddSingleton<IGeekBudgetContext, GeekBudgetContext>();
+            services.AddScoped<IGeekBudgetContext, GeekBudgetContext>();
 
             //register contact repo
-            services.AddSingleton<IUserRepository, UserRepository>();
+            services.AddTransient<IUserRepository, UserRepository>();
 
             //register swagger generator
             //services.AddSwaggerGen()
+
+            var serviceProvider = services.BuildServiceProvider();
+
+            return serviceProvider;
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IServiceProvider serviceProvider)
         {
-            InitializeDatabase(app);
+            InitializeDatabase(serviceProvider);
 
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
@@ -82,9 +85,9 @@ namespace GeekBudget
             app.UseMvc();
         }
 
-        private void InitializeDatabase(IApplicationBuilder app)
+        private void InitializeDatabase(IServiceProvider serviceProvider)
         {
-            using (var scope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
+            using (var scope = serviceProvider.GetService<IServiceScopeFactory>().CreateScope())
             {
                 scope.ServiceProvider.GetRequiredService<GeekBudgetContext>().Database.Migrate();
             }
