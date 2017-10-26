@@ -16,6 +16,7 @@ import Tab from '../../components/Tab';
 import TabModel from '../../models/Tab';
 
 import TabsContainer from '../../containers/Tabs'; 
+import OperationsContainer from '../../containers/Operations'; 
 
 interface Props {
     dispatch: Dispatch<{}>;
@@ -47,7 +48,7 @@ class App extends React.Component<Props> {
                 <br />
                 <Route exact path={'/'} render={() => (<h1>Welcome!</h1>)}/>
                 <Route path={'/tabs'} render={() => (<TabsContainer />)} />
-                <Route path={'/operations'} render={() => (<h1>OPEARTIONS PAGE</h1>)} />
+                <Route path={'/operations'} render={() => (<OperationsContainer />)} />
             </div>
         );
     }

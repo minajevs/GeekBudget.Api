@@ -4,8 +4,8 @@ export default class Operation{
     id:number;
     comment:string;
     amount:number;
-    currency:number;
-    from:Tab;
-    to:Tab;
+    currency:string;
+    from:number;
+    to:number;
     date:Date;
 }

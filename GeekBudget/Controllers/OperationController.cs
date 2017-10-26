@@ -118,7 +118,7 @@ namespace GeekBudget.Controllers
             
 
             //Get new tab From
-            if (value.From != null)
+            if (value.From != null && value.From != updateOperation.From.Id)
             {
                 newTabFrom = _context.Tabs.SingleOrDefault(t => t.Id == value.From);
                 if (newTabFrom == null) //If Tab by id does not exist
@@ -126,7 +126,7 @@ namespace GeekBudget.Controllers
             }
 
             //Get new tab To
-            if (value.To != null)
+            if (value.To != null && value.To != updateOperation.To.Id)
             {
                 newTabTo = _context.Tabs.SingleOrDefault(t => t.Id == value.From);
                 if (newTabTo == null) //If Tab by id does not exist

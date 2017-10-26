@@ -5,7 +5,7 @@ import { handleActions, Action } from 'redux-actions';
 import Tab from '../../models/Tab';
 
 export const tabReducers = handleActions<TabState, Tab[] | Tab | string | number | void>({
-    [constants.REQUEST_ALL_TABS]: (state: TabState): TabState => ({ ...state, isFetching: true }),
+    [constants.REQUEST_ALL_TABS]: (state: TabState): TabState => ({ ...state, isFetching: true, items: [] }),
     [constants.RECEIVE_ALL_TABS]: (state: TabState, action: Action<Tab[]>): TabState => ({
         ...state,
         items: action.payload || state.items,
