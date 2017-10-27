@@ -13,3 +13,12 @@ export const createRequestOptions = (method:string, body:any = null):RequestInit
         mode: 'cors'
     }
 )
+
+export const createErrorStringFromDictionary = (dict:{ [key:string] : string[] }):string => {
+    let result = ``;
+    for(const key in dict){
+        result += `
+        ${key}: ${dict[key].join()}`;
+    }
+    return result;
+}

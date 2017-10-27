@@ -1,10 +1,10 @@
 import * as constants from '../../constants/operationConstants';
-import { OperationState, initialState } from '../../types';
+import { OperationState, initialState, ApplicationError } from '../../types';
 import { handleActions, Action } from 'redux-actions';
 
 import Operation from '../../models/Operation';
 
-export const operationReducers = handleActions<OperationState, Operation[] | Operation | string | number | void>({
+export const operationReducers = handleActions<OperationState, Operation[] | Operation | ApplicationError | string | number | void>({
     [constants.REQUEST_ALL_OPERATIONS]: (state: OperationState): OperationState => ({ ...state, isFetching: true, items: [] }),
     [constants.RECEIVE_ALL_OPERATIONS]: (state: OperationState, action: Action<Operation[]>): OperationState => ({
         ...state,
@@ -28,6 +28,12 @@ export const operationReducers = handleActions<OperationState, Operation[] | Ope
     [constants.REQUEST_UPDATE_OPERATION]: (state: OperationState, action: Action<Operation>): OperationState => ({ ...state, isFetching: true }),
 
     [constants.RESPONSE_OPERATION]: (state: OperationState, action: Action<string>): OperationState => {
+        state.isFetching = false;
+        return { ...state };  //Shallow copy to force rerender
+    },
+
+    [constants.RESPONSE_ERROR_OPERATION]: (state: OperationState, action: Action<ApplicationError>): OperationState => {
+        alert((action.payload as ApplicationError).text);
         state.isFetching = false;
         return { ...state };  //Shallow copy to force rerender
     },

@@ -30,3 +30,7 @@ export type REQUEST_UPDATE_TAB = typeof REQUEST_UPDATE_TAB;
 // Common response
 export const RESPONSE_TAB = 'RESPONSE_TAB';
 export type RESPONSE_TAB = typeof RESPONSE_TAB;
+
+// Common error
+export const RESPONSE_ERROR_TAB = 'RESPONSE_ERROR_TAB';
+export type RESPONSE_ERROR_TAB = typeof RESPONSE_ERROR_TAB;

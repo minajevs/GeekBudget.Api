@@ -7,10 +7,11 @@ export const getAll = async ():Promise<Tab[]> => {
     const options = createRequestOptions("GET");
     try{
         const response = await fetch(url, options);
-        const data = await response.json() as Tab[];
-        console.log("Fetch succeed.");
-        console.log(data);
-        return data;
+
+        if(response.status != 200)
+            throw await response.text(); // TODO
+        
+        return await response.json() as Tab[];
     } catch (e){
         throw `Fetch failed! Reason: ${e}`
     }
@@ -21,10 +22,11 @@ export const add = async (tab:Tab):Promise<number> => {
     const options = createRequestOptions("POST", tab);
     try{
         const response = await fetch(url, options);
-        const data = await response.json() as number;
-        console.log("Fetch succeed.");
-        console.log(data);
-        return data;
+
+        if(response.status != 200)
+            throw await response.text(); // TODO
+    
+        return await response.json() as number;
     } catch (e){
         throw `Fetch failed! Reason: ${e}`
     }
@@ -35,8 +37,10 @@ export const remove = async (id:number):Promise<boolean> => {
     const options = createRequestOptions("POST");
     try{
         const response = await fetch(url, options);
-        console.log("Fetch succeed.");
-        return true;
+        if(response.status != 200)
+            throw await response.text(); // TODO
+
+        return await true;
     } catch (e){
         throw `Fetch failed! Reason: ${e}`
     }
@@ -47,8 +51,10 @@ export const update = async (tab:Tab):Promise<boolean> => {
     const options = createRequestOptions("POST", tab);
     try{
         const response = await fetch(url, options);
-        console.log("Fetch succeed.");
-        return true;
+        if(response.status != 200)
+            throw await response.text(); // TODO
+
+        return await true;
     } catch (e){
         throw `Fetch failed! Reason: ${e}`
     }

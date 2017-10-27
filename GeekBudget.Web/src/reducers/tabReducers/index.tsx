@@ -1,10 +1,10 @@
 import * as constants from '../../constants/tabConstants';
-import { TabState, initialState } from '../../types';
+import { TabState, initialState, ApplicationError} from '../../types';
 import { handleActions, Action } from 'redux-actions';
 
 import Tab from '../../models/Tab';
 
-export const tabReducers = handleActions<TabState, Tab[] | Tab | string | number | void>({
+export const tabReducers = handleActions<TabState, Tab[] | Tab | ApplicationError | string | number | void>({
     [constants.REQUEST_ALL_TABS]: (state: TabState): TabState => ({ ...state, isFetching: true, items: [] }),
     [constants.RECEIVE_ALL_TABS]: (state: TabState, action: Action<Tab[]>): TabState => ({
         ...state,
@@ -31,6 +31,12 @@ export const tabReducers = handleActions<TabState, Tab[] | Tab | string | number
     [constants.REQUEST_UPDATE_TAB]: (state: TabState, action: Action<Tab>): TabState => ({ ...state, isFetching: true }),
 
     [constants.RESPONSE_TAB]: (state: TabState, action: Action<string>): TabState => {
+        state.isFetching = false;
+        return { ...state };  //Shallow copy to force rerender
+    },
+
+    [constants.RESPONSE_ERROR_TAB]: (state: TabState, action: Action<ApplicationError>): TabState => {
+        alert((action.payload as ApplicationError).text);
         state.isFetching = false;
         return { ...state };  //Shallow copy to force rerender
     },

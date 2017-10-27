@@ -14,7 +14,7 @@ import { Provider } from 'react-redux'
 import { StoreState, initialState } from './types'
 import { rootReducer } from './reducers'
 import { getAllTabs, removeTab } from './actions/tabActions'
-import { getAllOperations, addOperation } from './actions/operationActions'
+import { getAllOperations, addOperation, removeOperation } from './actions/operationActions'
 
 // Other
 import App from './containers/App'
@@ -32,22 +32,9 @@ const store:Store<StoreState> = createStore(
     applyMiddleware(historyMiddleware, thunk)
 );
 
-// Init app with tabs
+// Init app state
 store.dispatch(getAllTabs());
-
 store.dispatch(getAllOperations());
-
-
-//store.dispatch(addOperation({
-//    from: 11,
-//    to: 12,
-//    amount: 1,
-//    comment: "test op",
-//    currency: 'EUR',
-//    date: new Date(),
-//    id: 1
-//}));
-
 
 ReactDOM.render(
     <Provider store={store}>

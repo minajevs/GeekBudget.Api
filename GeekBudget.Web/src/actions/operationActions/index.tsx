@@ -2,6 +2,9 @@ import * as constants from '../../constants/operationConstants';
 import { createAction } from 'redux-actions';
 import { push } from 'react-router-redux'
 
+import { throwApplicationError } from '../errorActions';
+import { ApplicationError, ValidationError } from '../../types';
+
 import Api from '../../api';
 
 import Operation from '../../models/Operation';
@@ -14,9 +17,9 @@ export function getAllOperations(){
         try{
             const operations = await Api.operation.getAll();
             dispatch(receiveAllOperations(operations));
-            dispatch(requestResponseOperation('success'));
+            dispatch(requestResponseOperation('Success'));
         } catch(e){
-            dispatch(requestResponseOperation(e.toString()));
+            dispatch(responseErrorOperation(e));
         }
     }
 }
@@ -33,10 +36,11 @@ export function addOperation(operation:Operation){
             const newId = await Api.operation.add(operation);    //Add operation, get its ID
             await getAllOperations()(dispatch);           //Reload alloperations
             dispatch(responseAddOperation(newId));        //When its done dispatch success response
-            dispatch(requestResponseOperation('success'));
-            dispatch(push('/operations'));
+            dispatch(requestResponseOperation('Success'));
         } catch(e){
-            dispatch(requestResponseOperation(e));
+            dispatch(responseErrorOperation(e));
+        } finally{
+            dispatch(push('/operations'));
         }
     }
 }
@@ -44,16 +48,13 @@ export function addOperation(operation:Operation){
 export const requestRemoveOperation = createAction<number>(constants.REQUEST_REMOVE_OPERATION);
 export function removeOperation(id:number){
     return async function (dispatch:any){
-        let responseString = "";
         dispatch(requestRemoveOperation(id));
         try{
             await Api.operation.remove(id);
             dispatch(getAllOperations());
-            responseString = 'Success!';
+            dispatch(requestResponseOperation('Success'));
         } catch(e){
-            responseString = e;
-        } finally{
-            dispatch(requestResponseOperation(responseString));
+            dispatch(responseErrorOperation(e));
         }
     }
 }
@@ -61,18 +62,26 @@ export function removeOperation(id:number){
 export const requestUpdateOperation = createAction<Operation>(constants.REQUEST_UPDATE_OPERATION);
 export function updateOperation(operation:Operation){
     return async function (dispatch:any){
-        let responseString = "";
         dispatch(requestUpdateOperation(operation));
         try{
             await Api.operation.update(operation);
             dispatch(getAllOperations());
-            responseString = 'Success!';
+            dispatch(requestResponseOperation('Success'));
         } catch(e){
-            responseString = e;
-        } finally{
-            dispatch(requestResponseOperation(responseString));
+            dispatch(responseErrorOperation(e));
         }
     }
 }
 
 export const requestResponseOperation = createAction<string>(constants.RESPONSE_OPERATION);
+export const requestResponseErrorOperation = createAction<ApplicationError>(constants.RESPONSE_ERROR_OPERATION);
+export function responseErrorOperation(error:any){
+    const appError = {
+        code: 400, // TODO
+        object: error, // TODO
+        text: error // TODO
+    }
+    return async function (dispatch:any){
+        dispatch(throwApplicationError(appError));
+    }
+}

@@ -5,6 +5,7 @@ import { RouterState } from 'react-router-redux'
 export interface StoreState{
     tabs: TabState;
     operations: OperationState;
+    applicationError: ApplicationErrorState;
     router: RouterState;
 }
 
@@ -22,6 +23,21 @@ export interface OperationState{
     // etc.
 }
 
+export interface ApplicationErrorState{
+    errorText: string;
+    error: ApplicationError;
+}
+
+export interface ApplicationError{
+    code: number;
+    text: string;
+    object: ValidationError | string;
+}
+
+export interface ValidationError{
+    [key: string] : string[]; //{ errorKey: string, errorValues: string[] }
+}
+
 export const initialState : StoreState = {
     tabs: {
         isFetching: false,
@@ -30,6 +46,14 @@ export const initialState : StoreState = {
     operations: {
         isFetching: false,
         items: []  
+    },
+    applicationError: {
+        error: {
+            code: 0,
+            object: {},
+            text: ''
+        },
+        errorText: ''
     },
     router: {
         location: null

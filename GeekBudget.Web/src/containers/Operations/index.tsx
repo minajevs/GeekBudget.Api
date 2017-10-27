@@ -26,9 +26,9 @@ class Operations extends React.Component<Props> {
 
         return (
             <div>
-                <button>
-                    <Link to={'/operations/add'}>Add new</Link>
-                </button>
+                    <Link to={'/operations/add'}>
+                        <button>Add new</button>
+                    </Link>
 
                 <button onClick={() => dispatch(operationActions.getAllOperations())}>Reload</button>
                 <p>

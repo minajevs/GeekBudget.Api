@@ -1,5 +1,8 @@
 import * as constants from '../../constants/tabConstants';
 import { createAction } from 'redux-actions';
+import { ApplicationError, ValidationError } from '../../types';
+
+import { throwApplicationError } from '../errorActions';
 
 import Api from '../../api';
 
@@ -74,3 +77,14 @@ export function updateTab(tab:Tab){
 }
 
 export const requestResponseTab = createAction<string>(constants.RESPONSE_TAB);
+export const requestResponseErrorTab = createAction<ApplicationError>(constants.RESPONSE_ERROR_TAB);
+export function responseErrorOperation(error:any){
+    const appError = {
+        code: 400, // TODO
+        object: error, // TODO
+        text: error // TODO
+    }
+    return async function (dispatch:any){
+        dispatch(throwApplicationError(appError));
+    }
+}
