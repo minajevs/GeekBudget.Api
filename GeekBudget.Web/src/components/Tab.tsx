@@ -1,16 +1,16 @@
 import * as React from 'react';
 
-import Tab from '../models/Tab';
+import TabModel from '../models/Tab';
 
 interface Props {
-    tab: Tab;
+    tab: TabModel;
     onRemove: () => void;
-    onSave: (tab: Tab) => void;
+    onSave: (tab: TabModel) => void;
 }
 
 interface State {
     edit: boolean;
-    innerTab: Tab;
+    innerTab: TabModel;
 }
 
 const textOrEdit = function (edit: boolean, value: string, onChange: any) {
@@ -21,7 +21,7 @@ const textOrEdit = function (edit: boolean, value: string, onChange: any) {
     }
 }
 
-export default class TabView extends React.Component<Props, State> {
+export default class Tab extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
         this.state = {

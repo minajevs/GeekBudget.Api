@@ -6,6 +6,7 @@ interface Props {
     operation: Operation;
     onRemove: () => void;
     onSave: (operation: Operation) => void;
+    edit?:boolean;
 }
 
 interface State {
@@ -21,11 +22,11 @@ const textOrEdit = function (edit: boolean, value: string, onChange: any) {
     }
 }
 
-export default class TabView extends React.Component<Props, State> {
+export default class OperationView extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
         this.state = {
-            edit: false,
+            edit: props.edit || false,
             innerOperation: props.operation
         }
     }
@@ -44,7 +45,7 @@ export default class TabView extends React.Component<Props, State> {
         return (
             <div 
                 onDoubleClick={() => this.setState({edit: !edit})} 
-                style={{ border: '1px solid', width: '300px', margin: '2px', display: 'inline-block', cursor: 'pointer' }}>
+                style={{ border: '1px solid', width: '400px', margin: '2px', display: 'inline-block', cursor: 'pointer' }}>
                 <ul>
                     <li>id: {operation.id}</li>
                     <li>comment: {textOrEdit(edit, (operation.comment || '').toString(), this.handleChange.bind(this, 'comment'))}</li>

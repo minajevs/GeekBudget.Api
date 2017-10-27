@@ -21,10 +21,7 @@ export const operationReducers = handleActions<OperationState, Operation[] | Ope
     },
 
     [constants.REQUEST_ADD_OPERATION]: (state: OperationState, action: Action<Operation>): OperationState => ({ ...state, isFetching: true }),
-    [constants.RESPONSE_ADD_OPERATION]: (state: OperationState, action: Action<number>): OperationState => {
-        //TODO: automatically select tab for edit?
-        return { ...state };  //Shallow copy to force rerender
-    },
+    [constants.RESPONSE_ADD_OPERATION]: (state: OperationState, action: Action<number>): OperationState =>  ({ ...state }),  //Shallow copy to force rerender
 
     [constants.REQUEST_REMOVE_OPERATION]: (state: OperationState, action: Action<number>): OperationState => ({ ...state, isFetching: true }),
 

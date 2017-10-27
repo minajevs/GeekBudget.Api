@@ -289,3 +289,4 @@ __pycache__/
 
 # env
 GeekBudget.Web/.env
+/GeekBudget/GeekBudget.db-journal

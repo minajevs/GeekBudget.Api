@@ -9,6 +9,7 @@ import { StoreState } from '../../types/index';
 
 //Router
 import { Route, Link, withRouter } from 'react-router-dom';
+import { push } from 'react-router-redux'
 
 //Components
 import Operation from '../../components/Operation';
@@ -25,7 +26,10 @@ class Operations extends React.Component<Props> {
 
         return (
             <div>
-                <button onClick={() => dispatch(operationActions.addOperation(new OperationModel()))}>Add new</button>
+                <button>
+                    <Link to={'/operations/add'}>Add new</Link>
+                </button>
+
                 <button onClick={() => dispatch(operationActions.getAllOperations())}>Reload</button>
                 <p>
                     Fetching: <strong>{store.operations.isFetching.toString()}</strong>
@@ -39,6 +43,13 @@ class Operations extends React.Component<Props> {
                         onSave={(operation) => dispatch(operationActions.updateOperation(operation))}
                     />
                 })}
+                <Route path={'/operations/add'} render={() => 
+                    (<Operation 
+                        edit={true}
+                        onRemove={() => dispatch(push('/operations'))}
+                        operation={new OperationModel()}
+                        onSave={(operation:OperationModel) => dispatch(operationActions.addOperation(operation))} />)} 
+                />
             </div>
         );
     }

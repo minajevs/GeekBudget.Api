@@ -1,5 +1,6 @@
 import * as constants from '../../constants/operationConstants';
 import { createAction } from 'redux-actions';
+import { push } from 'react-router-redux'
 
 import Api from '../../api';
 
@@ -33,6 +34,7 @@ export function addOperation(operation:Operation){
             await getAllOperations()(dispatch);           //Reload alloperations
             dispatch(responseAddOperation(newId));        //When its done dispatch success response
             dispatch(requestResponseOperation('success'));
+            dispatch(push('/operations'));
         } catch(e){
             dispatch(requestResponseOperation(e));
         }
