@@ -12,19 +12,25 @@ namespace GeekBudget.Middleware
     public class UserKeyValidator
     {
         private readonly RequestDelegate _next;
-        private IUserRepository UsersRepo { get; set; }
 
-        public UserKeyValidator(RequestDelegate next, IUserRepository _repo)
+        public UserKeyValidator(RequestDelegate next)
         {
             _next = next;
-            UsersRepo = _repo;
         }
 
         public async Task Invoke(HttpContext context)
         {
-            if (context.Request.Method != "OPTIONS" && //Do not check if it is preflight cors request
-                !UsersRepo.AreContactsEmpty()) //Do not check login if there are no users!
+
+            if (context.Request.Method != "OPTIONS") //Do not check if it is preflight cors request
             {
+                var userRepo = (UserRepository)context.RequestServices.GetService(typeof(IUserRepository));
+                if (userRepo.AreContactsEmpty()) //Do not check login if there are no users!)
+                {
+                    await _next.Invoke(context);
+                    return;;
+                } 
+
+
                 if (!context.Request.Headers.Keys.Contains("user-key"))
                 {
                     context.Response.StatusCode = 400; //Bad Request                
@@ -33,7 +39,7 @@ namespace GeekBudget.Middleware
                 }
                 else
                 {
-                    if (!UsersRepo.CheckValidUserKey(context.Request.Headers["user-key"]))
+                    if (!userRepo.CheckValidUserKey(context.Request.Headers["user-key"]))
                     {
                         context.Response.StatusCode = 401; //UnAuthorized
                         await context.Response.WriteAsync("Invalid User Key");

@@ -52,7 +52,7 @@ namespace GeekBudget
                 options => options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
 
             //register geekcontext
-            services.AddScoped<IGeekBudgetContext, GeekBudgetContext>();
+            services.AddTransient<IGeekBudgetContext, GeekBudgetContext>();
 
             //register contact repo
             services.AddTransient<IUserRepository, UserRepository>();
