@@ -76,6 +76,9 @@ namespace GeekBudget
             //Authentication
             app.UseMiddleware<UserKeyValidator>();
 
+            //Exception handling
+            app.UseMiddleware<ErrorWrapper>();
+
             //Enable CORS
             app.UseCors(builder => builder
                 .AllowAnyOrigin()           //TODO: setup allowed urls
