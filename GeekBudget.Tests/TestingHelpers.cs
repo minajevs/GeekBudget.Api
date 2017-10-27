@@ -5,6 +5,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Data.Sqlite;
 
 namespace GeekBudget.Test
@@ -67,6 +70,29 @@ namespace GeekBudget.Test
             }
 
             this._connection.Close();
+        }
+    }
+
+    // https://stackoverflow.com/questions/38285815/how-to-write-unit-test-for-actionfilter-when-using-service-locator
+    public class HttpContextUtils
+    {
+        public static ActionExecutingContext MockedActionExecutingContext(
+            HttpContext context,
+            IList<IFilterMetadata> filters,
+            IDictionary<string, object> actionArguments,
+            object controller
+        )
+        {
+            var actionContext = new ActionContext() { HttpContext = context };
+
+            return new ActionExecutingContext(actionContext, filters, actionArguments, controller);
+        }
+        public static ActionExecutingContext MockedActionExecutingContext(
+            HttpContext context,
+            object controller
+        )
+        {
+            return MockedActionExecutingContext(context, new List<IFilterMetadata>(), new Dictionary<string, object>(), controller);
         }
     }
 }

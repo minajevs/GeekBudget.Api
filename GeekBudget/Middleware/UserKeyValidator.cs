@@ -23,13 +23,12 @@ namespace GeekBudget.Middleware
 
             if (context.Request.Method != "OPTIONS") //Do not check if it is preflight cors request
             {
-                var userRepo = (UserRepository)context.RequestServices.GetService(typeof(IUserRepository));
+                var userRepo = context.RequestServices.GetService(typeof(IUserRepository)) as IUserRepository;
                 if (userRepo.AreContactsEmpty()) //Do not check login if there are no users!)
                 {
                     await _next.Invoke(context);
                     return;;
                 } 
-
 
                 if (!context.Request.Headers.Keys.Contains("user-key"))
                 {

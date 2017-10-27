@@ -17,6 +17,8 @@ namespace GeekBudget.Test.Middleware
         {
             //Arrange
             var nextAuthorizedRequestCalled = false;
+
+            // userrepo
             var userRepoMock = new Mock<IUserRepository>();
             userRepoMock.Setup(r => r.CheckValidUserKey(It.IsAny<string>())).Returns(true);  //Validates to true
             userRepoMock.Setup(r => r.AreContactsEmpty()).Returns(false);                    //Contacts are not empty
@@ -25,9 +27,24 @@ namespace GeekBudget.Test.Middleware
             {
                 nextAuthorizedRequestCalled = true;
                 await innerHttpContext.Response.WriteAsync("authorized body");
-            }, _repo: userRepoMock.Object);
+            });
 
-            var requestContext = new DefaultHttpContext();
+            // service provider
+            var serviceProviderMock = new Mock<IServiceProvider>();
+            serviceProviderMock.Setup(provider => provider.GetService(typeof(IUserRepository)))
+                .Returns(userRepoMock.Object);
+
+            // context
+            var defaultContext = new DefaultHttpContext();
+            var httpContextMock = new Mock<HttpContext>();
+            httpContextMock.SetupGet(context => context.RequestServices)
+                .Returns(serviceProviderMock.Object);
+            httpContextMock.Setup(context => context.Request)
+                .Returns(defaultContext.Request);
+            httpContextMock.Setup(context => context.Response)
+                .Returns(defaultContext.Response);
+            var requestContext = httpContextMock.Object;
+
             requestContext.Request.Headers.Add(new KeyValuePair<string, StringValues>("user-key", "password"));
 
             //Act
@@ -43,17 +60,34 @@ namespace GeekBudget.Test.Middleware
         {
             //Arrange
             var nextAuthorizedRequestCalled = false;
+
+            // userrepo
             var userRepoMock = new Mock<IUserRepository>();
-            userRepoMock.Setup(r => r.CheckValidUserKey(It.IsAny<string>())).Returns(false);  //Validates to false
+            userRepoMock.Setup(r => r.CheckValidUserKey(It.IsAny<string>())).Returns(false);  //Validates to true
             userRepoMock.Setup(r => r.AreContactsEmpty()).Returns(false);                    //Contacts are not empty
 
             var userKeyValidator = new UserKeyValidator(next: async (innerHttpContext) =>
             {
                 nextAuthorizedRequestCalled = true;
                 await innerHttpContext.Response.WriteAsync("authorized body");
-            }, _repo: userRepoMock.Object);
+            });
 
-            var requestContext = new DefaultHttpContext();
+            // service provider
+            var serviceProviderMock = new Mock<IServiceProvider>();
+            serviceProviderMock.Setup(provider => provider.GetService(typeof(IUserRepository)))
+                .Returns(userRepoMock.Object);
+
+            // context
+            var defaultContext = new DefaultHttpContext();
+            var httpContextMock = new Mock<HttpContext>();
+            httpContextMock.SetupGet(context => context.RequestServices)
+                .Returns(serviceProviderMock.Object);
+            httpContextMock.Setup(context => context.Request)
+                .Returns(defaultContext.Request);
+            httpContextMock.Setup(context => context.Response)
+                .Returns(defaultContext.Response);
+            var requestContext = httpContextMock.Object;
+
             requestContext.Request.Headers.Add(new KeyValuePair<string, StringValues>("user-key", "password"));
 
             //Act
@@ -69,6 +103,7 @@ namespace GeekBudget.Test.Middleware
         {
             //Arrange
             var nextAuthorizedRequestCalled = false;
+            // userrepo
             var userRepoMock = new Mock<IUserRepository>();
             userRepoMock.Setup(r => r.CheckValidUserKey(It.IsAny<string>())).Returns(false);  //Validates to false
             userRepoMock.Setup(r => r.AreContactsEmpty()).Returns(false);                    //Contacts are not empty
@@ -77,9 +112,24 @@ namespace GeekBudget.Test.Middleware
             {
                 nextAuthorizedRequestCalled = true;
                 await innerHttpContext.Response.WriteAsync("authorized body");
-            }, _repo: userRepoMock.Object);
+            });
 
-            var requestContext = new DefaultHttpContext();
+            // service provider
+            var serviceProviderMock = new Mock<IServiceProvider>();
+            serviceProviderMock.Setup(provider => provider.GetService(typeof(IUserRepository)))
+                .Returns(userRepoMock.Object);
+
+            // context
+            var defaultContext = new DefaultHttpContext();
+            var httpContextMock = new Mock<HttpContext>();
+            httpContextMock.SetupGet(context => context.RequestServices)
+                .Returns(serviceProviderMock.Object);
+            httpContextMock.Setup(context => context.Request)
+                .Returns(defaultContext.Request);
+            httpContextMock.Setup(context => context.Response)
+                .Returns(defaultContext.Response);
+            var requestContext = httpContextMock.Object;
+
             //requestContext.Request.Headers.Add(new KeyValuePair<string, StringValues>("user-key", "password")); //No header in message!!!
 
             //Act
@@ -95,17 +145,33 @@ namespace GeekBudget.Test.Middleware
         {
             //Arrange
             var nextAuthorizedRequestCalled = false;
+            // userrepo
             var userRepoMock = new Mock<IUserRepository>();
             userRepoMock.Setup(r => r.CheckValidUserKey(It.IsAny<string>())).Returns(false);  //Validates to false
-            userRepoMock.Setup(r => r.AreContactsEmpty()).Returns(true);                      //Contacts are empty
+            userRepoMock.Setup(r => r.AreContactsEmpty()).Returns(true);                    //Contacts are empty
 
             var userKeyValidator = new UserKeyValidator(next: async (innerHttpContext) =>
             {
                 nextAuthorizedRequestCalled = true;
                 await innerHttpContext.Response.WriteAsync("authorized body");
-            }, _repo: userRepoMock.Object);
+            });
 
-            var requestContext = new DefaultHttpContext();
+            // service provider
+            var serviceProviderMock = new Mock<IServiceProvider>();
+            serviceProviderMock.Setup(provider => provider.GetService(typeof(IUserRepository)))
+                .Returns(userRepoMock.Object);
+
+            // context
+            var defaultContext = new DefaultHttpContext();
+            var httpContextMock = new Mock<HttpContext>();
+            httpContextMock.SetupGet(context => context.RequestServices)
+                .Returns(serviceProviderMock.Object);
+            httpContextMock.Setup(context => context.Request)
+                .Returns(defaultContext.Request);
+            httpContextMock.Setup(context => context.Response)
+                .Returns(defaultContext.Response);
+            var requestContext = httpContextMock.Object;
+
             requestContext.Request.Headers.Add(new KeyValuePair<string, StringValues>("user-key", "password"));
 
             //Act
@@ -121,17 +187,33 @@ namespace GeekBudget.Test.Middleware
         {
             //Arrange
             var nextAuthorizedRequestCalled = false;
+            // userrepo
             var userRepoMock = new Mock<IUserRepository>();
-            userRepoMock.Setup(r => r.CheckValidUserKey(It.IsAny<string>())).Returns(false);  //Validates to true
-            userRepoMock.Setup(r => r.AreContactsEmpty()).Returns(false);                      //Contacts arent empty
+            userRepoMock.Setup(r => r.CheckValidUserKey(It.IsAny<string>())).Returns(false);  //Validates to false
+            userRepoMock.Setup(r => r.AreContactsEmpty()).Returns(false);                    //Contacts are not empty
 
             var userKeyValidator = new UserKeyValidator(next: async (innerHttpContext) =>
             {
                 nextAuthorizedRequestCalled = true;
                 await innerHttpContext.Response.WriteAsync("authorized body");
-            }, _repo: userRepoMock.Object);
+            });
 
-            var requestContext = new DefaultHttpContext();
+            // service provider
+            var serviceProviderMock = new Mock<IServiceProvider>();
+            serviceProviderMock.Setup(provider => provider.GetService(typeof(IUserRepository)))
+                .Returns(userRepoMock.Object);
+
+            // context
+            var defaultContext = new DefaultHttpContext();
+            var httpContextMock = new Mock<HttpContext>();
+            httpContextMock.SetupGet(context => context.RequestServices)
+                .Returns(serviceProviderMock.Object);
+            httpContextMock.Setup(context => context.Request)
+                .Returns(defaultContext.Request);
+            httpContextMock.Setup(context => context.Response)
+                .Returns(defaultContext.Response);
+            var requestContext = httpContextMock.Object;
+
             requestContext.Request.Method = "OPTIONS";
             requestContext.Request.Headers.Add(new KeyValuePair<string, StringValues>("user-key", "password"));
 
