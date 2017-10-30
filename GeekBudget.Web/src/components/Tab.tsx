@@ -1,23 +1,33 @@
 import * as React from 'react';
 
+import Paper from 'material-ui/Paper';
+import Card, { CardActions, CardContent, CardHeader } from 'material-ui/Card';
+import Typography from 'material-ui/Typography';
+import IconButton from 'material-ui/IconButton';
+import ModeEdit from 'material-ui-icons/ModeEdit';
+import DeleteForever from 'material-ui-icons/DeleteForever';
+import MoreVertIcon from 'material-ui-icons/MoreVert';
+import AccountBalanceWallet from 'material-ui-icons/AccountBalanceWallet';
+import Menu, { MenuItem } from 'material-ui/Menu';
+import Grid from 'material-ui/Grid';
+import Avatar from 'material-ui/Avatar';
 import TabModel from '../models/Tab';
 
 interface Props {
     tab: TabModel;
-    onRemove: () => void;
-    onSave: (tab: TabModel) => void;
+    onRemoveClick: () => void;
+    onEditClick: () => void;
 }
 
 interface State {
-    edit: boolean;
+    menuOpen: boolean;
+    menuEl: HTMLElement | undefined;
     innerTab: TabModel;
 }
 
-const textOrEdit = function (edit: boolean, value: string, onChange: any) {
-    if (edit) {
-        return <input type="text" value={value} onChange={onChange} />
-    } else {
-        return value;
+const styles = {
+    tab: {
+        cursor: 'pointer'
     }
 }
 
@@ -25,46 +35,46 @@ export default class Tab extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
         this.state = {
-            edit: false,
+            menuOpen: false,
+            menuEl: undefined,
             innerTab: props.tab
         }
     }
 
-    handleChange(property:string, event:any) {
+    handleChange(property: string, event: any) {
         let updateTab = { ...this.state.innerTab };
         updateTab[property] = event.target.value;
-        this.setState({ 
+        this.setState({
             innerTab: updateTab
-         });
+        });
     }
 
     render() {
-        const { onRemove } = this.props;
-        const { innerTab: tab, edit } = this.state;
+        const { onRemoveClick, onEditClick } = this.props;
+        const { innerTab: tab } = this.state;
         return (
-            <div 
-                onDoubleClick={() => this.setState({edit: !edit})} 
-                style={{ border: '1px solid', width: '300px', margin: '2px', display: 'inline-block', cursor: 'pointer' }}>
-                <ul>
-                    <li>id: {tab.id}</li>
-                    <li>name: {textOrEdit(edit, (tab.name || '').toString(), this.handleChange.bind(this, 'name'))}</li>
-                    <li>amount: {textOrEdit(edit, (tab.amount || '').toString(), this.handleChange.bind(this, 'amount'))}</li>
-                    <li>currency: {textOrEdit(edit, (tab.currency || '').toString(), this.handleChange.bind(this, 'currency'))}</li>
-                </ul>
-                {edit  
-                    ? <button onClick={this.onSave.bind(this)}>save</button>
-                    : null
-                }
-                
-                <button onClick={onRemove}>remove</button>
-            </div>
+            <Card>
+                <CardHeader
+                    avatar={<Avatar aria-label='TabIcon'><AccountBalanceWallet /></Avatar>}
+                    title={tab.name}
+                    subheader={`${tab.amount} €`}
+                />
+                <CardActions>
+                    <IconButton
+                        aria-label="Edit"
+                        onClick={onEditClick}
+                    >
+                        <ModeEdit />
+                    </IconButton>
+                    <div style={{ flex: '1 1 auto' }} />
+                    <IconButton
+                        aria-label="Remove"
+                        onClick={onRemoveClick}
+                    >
+                        <DeleteForever />
+                    </IconButton>
+                </CardActions>
+            </Card>
         );
     }
-
-    onSave(){
-        console.log('save');
-        this.setState({edit: false});
-        this.props.onSave(this.state.innerTab);
-    }
-
 }

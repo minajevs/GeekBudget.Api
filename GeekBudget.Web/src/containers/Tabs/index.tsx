@@ -1,5 +1,7 @@
 //Related
 import * as React from 'react';
+import Grid from 'material-ui/Grid';
+import Button from 'material-ui/Button';
 
 //Redux
 import { Dispatch } from 'redux';
@@ -12,6 +14,8 @@ import { Route, Link, withRouter } from 'react-router-dom';
 
 //Components
 import Tab from '../../components/Tab';
+import ConfirmationDialog from '../../components/ConfirmationDialog';
+import TabEdit from '../../components/TabEdit';
 import TabModel from '../../models/Tab';
 
 interface Props {
@@ -19,27 +23,89 @@ interface Props {
     store: StoreState;
 }
 
-class Tabs extends React.Component<Props> {
+interface State {
+    removeTabRequestOpen: boolean;
+    tabToRemove: TabModel;
+
+    editTabRequestOpen: boolean;
+    tabToEdit: TabModel;
+}
+
+class Tabs extends React.Component<Props, State> {
+    constructor(props: Props) {
+        super(props);
+        this.state = {
+            removeTabRequestOpen: false,
+            tabToRemove: new TabModel(),
+
+            editTabRequestOpen: false,
+            tabToEdit: new TabModel()
+        }
+    }
+
+    onTabRemoveRequest = (tab: TabModel) => {
+        this.setState({ removeTabRequestOpen: true, tabToRemove: tab });
+    }
+
+    onTabRemoveConfirm = () => {
+        this.props.dispatch(tabActions.removeTab(this.state.tabToRemove.id));
+    }
+
+    onTabRemoveClose = () => {
+        this.setState({ removeTabRequestOpen: false });
+    }
+
+    onTabEditRequest = (tab: TabModel) => {
+        this.setState({ editTabRequestOpen: true, tabToEdit: tab });
+    }
+    
+    onTabEditSave = (tab: TabModel) => {
+        this.props.dispatch(tabActions.updateTab(tab));
+    }
+
+    onTabEditClose = () => {
+        console.log('hit');
+        this.setState({ editTabRequestOpen: false});
+    }
+
     render() {
         const { dispatch, store } = this.props;
-
+        const { tabToRemove, removeTabRequestOpen, tabToEdit, editTabRequestOpen } = this.state;
         return (
-            <div>
-                <button onClick={() => dispatch(tabActions.addTab(new TabModel()))}>Add new</button>
-                <button onClick={() => dispatch(tabActions.getAllTabs())}>Reload</button>
-                <p>
-                    Fetching: <strong>{store.tabs.isFetching.toString()}</strong>
-                    Tabs count: <strong>{store.tabs.items.length}</strong>
-                </p>
+            <Grid container>
+                <Grid item xs={12}>
+                    <button onClick={() => dispatch(tabActions.addTab(new TabModel()))}>Add new</button>
+                    <button onClick={() => dispatch(tabActions.getAllTabs())}>Reload</button>
+                    <p>
+                        Fetching: <strong>{store.tabs.isFetching.toString()}</strong>
+                        Tabs count: <strong>{store.tabs.items.length}</strong>
+                    </p>
+                </Grid>
                 {store.tabs.items.map(t => {
-                    return <Tab
-                        tab={t}
-                        key={t.id}
-                        onRemove={() => dispatch(tabActions.removeTab(t.id))}
-                        onSave={(tab) => dispatch(tabActions.updateTab(tab))}
-                    />
+                    return (<Grid item xs={12} sm={3} md={4} lg={4} key={t.id}>
+                        <Tab
+                            tab={t}
+                            onRemoveClick={() => this.onTabRemoveRequest(t)}
+                            onEditClick={() => this.onTabEditRequest(t)}
+                        />
+                    </Grid>)
                 })}
-            </div>
+                <ConfirmationDialog 
+                    open={removeTabRequestOpen}
+                    onClose={this.onTabRemoveClose}
+                    onConfirm={this.onTabRemoveConfirm}
+                    title={`Do you really want to remove "${tabToRemove.name}"?`}
+                    text={`After tab is deleted you can't restore it!`}  
+                />
+                <TabEdit 
+                    open={editTabRequestOpen}
+                    tab={tabToEdit}
+                    onSave={(t) => this.onTabEditSave(t)}
+                    onClose={this.onTabEditClose}
+                    title={`Edit ${tabToEdit.name != null ? '"' + tabToEdit.name + '"' : ' tab'}`}
+                    text={`Edit this tab and press save.`}
+                />
+            </Grid>
         );
     }
 }

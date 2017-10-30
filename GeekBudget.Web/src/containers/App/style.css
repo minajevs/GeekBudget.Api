@@ -1,24 +1,7 @@
 /* TODO: Move to react inline styles!!!!! */
-
-.App {
-	font-family: sans-serif;
-	text-align: center;
-}
-
 .App-logo {
   animation: App-logo-spin infinite 20s linear;
   height: 80px;
-}
-
-.App-header {
-  background-color: #222;
-  height: 100px;
-  padding: 20px;
-  color: white;
-}
-
-.App-intro {
-  font-size: large;
 }
 
 @keyframes App-logo-spin {

@@ -26,9 +26,9 @@ class Operations extends React.Component<Props> {
 
         return (
             <div>
-                    <Link to={'/operations/add'}>
-                        <button>Add new</button>
-                    </Link>
+                <Link to={'/operations/add'}>
+                    <button>Add new</button>
+                </Link>
 
                 <button onClick={() => dispatch(operationActions.getAllOperations())}>Reload</button>
                 <p>
@@ -43,12 +43,12 @@ class Operations extends React.Component<Props> {
                         onSave={(operation) => dispatch(operationActions.updateOperation(operation))}
                     />
                 })}
-                <Route path={'/operations/add'} render={() => 
-                    (<Operation 
+                <Route path={'/operations/add'} render={() =>
+                    (<Operation
                         edit={true}
                         onRemove={() => dispatch(push('/operations'))}
                         operation={new OperationModel()}
-                        onSave={(operation:OperationModel) => dispatch(operationActions.addOperation(operation))} />)} 
+                        onSave={(operation: OperationModel) => dispatch(operationActions.addOperation(operation))} />)}
                 />
             </div>
         );
