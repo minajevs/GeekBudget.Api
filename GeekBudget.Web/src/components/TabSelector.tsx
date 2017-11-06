@@ -1,46 +1,60 @@
 import * as React from 'react';
+import * as Autosuggest from 'react-autosuggest';
+let match = require('autosuggest-highlight/match');
+let parse = require('autosuggest-highlight/parse');
+
+import TextField from 'material-ui/TextField';
+import Menu, { MenuItem } from 'material-ui/Menu';
 
 import Operation from '../models/Operation';
-import Tab from '../models/Tab';
+import TabModel from '../models/Tab';
 
 interface Props {
-    onChange: (tab: Tab) => void;
-    availableTabs:  Tab[];
+    onChange: (event: React.ChangeEvent<HTMLElement>) => void;
+    tabs: TabModel[];
+    label: string;
+    defaultValue: number;
 }
 
 interface State {
-    innerOperation: Operation
-}
-
-const styles = {
-    popup: {
-        position: 'relative', 
-        border: '1px solid', 
-        width: '300px', 
-        margin: ' 0 auto', 
-        clear: 'left',
-        display: 'inline-block', 
-        textAling: 'center',
-        zIndex: '9'
-    }
+    value: number;
 }
 
 export default class TabSelector extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
         this.state = {
-            innerOperation: new Operation()
-        }
+            value: props.defaultValue
+        };
+    }
+
+    handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        this.setState({
+            value: parseInt(event.target.value),
+        });
+        this.props.onChange(event);
     }
 
     render() {
-        const { availableTabs } = this.props;
-        const { innerOperation } = this.state;
+        const { tabs, label } = this.props;
+        const { value } = this.state;
         return (
-            <div 
-                style={{  }}>
-
-            </div>
+            <TextField
+                autoFocus
+                margin="dense"
+                id="select-tab"
+                select
+                label={label}
+                value={this.state.value}
+                onChange={this.handleChange}
+                fullWidth
+            >
+                {tabs.map((tab) => (
+                    <MenuItem selected={value === tab.id} key={tab.id} value={tab.id}>
+                        {tab.name}
+                    </MenuItem>
+                ))}
+            </TextField>
         );
     }
 }

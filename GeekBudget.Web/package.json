@@ -4,16 +4,19 @@
   "private": true,
   "dependencies": {
     "@types/history": "^4.6.1",
+    "@types/react-autosuggest": "^9.3.1",
     "@types/react-redux": "^5.0.10",
     "@types/react-router": "^4.0.16",
     "@types/react-router-dom": "^4.0.8",
     "@types/react-router-redux": "^5.0.8",
     "@types/redux-actions": "^2.2.2",
     "@types/redux-thunk": "^2.1.0",
+    "autosuggest-highlight": "^3.1.1",
     "history": "^4.7.2",
     "material-ui": "^1.0.0-beta.18",
     "material-ui-icons": "^1.0.0-beta.17",
     "react": "^16.0.0",
+    "react-autosuggest": "^9.3.2",
     "react-dom": "^16.0.0",
     "react-flexbox-grid": "^2.0.0",
     "react-redux": "^5.0.6",
@@ -35,6 +38,7 @@
     "@types/jest": "^21.1.4",
     "@types/node": "^8.0.46",
     "@types/react": "^16.0.15",
-    "@types/react-dom": "^16.0.2"
+    "@types/react-dom": "^16.0.2",
+    "babel-polyfill": "^6.26.0"
   }
 }

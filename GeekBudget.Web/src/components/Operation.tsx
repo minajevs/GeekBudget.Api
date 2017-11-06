@@ -1,74 +1,128 @@
 import * as React from 'react';
+import { dateToString } from '../helpers';
 
-import Operation from '../models/Operation';
+import Grid from 'material-ui/Grid';
+import Paper from 'material-ui/Paper';
+import EuroSymbol from 'material-ui-icons/EuroSymbol';
+import Avatar from 'material-ui/Avatar';
+import Typography from 'material-ui/Typography';
+import IconButton from 'material-ui/IconButton';
+import ModeEdit from 'material-ui-icons/ModeEdit';
+import DeleteForever from 'material-ui-icons/DeleteForever';
+import { green } from 'material-ui/colors';
+
+import OperationModel from '../models/Operation';
+import OperationEdit from '../components/OperationEdit';
+import ConfirmationDialog from '../components/ConfirmationDialog';
+import TabModel from '../models/Tab';
+
+// Redux
+import { Dispatch } from 'redux';
+import { connect } from 'react-redux';
+import { operationActions } from '../actions';
+import { StoreState } from '../types/index';
 
 interface Props {
-    operation: Operation;
-    onRemove: () => void;
-    onSave: (operation: Operation) => void;
-    edit?:boolean;
+    operation: OperationModel;
+    dispatch: Dispatch<{}>;
+    tabs: TabModel[];
 }
 
 interface State {
-    edit: boolean;
-    innerOperation: Operation;
+    openConfirmationDialog: boolean;
 }
 
-const textOrEdit = function (edit: boolean, value: string, onChange: any) {
-    if (edit) {
-        return <input type="text" value={value} onChange={onChange} />
-    } else {
-        return value;
+const styles = {
+    paper: {
+        padding: 16
     }
-}
+};
 
-export default class OperationView extends React.Component<Props, State> {
+class Operation extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
         this.state = {
-            edit: props.edit || false,
-            innerOperation: props.operation
-        }
+            openConfirmationDialog: false
+        };
+    }
+    onEditClick = () => {
+        this.props.dispatch(operationActions.requestEditOperation(this.props.operation));
     }
 
-    handleChange(property:string, event:any) { //TODO: change from any to correct type
-        let updateOperation = { ...this.state.innerOperation };
-        updateOperation[property] = event.target.value;
-        this.setState({ 
-            innerOperation: updateOperation
-         });
+    onRemoveClick = () => {
+        this.setState({ openConfirmationDialog: true });
+    }
+
+    onRemoveConfirm = () => {
+        this.props.dispatch(operationActions.removeOperation(this.props.operation.id));
+        this.onRemoveClose();
+    }
+
+    onRemoveClose = () => {
+        this.setState({ openConfirmationDialog: false });
     }
 
     render() {
-        const { onRemove } = this.props;
-        const { innerOperation: operation, edit } = this.state;
+        const { operation, tabs } = this.props;
+        const fromTab = tabs.find(t => t.id === operation.from) as TabModel;
+        const toTab = tabs.find(t => t.id === operation.to) as TabModel;
+
         return (
-            <div 
-                onDoubleClick={() => this.setState({edit: !edit})} 
-                style={{ border: '1px solid', width: '400px', margin: '2px', display: 'inline-block', cursor: 'pointer' }}>
-                <ul>
-                    <li>id: {operation.id}</li>
-                    <li>comment: {textOrEdit(edit, (operation.comment || '').toString(), this.handleChange.bind(this, 'comment'))}</li>
-                    <li>amount: {textOrEdit(edit, (operation.amount || '').toString(), this.handleChange.bind(this, 'amount'))}</li>
-                    <li>currency: {textOrEdit(edit, (operation.currency || '').toString(), this.handleChange.bind(this, 'currency'))}</li>
-                    <li>date: {textOrEdit(edit, (operation.date || '').toString(), this.handleChange.bind(this, 'date'))}</li>
-                    <li>from: {textOrEdit(edit, (operation.from || '').toString(), this.handleChange.bind(this, 'from'))}</li>
-                    <li>to: {textOrEdit(edit, (operation.to || '').toString(), this.handleChange.bind(this, 'to'))}</li>
-                </ul>
-                {edit  
-                    ? <button onClick={this.onSave.bind(this)}>save</button>
-                    : null
-                }
-                
-                <button onClick={onRemove}>remove</button>
-            </div>
+            <Paper style={styles.paper}>
+                <Grid container alignItems="center">
+                    <Grid item xs={1}>
+                        <Avatar 
+                            aria-label="OperationIcon" 
+                            style={{ color: green[900], backgroundColor: green[300], marginRight: 16 }}
+                        >
+                            <EuroSymbol />
+                        </Avatar>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Typography type="title">
+                            {fromTab.name} -> {toTab.name}
+                        </Typography>
+                        <Typography type="body2">
+                            {dateToString(operation.date)}
+                        </Typography>
+                        <Typography type="body1">
+                            {operation.comment}
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={2}>
+                        <Typography type="subheading">
+                            {operation.amount} €
+                    </Typography>
+                    </Grid>
+                    <Grid item xs={3}>
+                        <IconButton
+                            aria-label="Edit"
+                            onClick={this.onEditClick}
+                        >
+                            <ModeEdit />
+                        </IconButton>
+                        <IconButton
+                            aria-label="Remove"
+                            onClick={this.onRemoveClick}
+                        >
+                            <DeleteForever />
+                        </IconButton>
+                    </Grid>
+                </Grid>
+                <ConfirmationDialog
+                    open={this.state.openConfirmationDialog}
+                    onClose={this.onRemoveClose}
+                    onConfirm={this.onRemoveConfirm}
+                    title={`Do you really want to remove this operation?`}
+                    text={`After opeartion is deleted you can't restore it!`}
+                />
+            </Paper>
         );
     }
-
-    onSave(){
-        console.log('save');
-        this.setState({edit: false});
-        this.props.onSave(this.state.innerOperation);
-    }
-
 }
+
+const mapStateToProps = (state: StoreState) => ({
+    tabs: state.tabs.items
+});
+
+export default connect(mapStateToProps)(Operation);

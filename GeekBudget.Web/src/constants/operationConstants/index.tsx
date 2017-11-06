@@ -34,3 +34,15 @@ export type RESPONSE_OPERATION = typeof RESPONSE_OPERATION;
 // Common error
 export const RESPONSE_ERROR_OPERATION = 'RESPONSE_ERROR_OPERATION';
 export type RESPONSE_ERROR_OPERATION = typeof RESPONSE_ERROR_OPERATION;
+
+// Request edit operation
+export const REQUEST_EDIT_OPERATION = 'REQUEST_EDIT_OPERATION';     // TODO: separate api and ui actions!!
+export type REQUEST_EDIT_OPERATION = typeof REQUEST_EDIT_OPERATION;
+
+// Save operation after edit
+export const SAVE_EDIT_OPERATION = 'SAVE_EDIT_OPERATION';
+export type SAVE_EDIT_OPERATION = typeof SAVE_EDIT_OPERATION;
+
+// Close operation edit
+export const CLOSE_EDIT_OPERATION = 'CLOSE_EDIT_OPERATION'; 
+export type CLOSE_EDIT_OPERATION = typeof CLOSE_EDIT_OPERATION;

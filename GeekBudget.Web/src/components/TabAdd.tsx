@@ -5,13 +5,13 @@ import AddIcon from 'material-ui-icons/Add';
 import TabModel from '../models/Tab';
 import TabEdit from '../components/TabEdit';
 
-//Redux
+// Redux
 import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import { tabActions } from '../actions';
 import { StoreState } from '../types/index';
 
-//Router
+// Router
 import { withRouter } from 'react-router-dom';
 
 interface Props {
@@ -25,32 +25,25 @@ interface State {
 }
 
 class TabAddButton extends React.Component<Props, State> {
-    constructor(props:Props) {
+    constructor(props: Props) {
         super(props);
         this.state = {
             openAddDialog: false,
             innerTab: new TabModel()
-        }
-    }
-
-    onTabSave = (tab:TabModel) => {
-        this.props.dispatch(tabActions.addTab(tab));
+        };
     }
 
     render() {
+        const { dispatch } = this.props;
         return (
             <div>
-                <Button fab aria-label="add" onClick={() => this.setState({openAddDialog: true, innerTab: new TabModel()})}>
+                <Button 
+                    fab 
+                    aria-label="add" 
+                    onClick={() => dispatch(tabActions.requestEditTab(new TabModel()))}
+                >
                     <AddIcon />
                 </Button>
-                <TabEdit
-                    open={this.state.openAddDialog}
-                    tab={new TabModel()}
-                    onSave={(t) => this.onTabSave(t)}
-                    onClose={() => this.setState({openAddDialog: false})}
-                    title={`Add new tab`}
-                    text={`Edit this tab and press save.`}
-                />
             </div>
         );
     }

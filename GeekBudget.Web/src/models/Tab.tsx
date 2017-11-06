@@ -1,6 +1,6 @@
 export default class Tab{
-    id:number;
-    name:string;
-    amount:number;
-    currency:number;
+    id: number = -1;
+    name: string;
+    amount: number;
+    currency: number;
 }

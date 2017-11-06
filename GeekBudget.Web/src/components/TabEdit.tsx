@@ -1,5 +1,11 @@
 import * as React from 'react';
 
+// Redux
+import { Dispatch } from 'redux';
+import { connect } from 'react-redux';
+import { tabActions } from '../actions';
+import { TabEditState, StoreState } from '../types/index';
+
 import Dialog, {
     DialogActions,
     DialogContent,
@@ -13,50 +19,53 @@ import TextField from 'material-ui/TextField';
 import TabModel from '../models/Tab';
 
 interface Props {
-    open: boolean;
-    title: string;
-    text: string;
-    tab: TabModel;
-    onSave: (tab:TabModel) => void;
-    onClose: () => void;
+    dispatch: Dispatch<{}>;
+    store: TabEditState;
 }
 
 interface State {
-    innerTab: TabModel;
+    innerTab: TabModel | null;
 }
 
-export default class ConfirmationDialog extends React.Component<Props, State> {
+class TabEdit extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
         this.state = {
-            innerTab: props.tab
-        }
+            innerTab: props.store.tab
+        };
     }
 
-    componentWillReceiveProps(props:Props){
-        this.setState({innerTab: props.tab});
+    componentWillReceiveProps(props: Props){
+        this.setState({innerTab: props.store.tab});
     }
 
-    handleChange = (name:string) => (event:any) => {
-        let updateTab = { ...this.state.innerTab };
+    handleChange = (name: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
+        let updateTab = { ...this.state.innerTab } as TabModel;
         updateTab[name] = event.target.value;
         this.setState({ 
             innerTab: updateTab
          });
-      };
+      }
+
+    onSave = () => {
+        this.props.dispatch(tabActions.saveTab(this.state.innerTab as TabModel));
+    }
+
+    onClose = () => {
+        this.props.dispatch(tabActions.closeEditTab());
+    }
 
     render() {
-        const { onClose, onSave, title, text, open } = this.props;
-        const innerSave = () => {
-            onSave(this.state.innerTab);
-            onClose();
-        }
+        const { innerTab } = this.state;
+        if (innerTab == null) return null;
+        const { open, isNew } = this.props.store;
+        const title = isNew ? 'Add new tab' : `Edit "${innerTab.name}"`;
         return (
-            <Dialog open={open} onRequestClose={onClose}>
+            <Dialog open={open} onRequestClose={this.onClose}>
                 <DialogTitle>{title}</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        {text}
+                        Enter tab info
                     </DialogContentText>
                     <TextField
                         autoFocus
@@ -64,18 +73,24 @@ export default class ConfirmationDialog extends React.Component<Props, State> {
                         id="name"
                         label="Tab Name"
                         onChange={this.handleChange('name')}
-                        defaultValue={this.state.innerTab.name}
+                        defaultValue={innerTab.name}
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={onClose} color="primary">
+                    <Button onClick={this.onClose} color="primary">
                         Cancel
                     </Button>
-                    <Button onClick={innerSave} color="primary">
+                    <Button onClick={this.onSave} color="primary">
                         Save
                     </Button>
                 </DialogActions>
             </Dialog>
-        )
+        );
     }
 }
+
+const mapStateToProps = (state: StoreState) => ({
+    store: state.tabs.edit
+});
+
+export default connect(mapStateToProps)(TabEdit);

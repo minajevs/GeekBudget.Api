@@ -13,14 +13,15 @@
             true,
             "check-space"
         ],
-        "curly": true,
+        "curly": false,
         "eofline": false,
-        "forin": true,
-        "indent": [ true, "tabs" ],
+        "forin": false,
+        "indent": [ true, "spaces" ],
         "interface-name": [true, "never-prefix"],
         "jsdoc-format": true,
         "jsx-no-lambda": false,
         "jsx-no-multiline-js": false,
+        "jsx-boolean-value": false,
         "label-position": true,
         "max-line-length": [ true, 120 ],
         "member-ordering": [
@@ -58,11 +59,10 @@
             true,
             "check-catch",
             "check-else",
-            "check-open-brace",
-            "check-whitespace"
+            "check-open-brace"
         ],
         "quotemark": [true, "single", "jsx-double"],
-        "radix": true,
+        "radix": false,
         "semicolon": [true, "always"],
         "switch-default": true,
 

@@ -1,18 +1,24 @@
-//Related
+// Related
 import * as React from 'react';
+import Grid from 'material-ui/Grid';
+import Button from 'material-ui/Button';
+import AddIcon from 'material-ui-icons/Add';
+import { CircularProgress } from 'material-ui/Progress';
 
-//Redux
+// Redux
 import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import { operationActions } from '../../actions';
 import { StoreState } from '../../types/index';
 
-//Router
+// Router
 import { Route, Link, withRouter } from 'react-router-dom';
-import { push } from 'react-router-redux'
+import { push } from 'react-router-redux';
 
-//Components
+// Components
 import Operation from '../../components/Operation';
+import OperationList from '../../components/OperationList';
+import OperationEdit from '../../components/OperationEdit';
 import OperationModel from '../../models/Operation';
 
 interface Props {
@@ -23,34 +29,30 @@ interface Props {
 class Operations extends React.Component<Props> {
     render() {
         const { dispatch, store } = this.props;
-
         return (
-            <div>
-                <Link to={'/operations/add'}>
-                    <button>Add new</button>
-                </Link>
-
-                <button onClick={() => dispatch(operationActions.getAllOperations())}>Reload</button>
-                <p>
-                    Fetching: <strong>{store.operations.isFetching.toString()}</strong>
-                    Operations count: <strong>{store.operations.items.length}</strong>
-                </p>
-                {store.operations.items.map(o => {
-                    return <Operation
-                        operation={o}
-                        key={o.id}
-                        onRemove={() => dispatch(operationActions.removeOperation(o.id))}
-                        onSave={(operation) => dispatch(operationActions.updateOperation(operation))}
-                    />
-                })}
-                <Route path={'/operations/add'} render={() =>
-                    (<Operation
-                        edit={true}
-                        onRemove={() => dispatch(push('/operations'))}
-                        operation={new OperationModel()}
-                        onSave={(operation: OperationModel) => dispatch(operationActions.addOperation(operation))} />)}
-                />
-            </div>
+            <Grid container>
+                <Grid item xs={12}>
+                    <Button 
+                        raised 
+                        onClick={() => dispatch(operationActions.requestEditOperation(new OperationModel()))}
+                    >
+                        <AddIcon />
+                        Add new operation
+                    </Button>
+                </Grid>
+                <Grid item xs={12}>
+                    {store.operations.isFetching ?
+                        <Grid container alignItems="center" justify="center" spacing={0}>
+                            <Grid item>
+                                <CircularProgress size={100} />
+                            </Grid>
+                        </Grid>
+                        :
+                        <OperationList />
+                    }
+                </Grid>
+                <OperationEdit />
+            </Grid>
         );
     }
 }

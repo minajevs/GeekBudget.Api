@@ -1,6 +1,6 @@
 import Tab from '../models/Tab';
 import Operation from '../models/Operation';
-import { RouterState } from 'react-router-redux'
+import { RouterState } from 'react-router-redux';
 
 export interface StoreState{
     tabs: TabState;
@@ -12,6 +12,7 @@ export interface StoreState{
 export interface TabState{
     isFetching: boolean;
     items: Tab[];
+    edit: TabEditState;
     // filter: TabFilter,
     // etc.
 }
@@ -19,8 +20,21 @@ export interface TabState{
 export interface OperationState{
     isFetching: boolean;
     items: Operation[];
+    edit: OperationEditState;
     // filter: OperationFilter,
     // etc.
+}
+
+export interface TabEditState{
+    open: boolean;
+    isNew: boolean;
+    tab: Tab | null;
+}
+
+export interface OperationEditState{
+    open: boolean;
+    isNew: boolean;
+    operation: Operation | null;
 }
 
 export interface ApplicationErrorState{
@@ -35,17 +49,27 @@ export interface ApplicationError{
 }
 
 export interface ValidationError{
-    [key: string] : string[]; //{ errorKey: string, errorValues: string[] }
+    [key: string]: string[]; // { errorKey: string, errorValues: string[] }
 }
 
-export const initialState : StoreState = {
+export const initialState: StoreState = {
     tabs: {
         isFetching: false,
-        items: []  
+        items: [],
+        edit: {
+            open: false,
+            isNew: true,
+            tab: null
+        }
     },
     operations: {
         isFetching: false,
-        items: []  
+        items: [],
+        edit: {
+            open: false,
+            isNew: true,
+            operation: null
+        }
     },
     applicationError: {
         error: {
@@ -58,4 +82,4 @@ export const initialState : StoreState = {
     router: {
         location: null
     }
-}
+};

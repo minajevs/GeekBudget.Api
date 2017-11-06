@@ -34,3 +34,15 @@ export type RESPONSE_TAB = typeof RESPONSE_TAB;
 // Common error
 export const RESPONSE_ERROR_TAB = 'RESPONSE_ERROR_TAB';
 export type RESPONSE_ERROR_TAB = typeof RESPONSE_ERROR_TAB;
+
+// Request edit tab
+export const REQUEST_EDIT_TAB = 'REQUEST_EDIT_TAB';     // TODO: separate api and ui actions!!
+export type REQUEST_EDIT_TAB = typeof REQUEST_EDIT_TAB;
+
+// Save tab after edit
+export const SAVE_EDIT_TAB = 'SAVE_EDIT_TAB';
+export type SAVE_EDIT_TAB = typeof SAVE_EDIT_TAB;
+
+// Close tab edit
+export const CLOSE_EDIT_TAB = 'CLOSE_EDIT_TAB'; 
+export type CLOSE_EDIT_TAB = typeof CLOSE_EDIT_TAB;

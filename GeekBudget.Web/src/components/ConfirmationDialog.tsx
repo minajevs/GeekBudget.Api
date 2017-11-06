@@ -10,12 +10,12 @@ import Dialog, {
 import Button from 'material-ui/Button';
 
 interface Props{
-    open:boolean;
-    title:string;
-    text:string;
-    onConfirm?: ()=>void;
-    onDecline?: ()=>void;
-    onClose: ()=>void;
+    open: boolean;
+    title: string;
+    text: string;
+    onConfirm?: () => void;
+    onDecline?: () => void;
+    onClose: () => void;
 }
 
 export default class ConfirmationDialog extends React.Component<Props> {
@@ -23,17 +23,17 @@ export default class ConfirmationDialog extends React.Component<Props> {
         super(props);
     }
 
-    render() {
+    render() { // TODO: https://reactjs.org/docs/portals.html
         const {onClose, onConfirm, onDecline, title, text, open} = this.props;
         const onDeclineInternal = () => {
             onClose();
-            if(onDecline != null) onDecline();
-        }
+            if (onDecline != null) onDecline();
+        };
 
         const onConfirmInternal = () => {
             onClose();
-            if(onConfirm != null) onConfirm();
-        }
+            if (onConfirm != null) onConfirm();
+        };
 
         return (
             <Dialog open={open} onRequestClose={onClose}>
@@ -52,6 +52,6 @@ export default class ConfirmationDialog extends React.Component<Props> {
                 </Button>
                 </DialogActions>
             </Dialog>
-        )
+        );
     }
 }

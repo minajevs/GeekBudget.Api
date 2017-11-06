@@ -1,19 +1,21 @@
-//React
+// React
 import * as React from 'react';
 // import { withStyles } from 'material-ui/styles'; TODO!!
 import Grid from 'material-ui/Grid';
+import Typography from 'material-ui/Typography';
+import { grey } from 'material-ui/colors';
 import './style.css';
 
-//Redux
+// Redux
 import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import { tabActions } from '../../actions';
 import { StoreState } from '../../types/index';
 
-//Router
+// Router
 import { Route, Link, withRouter } from 'react-router-dom';
 
-//Components
+// Components
 import Tab from '../../components/Tab';
 import TabModel from '../../models/Tab';
 
@@ -33,23 +35,24 @@ const styles = {
     },
     header: {
         backgroundColor: '#222',
-        textAlign: 'center'
+        textAlign: 'center',
+        zIndex: -99
     } as React.CSSProperties,
     link: {
         backgroundColor: '#fff',
         margin: '10px'
     }
-}
+};
 
 class App extends React.Component<Props> {
     render() {
         const { dispatch, store } = this.props;
         return (
-            <Grid container style={styles.app}>
+            <Grid container style={styles.app} spacing={40}>
                 <Grid item xs={12} style={styles.header}>
-                    <Link to={'/'}>
-                        <img src={logo} className="App-logo" alt="logo" />
-                    </Link>
+                    <Typography type="display3" style={{color: grey[50]}}>
+                        Geek<div className="App-logo" style={{display: 'inline-block'}}>Budget</div>
+                    </Typography>
                 </Grid>
                 <Grid item md={6} xs={12}>
                     <TabsContainer />
