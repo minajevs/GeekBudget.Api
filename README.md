@@ -22,7 +22,7 @@ Front-end development
     1) React setup
     2) REDUX setup
     3) API connection setup
-    4) full API implementation <<<TODO
+    4) full API implementation
     5) pretty views <<<TODO
 4) Testing <<<TODO
     1) Smoke tests <<<TODO
