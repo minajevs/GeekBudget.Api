@@ -11,16 +11,16 @@ import AccountBalanceWallet from 'material-ui-icons/AccountBalanceWallet';
 import Menu, { MenuItem } from 'material-ui/Menu';
 import Grid from 'material-ui/Grid';
 import Avatar from 'material-ui/Avatar';
-import TabModel from '../models/Tab';
+import TabModel from '../../models/Tab';
 import { blue } from 'material-ui/colors';
 
 // Redux
 import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
-import { tabActions } from '../actions';
-import { StoreState } from '../types/index';
+import { tabActions } from '../../actions';
+import { StoreState } from '../../types/index';
 
-import ConfirmationDialog from '../components/ConfirmationDialog';
+import ConfirmationDialog from '../../components/ConfirmationDialog';
 
 interface Props {
     tab: TabModel;

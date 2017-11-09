@@ -4,15 +4,15 @@ import Grid from 'material-ui/Grid';
 // Redux
 import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
-import { tabActions } from '../actions';
-import { StoreState } from '../types/index';
+import { tabActions } from '../../actions';
+import { StoreState } from '../../types/index';
 
 // Router
 import { Route, Redirect, Link, withRouter, RouteComponentProps } from 'react-router-dom';
 
-import OperationModel from '../models/Operation';
-import Operation from '../components/Operation';
-import OperationEdit from '../components/OperationEdit';
+import OperationModel from '../../models/Operation';
+import Operation from '../../components/Operation';
+import OperationEdit from '../../components/OperationEdit';
 
 interface Props {
     dispatch: Dispatch<{}>;

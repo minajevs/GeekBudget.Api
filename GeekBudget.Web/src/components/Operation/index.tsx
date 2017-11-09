@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { dateToString } from '../helpers';
+import { dateToString } from '../../helpers';
 
 import Grid from 'material-ui/Grid';
 import Paper from 'material-ui/Paper';
@@ -11,16 +11,16 @@ import ModeEdit from 'material-ui-icons/ModeEdit';
 import DeleteForever from 'material-ui-icons/DeleteForever';
 import { green } from 'material-ui/colors';
 
-import OperationModel from '../models/Operation';
-import OperationEdit from '../components/OperationEdit';
-import ConfirmationDialog from '../components/ConfirmationDialog';
-import TabModel from '../models/Tab';
+import OperationModel from '../../models/Operation';
+import OperationEdit from '../../components/OperationEdit';
+import ConfirmationDialog from '../../components/ConfirmationDialog';
+import TabModel from '../../models/Tab';
 
 // Redux
 import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
-import { operationActions } from '../actions';
-import { StoreState } from '../types/index';
+import { operationActions } from '../../actions';
+import { StoreState } from '../../types/index';
 
 interface Props {
     operation: OperationModel;

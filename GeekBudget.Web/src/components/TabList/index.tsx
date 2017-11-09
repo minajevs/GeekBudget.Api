@@ -4,17 +4,17 @@ import Grid from 'material-ui/Grid';
 // Redux
 import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
-import { tabActions } from '../actions';
-import { StoreState } from '../types/index';
+import { tabActions } from '../../actions';
+import { StoreState } from '../../types/index';
 
 // Router
 import { Route, Redirect, Link, withRouter, RouteComponentProps } from 'react-router-dom';
 
-import TabModel from '../models/Tab';
-import Tab from '../components/Tab';
-import TabAddButton from '../components/TabAdd';
-import ConfirmationDialog from '../components/ConfirmationDialog';
-import TabEdit from '../components/TabEdit';
+import TabModel from '../../models/Tab';
+import Tab from '../../components/Tab';
+import TabAddButton from '../../components/TabAdd';
+import ConfirmationDialog from '../../components/ConfirmationDialog';
+import TabEdit from '../../components/TabEdit';
 
 interface Props {
     dispatch: Dispatch<{}>;

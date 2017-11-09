@@ -6,8 +6,8 @@ let parse = require('autosuggest-highlight/parse');
 import TextField from 'material-ui/TextField';
 import Menu, { MenuItem } from 'material-ui/Menu';
 
-import Operation from '../models/Operation';
-import TabModel from '../models/Tab';
+import Operation from '../../models/Operation';
+import TabModel from '../../models/Tab';
 
 interface Props {
     onChange: (event: React.ChangeEvent<HTMLElement>) => void;
