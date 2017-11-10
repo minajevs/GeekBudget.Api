@@ -1,8 +1,8 @@
-import * as constants from '../../constants/errorConstants';
-import { ApplicationErrorState, ApplicationError, initialState } from '../../types';
+import * as constants from 'constants/errorConstants';
+import { ApplicationErrorState, ApplicationError, initialState } from 'types';
 import { handleActions, Action } from 'redux-actions';
 
-import Operation from '../../models/Operation';
+import Operation from 'models/Operation';
 
 export const errorReducers = handleActions<ApplicationErrorState, ApplicationError>(
     {

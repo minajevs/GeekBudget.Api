@@ -8,18 +8,18 @@ import { CircularProgress } from 'material-ui/Progress';
 // Redux
 import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
-import { operationActions } from '../../actions';
-import { StoreState } from '../../types/index';
+import { operationActions } from 'actions';
+import { StoreState } from 'types/index';
 
 // Router
 import { Route, Link, withRouter } from 'react-router-dom';
 import { push } from 'react-router-redux';
 
 // Components
-import Operation from '../../components/Operation';
-import OperationList from '../../components/OperationList';
-import OperationEdit from '../../components/OperationEdit';
-import OperationModel from '../../models/Operation';
+import Operation from 'components/Operation';
+import OperationList from 'components/OperationList';
+import OperationEdit from 'components/OperationEdit';
+import OperationModel from 'models/Operation';
 
 interface Props {
     dispatch: Dispatch<{}>;

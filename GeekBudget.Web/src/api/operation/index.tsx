@@ -1,6 +1,6 @@
-import Operation from '../../models/Operation';
+import Operation from 'models/Operation';
 
-import { createApiUrl, createRequestOptions } from '../helpers';
+import { createApiUrl, createRequestOptions } from 'helpers/apiHelpers';
 
 export const getAll = async (): Promise<Operation[]> => {
     const url = createApiUrl('operation', 'getall');

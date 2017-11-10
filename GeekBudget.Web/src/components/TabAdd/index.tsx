@@ -2,14 +2,14 @@ import * as React from 'react';
 import Button from 'material-ui/Button';
 import AddIcon from 'material-ui-icons/Add';
 
-import TabModel from '../../models/Tab';
-import TabEdit from '../../components/TabEdit';
+import TabModel from 'models/Tab';
+import TabEdit from 'components/TabEdit';
 
 // Redux
 import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
-import { tabActions } from '../../actions';
-import { StoreState } from '../../types/index';
+import { tabActions } from 'actions';
+import { StoreState } from 'types/index';
 
 // Router
 import { withRouter } from 'react-router-dom';

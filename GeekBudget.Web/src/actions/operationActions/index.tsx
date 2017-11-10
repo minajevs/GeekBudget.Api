@@ -1,15 +1,15 @@
-import * as constants from '../../constants/operationConstants';
+import * as constants from 'constants/operationConstants';
 import { createAction } from 'redux-actions';
 import { Dispatch } from 'redux';
 import { push } from 'react-router-redux';
 
-import { throwApplicationError } from '../errorActions';
-import { getAllTabs } from '../tabActions';
-import { ApplicationError, ValidationError } from '../../types';
+import { throwApplicationError } from 'actions/errorActions';
+import { getAllTabs } from 'actions/tabActions';
+import { ApplicationError, ValidationError } from 'types';
 
-import Api from '../../api';
+import Api from 'api';
 
-import Operation from '../../models/Operation';
+import Operation from 'models/Operation';
 
 export const requestAllOperations = createAction(constants.REQUEST_ALL_OPERATIONS);
 export const receiveAllOperations = createAction<Operation[]>(constants.RECEIVE_ALL_OPERATIONS);

@@ -7,17 +7,17 @@ import { CircularProgress } from 'material-ui/Progress';
 // Redux
 import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
-import { tabActions } from '../../actions';
-import { StoreState } from '../../types/index';
+import { tabActions } from 'actions';
+import { StoreState } from 'types/index';
 
 // Router
 import { Route, Link, withRouter, RouteComponentProps } from 'react-router-dom';
 
 // Components
-import TabList from '../../components/TabList';
-import TabEdit from '../../components/TabEdit';
+import TabList from 'components/TabList';
+import TabEdit from 'components/TabEdit';
 
-import TabModel from '../../models/Tab';
+import TabModel from 'models/Tab';
 
 interface Props {
     dispatch: Dispatch<{}>;

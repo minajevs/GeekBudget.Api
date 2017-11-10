@@ -1,11 +1,11 @@
 import * as React from 'react';
-import { dateToString } from '../../helpers';
+import { dateToString } from 'helpers';
 
 // Redux
 import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
-import { operationActions } from '../../actions';
-import { OperationEditState, StoreState } from '../../types/index';
+import { operationActions } from 'actions';
+import { OperationEditState, StoreState } from 'types/index';
 
 import Dialog, {
     DialogActions,
@@ -21,9 +21,9 @@ import { FormControl, FormHelperText } from 'material-ui/Form';
 import Select from 'material-ui/Select';
 import { MenuItem } from 'material-ui/Menu';
 
-import OperationModel from '../../models/Operation';
-import TabModel from '../../models/Tab';
-import TabSelector from '../../components/TabSelector';
+import OperationModel from 'models/Operation';
+import TabModel from 'models/Tab';
+import TabSelector from 'components/TabSelector';
 
 interface Props {
     dispatch: Dispatch<{}>;

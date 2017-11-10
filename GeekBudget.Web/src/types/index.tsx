@@ -1,5 +1,5 @@
-import Tab from '../models/Tab';
-import Operation from '../models/Operation';
+import Tab from 'models/Tab';
+import Operation from 'models/Operation';
 import { RouterState } from 'react-router-redux';
 
 export interface StoreState{

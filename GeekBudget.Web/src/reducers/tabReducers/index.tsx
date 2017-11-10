@@ -1,8 +1,8 @@
-import * as constants from '../../constants/tabConstants';
-import { TabState, initialState, ApplicationError } from '../../types';
+import * as constants from 'constants/tabConstants';
+import { TabState, initialState, ApplicationError } from 'types';
 import { handleActions, Action } from 'redux-actions';
 
-import Tab from '../../models/Tab';
+import Tab from 'models/Tab';
 
 export const tabReducers = handleActions<TabState, Tab[] | Tab | ApplicationError | string | number | void>(
     {

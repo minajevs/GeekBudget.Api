@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { dateToString } from '../../helpers';
+import { dateToString } from 'helpers';
 
 import Grid from 'material-ui/Grid';
 import Paper from 'material-ui/Paper';
@@ -11,16 +11,16 @@ import ModeEdit from 'material-ui-icons/ModeEdit';
 import DeleteForever from 'material-ui-icons/DeleteForever';
 import { green } from 'material-ui/colors';
 
-import OperationModel from '../../models/Operation';
-import OperationEdit from '../../components/OperationEdit';
-import ConfirmationDialog from '../../components/ConfirmationDialog';
-import TabModel from '../../models/Tab';
+import OperationModel from 'models/Operation';
+import OperationEdit from 'components/OperationEdit';
+import ConfirmationDialog from 'components/ConfirmationDialog';
+import TabModel from 'models/Tab';
 
 // Redux
 import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
-import { operationActions } from '../../actions';
-import { StoreState } from '../../types/index';
+import { operationActions } from 'actions';
+import { StoreState } from 'types/index';
 
 interface Props {
     operation: OperationModel;
@@ -38,7 +38,7 @@ const styles = {
     }
 };
 
-class Operation extends React.Component<Props, State> {
+export class Operation extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
         this.state = {
@@ -79,18 +79,18 @@ class Operation extends React.Component<Props, State> {
                         </Avatar>
                     </Grid>
                     <Grid item xs={6}>
-                        <Typography type="title">
+                        <Typography type="title" className="name">
                             {fromTab.name} -> {toTab.name}
                         </Typography>
-                        <Typography type="body2">
+                        <Typography type="body2" className="date">
                             {dateToString(operation.date)}
                         </Typography>
-                        <Typography type="body1">
+                        <Typography type="body1" className="comment">
                             {operation.comment}
                         </Typography>
                     </Grid>
                     <Grid item xs={2}>
-                        <Typography type="subheading">
+                        <Typography type="subheading" className="amount">
                             {operation.amount} €
                     </Typography>
                     </Grid>

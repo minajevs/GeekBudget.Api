@@ -9,18 +9,18 @@ import './style.css';
 // Redux
 import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
-import { tabActions } from '../../actions';
-import { StoreState } from '../../types/index';
+import { tabActions } from 'actions';
+import { StoreState } from 'types/index';
 
 // Router
 import { Route, Link, withRouter } from 'react-router-dom';
 
 // Components
-import Tab from '../../components/Tab';
-import TabModel from '../../models/Tab';
+import Tab from 'components/Tab';
+import TabModel from 'models/Tab';
 
-import TabsContainer from '../../containers/Tabs';
-import OperationsContainer from '../../containers/Operations';
+import TabsContainer from 'containers/Tabs';
+import OperationsContainer from 'containers/Operations';
 
 interface Props {
     dispatch: Dispatch<{}>;

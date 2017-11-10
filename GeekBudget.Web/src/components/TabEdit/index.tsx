@@ -3,8 +3,8 @@ import * as React from 'react';
 // Redux
 import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
-import { tabActions } from '../../actions';
-import { TabEditState, StoreState } from '../../types/index';
+import { tabActions } from 'actions';
+import { TabEditState, StoreState } from 'types/index';
 
 import Dialog, {
     DialogActions,
@@ -16,7 +16,7 @@ import Dialog, {
 import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
 
-import TabModel from '../../models/Tab';
+import TabModel from 'models/Tab';
 
 interface Props {
     dispatch: Dispatch<{}>;

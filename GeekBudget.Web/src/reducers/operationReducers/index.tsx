@@ -1,8 +1,8 @@
-import * as constants from '../../constants/operationConstants';
-import { OperationState, OperationEditState, initialState, ApplicationError } from '../../types';
+import * as constants from 'constants/operationConstants';
+import { OperationState, OperationEditState, initialState, ApplicationError } from 'types';
 import { handleActions, Action } from 'redux-actions';
 
-import Operation from '../../models/Operation';
+import Operation from 'models/Operation';
 
 export const operationReducers =
     handleActions<OperationState, Operation[] | Operation | ApplicationError | string | number | void>(

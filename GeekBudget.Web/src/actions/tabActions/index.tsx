@@ -1,13 +1,13 @@
-import * as constants from '../../constants/tabConstants';
+import * as constants from 'constants/tabConstants';
 import { createAction } from 'redux-actions';
 import { Dispatch } from 'redux';
-import { ApplicationError, ValidationError } from '../../types';
+import { ApplicationError, ValidationError } from 'types';
 
-import { throwApplicationError } from '../errorActions';
+import { throwApplicationError } from 'actions/errorActions';
 
-import Api from '../../api';
+import Api from 'api';
 
-import Tab from '../../models/Tab';
+import Tab from 'models/Tab';
 
 export const requestAllTabs = createAction(constants.REQUEST_ALL_TABS);
 export const receiveAllTabs = createAction<Tab[]>(constants.RECEIVE_ALL_TABS);
