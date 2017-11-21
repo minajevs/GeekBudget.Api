@@ -63,7 +63,7 @@ class OperationEdit extends React.Component<Props, State> {
     }
 
     onClose = () => {
-        this.props.dispatch(operationActions.closeEditOperation());
+        this.props.dispatch(operationActions.uiEditCloseOperation());
     }
     // TODO: https://reactjs.org/docs/portals.html
     render() {

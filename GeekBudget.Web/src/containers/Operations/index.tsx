@@ -34,7 +34,7 @@ class Operations extends React.Component<Props> {
                 <Grid item xs={12}>
                     <Button 
                         raised 
-                        onClick={() => dispatch(operationActions.requestEditOperation(new OperationModel()))}
+                        onClick={() => dispatch(operationActions.uiEditOpenOperation(new OperationModel()))}
                     >
                         <AddIcon />
                         Add new operation

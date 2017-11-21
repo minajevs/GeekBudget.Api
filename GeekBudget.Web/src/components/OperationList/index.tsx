@@ -5,6 +5,7 @@ import Grid from 'material-ui/Grid';
 import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import { tabActions } from 'actions';
+
 import { StoreState } from 'types/index';
 
 // Router
@@ -20,7 +21,7 @@ interface Props {
 }
 
 interface State {
-    
+
 }
 
 class OperationList extends React.Component<Props> {
@@ -31,7 +32,7 @@ class OperationList extends React.Component<Props> {
                 {store.operations.items.map(o => {
                     return (
                         <Grid item xs={12} lg={12} key={o.id}>
-                            <Operation operation={o}/>
+                            <Operation operation={o} />
                         </Grid>
                     );
                 })}

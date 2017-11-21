@@ -46,7 +46,7 @@ export class Operation extends React.Component<Props, State> {
         };
     }
     onEditClick = () => {
-        this.props.dispatch(operationActions.requestEditOperation(this.props.operation));
+        this.props.dispatch(operationActions.uiEditOpenOperation(this.props.operation));
     }
 
     onRemoveClick = () => {
@@ -104,6 +104,7 @@ export class Operation extends React.Component<Props, State> {
                         <IconButton
                             aria-label="Remove"
                             onClick={this.onRemoveClick}
+                            classes={{root: 'remove-btn'}}
                         >
                             <DeleteForever />
                         </IconButton>

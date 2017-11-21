@@ -11,96 +11,96 @@ import Api from 'api';
 
 import Operation from 'models/Operation';
 
-export const requestAllOperations = createAction(constants.REQUEST_ALL_OPERATIONS);
-export const receiveAllOperations = createAction<Operation[]>(constants.RECEIVE_ALL_OPERATIONS);
+export const apiRequestAllOperations = createAction(constants.API_REQUEST_ALL_OPERATION);
+export const apiResponseAllOperations = createAction<Operation[]>(constants.API_RESPONSE_ALL_OPERATION);
 export function getAllOperations() {
     return async function (dispatch: Dispatch<{}>){
-        dispatch(requestAllOperations());
+        dispatch(apiRequestAllOperations());
         try {
             let operations = await Api.operation.getAll();
-            dispatch(receiveAllOperations(operations));
-            dispatch(requestResponseOperation('Success'));
+            dispatch(apiResponseAllOperations(operations));
+            dispatch(apiResponseOperation('Success'));
         } catch (e) {
-            dispatch(responseErrorOperation(e));
+            dispatch(errorOperation(e));
         }
     };
 }
 
-export const requestOperation = createAction<number>(constants.REQUEST_OPERATION);
-export const receiveOperation = createAction<Operation>(constants.RECEIVE_OPERATION);
+export const apiRequestGetOperation = createAction<number>(constants.API_REQUEST_GET_OPERATION);
+export const apiResponseGetOperation = createAction<Operation>(constants.API_RESPONSE_GET_OPERATION);
 
-export const requestAddOperation = createAction<Operation>(constants.REQUEST_ADD_OPERATION);
-export const responseAddOperation = createAction<number>(constants.RESPONSE_ADD_OPERATION);
+export const apiRequestAddOperation = createAction<Operation>(constants.API_REQUEST_ADD_OPERATION);
+export const apiResponseAddOperation = createAction<number>(constants.API_RESPONSE_ADD_OPERATION);
 export function addOperation(operation: Operation) {
     return async function (dispatch: Dispatch<{}>){
-        dispatch(requestAddOperation(operation));
+        dispatch(apiRequestAddOperation(operation));
         try {
             const newId = await Api.operation.add(operation);    // Add operation, get its ID
             await getAllOperations()(dispatch);           // Reload alloperations
-            dispatch(responseAddOperation(newId));        // When its done dispatch success response
-            dispatch(requestResponseOperation('Success'));
+            dispatch(apiResponseAddOperation(newId));        // When its done dispatch success response
+            dispatch(apiResponseOperation('Success'));
             dispatch(getAllTabs());
         } catch (e) {
-            dispatch(responseErrorOperation(e));
+            dispatch(errorOperation(e));
         }
     };
 }
 
-export const requestRemoveOperation = createAction<number>(constants.REQUEST_REMOVE_OPERATION);
+export const apiRequestRemoveOperation = createAction<number>(constants.API_REQUEST_REMOVE_OPERATION);
 export function removeOperation(id: number) {
     return async function (dispatch: Dispatch<{}>){
-        dispatch(requestRemoveOperation(id));
+        dispatch(apiRequestRemoveOperation(id));
         try {
             await Api.operation.remove(id);
             dispatch(getAllOperations());
-            dispatch(requestResponseOperation('Success'));
+            dispatch(apiResponseOperation('Success'));
             dispatch(getAllTabs());
         } catch (e) {
-            dispatch(responseErrorOperation(e));
+            dispatch(errorOperation(e));
         }
     };
 }
 
-export const requestUpdateOperation = createAction<Operation>(constants.REQUEST_UPDATE_OPERATION);
-export function updateOperation(operation: Operation) {
+export const apiRequestEditOperation = createAction<Operation>(constants.API_REQUEST_EDIT_OPERATION);
+export function editOperation(operation: Operation) {
     return async function (dispatch: Dispatch<{}>){
-        dispatch(requestUpdateOperation(operation));
+        dispatch(apiRequestEditOperation(operation));
         try {
             await Api.operation.update(operation);
             dispatch(getAllOperations());
-            dispatch(requestResponseOperation('Success'));
+            dispatch(apiResponseOperation('Success'));
             dispatch(getAllTabs());
         } catch (e) {
-            dispatch(responseErrorOperation(e));
+            dispatch(errorOperation(e));
         }
     };
 }
 
-export const requestResponseOperation = createAction<string>(constants.RESPONSE_OPERATION);
-export const requestResponseErrorOperation = createAction<ApplicationError>(constants.RESPONSE_ERROR_OPERATION);
-export function responseErrorOperation(error: Error) {
+export const apiResponseOperation = createAction<string>(constants.API_RESPONSE_OPERATION);
+export const apiErrorOperation = createAction<ApplicationError>(constants.API_ERROR_OPERATION);
+export function errorOperation(error: Error) {
     const appError: ApplicationError = {
         code: 400, // TODO
         object: error as {}, // TODO
         text: JSON.stringify(error) // TODO
     };
     return async function (dispatch: Dispatch<{}>){
-        dispatch(requestResponseOperation('failed'));
+        dispatch(apiResponseOperation('failed'));
         dispatch(throwApplicationError(appError));
     };
 }
 
-export const requestEditOperation = createAction<Operation>(constants.REQUEST_EDIT_OPERATION);
-export const closeEditOperation = createAction(constants.CLOSE_EDIT_OPERATION);
-export const saveEditOperation = createAction<Operation>(constants.SAVE_EDIT_OPERATION);
+export const uiEditOpenOperation = createAction<Operation>(constants.UI_EDIT_OPEN_OPERATION);
+export const uiEditCloseOperation = createAction(constants.UI_EDIT_CLOSE_OPERATION);
+export const uiEditSaveOperation = createAction<Operation>(constants.UI_EDIT_SAVE_OPERATION);
 export function saveOperation(operation: Operation) {
     return async function (dispatch: Dispatch<{}>){
-        dispatch(saveEditOperation(operation));
+        dispatch(uiEditSaveOperation(operation));
         if (operation.id === -1) // new operation
             dispatch(addOperation(operation));
         else
-            dispatch(updateOperation(operation));
+            dispatch(editOperation(operation));
 
-        dispatch(closeEditOperation());
+        dispatch(uiEditCloseOperation());
     };
 }
