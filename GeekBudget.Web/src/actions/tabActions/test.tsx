@@ -3,7 +3,7 @@ import * as actions from '.';
 import * as types from 'constants/tabConstants';
 import Tab from 'models/Tab';
 
-import { mockApi } from 'helpers/testHelpers';
+import { mockApi } from 'helpers/test';
 
 const api = mockApi();
 

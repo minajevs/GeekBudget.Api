@@ -3,7 +3,7 @@ import * as ReactDOM from 'react-dom';
 import * as enzyme from 'enzyme';
 import Operation from '.';
 
-import { shallowWithStore, getMaterialUIValue, mountWithStore } from 'helpers/testHelpers';
+import { shallowWithStore, getMaterialUIValue, mountWithStore } from 'helpers/test';
 import OperationModel from 'models/Operation';
 import TabModel from 'models/Tab';
 import { StoreState, initialState } from 'types/index';

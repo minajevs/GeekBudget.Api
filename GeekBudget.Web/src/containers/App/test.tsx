@@ -11,7 +11,7 @@ import { createStore } from 'redux';
 import { rootReducer } from 'reducers/index';
 import { applyMiddleware } from 'redux';
 import { routerMiddleware } from 'react-router-redux';
-import { shallowWithStore } from 'helpers/testHelpers';
+import { shallowWithStore } from 'helpers/test';
 
 const history = createHistory();
 const historyMiddleware = routerMiddleware(history);

@@ -1,5 +1,5 @@
 import * as api from '.';
-import { mockFetch, mockFetchResponse } from 'helpers/testHelpers';
+import { mockFetch, mockFetchResponse } from 'helpers/test';
 import Tab from 'models/Tab';
 
 const tabs: Tab[] = [

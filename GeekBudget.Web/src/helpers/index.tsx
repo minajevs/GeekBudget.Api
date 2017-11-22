@@ -1,8 +1,7 @@
-import { shallow } from 'enzyme';
 import { StoreState } from 'types/index';
 
-import * as apiHelpers from './apiHelpers';
-import * as testHelpers from './testHelpers';
+import * as apiHelpers from './api';
+import * as testHelpers from './test/index';
 
 export function dateToString(date: Date): string{
     const yyyy = date.getFullYear();

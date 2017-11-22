@@ -1,6 +1,6 @@
 import Tab from 'models/Tab';
 
-import { createApiUrl, createRequestOptions } from 'helpers/apiHelpers';
+import { createApiUrl, createRequestOptions } from 'helpers/api';
 
 export const getAll = async (): Promise<Tab[]> => {
     const url = createApiUrl('tab', 'getall');
