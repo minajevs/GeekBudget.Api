@@ -52,7 +52,7 @@ class TabEdit extends React.Component<Props, State> {
     }
 
     onClose = () => {
-        this.props.dispatch(tabActions.closeEditTab());
+        this.props.dispatch(tabActions.uiEditCloseTab());
     }
 
     render() {

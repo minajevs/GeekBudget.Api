@@ -48,7 +48,7 @@ class Tab extends React.Component<Props, State> {
     }
 
     onEditClick = () => {
-        this.props.dispatch(tabActions.requestEditTab(this.props.tab));
+        this.props.dispatch(tabActions.uiEditOpenTab(this.props.tab));
     }
 
     onRemoveClick = () => {

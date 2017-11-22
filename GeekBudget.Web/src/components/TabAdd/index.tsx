@@ -40,7 +40,7 @@ class TabAddButton extends React.Component<Props, State> {
                 <Button 
                     fab 
                     aria-label="add" 
-                    onClick={() => dispatch(tabActions.requestEditTab(new TabModel()))}
+                    onClick={() => dispatch(tabActions.uiEditOpenTab(new TabModel()))}
                 >
                     <AddIcon />
                 </Button>

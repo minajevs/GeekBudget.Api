@@ -1,48 +1,56 @@
-// Get all
-export const REQUEST_ALL_TABS = 'REQUEST_ALL_TABS';
-export type REQUEST_ALL_TABS = typeof REQUEST_ALL_TABS;
+/***************
+ * API ACTIONS *
+ ***************/
 
-export const RECEIVE_ALL_TABS = 'RECEIVE_ALL_TABS';
-export type RECEIVE_ALL_TABS = typeof RECEIVE_ALL_TABS;
+// Get all
+export const API_REQUEST_ALL_TAB = 'API_REQUEST_ALL_TAB';
+export type API_REQUEST_ALL_TAB = typeof API_REQUEST_ALL_TAB;
+
+export const API_RESPONSE_ALL_TAB = 'API_RESPONSE_ALL_TAB';
+export type API_RESPONSE_ALL_TAB = typeof API_RESPONSE_ALL_TAB;
 
 // Get
-export const REQUEST_TAB = 'REQUEST_TAB';
-export type REQUEST_TAB = typeof REQUEST_TAB;
+export const API_REQUEST_GET_TAB = 'API_REQUEST_GET_TAB';
+export type API_REQUEST_GET_TAB = typeof API_REQUEST_GET_TAB;
 
-export const RECEIVE_TAB = 'RECEIVE_TAB';
-export type RECEIVE_TAB = typeof RECEIVE_TAB;
+export const API_RESPONSE_GET_TAB = 'API_RESPONSE_GET_TAB';
+export type API_RESPONSE_GET_TAB = typeof API_RESPONSE_GET_TAB;
 
 // Add
-export const REQUEST_ADD_TAB = 'REQUEST_ADD_TAB';
-export type REQUEST_ADD_TAB = typeof REQUEST_ADD_TAB;
+export const API_REQUEST_ADD_TAB = 'API_REQUEST_ADD_TAB';
+export type API_REQUEST_ADD_TAB = typeof API_REQUEST_ADD_TAB;
 
-export const RESPONSE_ADD_TAB = 'RESPONSE_ADD_TAB';
-export type RESPONSE_ADD_TAB = typeof RESPONSE_ADD_TAB;
+export const API_RESPONSE_ADD_TAB = 'API_RESPONSE_ADD_TAB';
+export type API_RESPONSE_ADD_TAB = typeof API_RESPONSE_ADD_TAB;
 
 // Remove
-export const REQUEST_REMOVE_TAB = 'REQUEST_REMOVE_TAB';
-export type REQUEST_REMOVE_TAB = typeof REQUEST_REMOVE_TAB;
+export const API_REQUEST_REMOVE_TAB = 'API_REQUEST_REMOVE_TAB';
+export type API_REQUEST_REMOVE_TAB = typeof API_REQUEST_REMOVE_TAB;
 
 // Update
-export const REQUEST_UPDATE_TAB = 'REQUEST_UPDATE_TAB';
-export type REQUEST_UPDATE_TAB = typeof REQUEST_UPDATE_TAB;
+export const API_REQUEST_EDIT_TAB = 'API_REQUEST_EDIT_TAB';
+export type API_REQUEST_EDIT_TAB = typeof API_REQUEST_EDIT_TAB;
 
 // Common response
-export const RESPONSE_TAB = 'RESPONSE_TAB';
-export type RESPONSE_TAB = typeof RESPONSE_TAB;
+export const API_RESPONSE_TAB = 'API_RESPONSE_TAB';
+export type API_RESPONSE_TAB = typeof API_RESPONSE_TAB;
 
 // Common error
-export const RESPONSE_ERROR_TAB = 'RESPONSE_ERROR_TAB';
-export type RESPONSE_ERROR_TAB = typeof RESPONSE_ERROR_TAB;
+export const API_ERROR_TAB = 'API_ERROR_TAB';
+export type API_ERROR_TAB = typeof API_ERROR_TAB;
+
+/***************
+ * UI ACTIONS *
+ ***************/
 
 // Request edit tab
-export const REQUEST_EDIT_TAB = 'REQUEST_EDIT_TAB';     // TODO: separate api and ui actions!!
-export type REQUEST_EDIT_TAB = typeof REQUEST_EDIT_TAB;
+export const UI_EDIT_OPEN_TAB = 'UI_EDIT_OPEN_TAB';
+export type UI_EDIT_OPEN_TAB = typeof UI_EDIT_OPEN_TAB;
 
 // Save tab after edit
-export const SAVE_EDIT_TAB = 'SAVE_EDIT_TAB';
-export type SAVE_EDIT_TAB = typeof SAVE_EDIT_TAB;
+export const UI_EDIT_SAVE_TAB = 'UI_EDIT_SAVE_TAB';
+export type UI_EDIT_SAVE_TAB = typeof UI_EDIT_SAVE_TAB;
 
 // Close tab edit
-export const CLOSE_EDIT_TAB = 'CLOSE_EDIT_TAB'; 
-export type CLOSE_EDIT_TAB = typeof CLOSE_EDIT_TAB;
+export const UI_EDIT_CLOSE_TAB = 'UI_EDIT_CLOSE_TAB'; 
+export type UI_EDIT_CLOSE_TAB = typeof UI_EDIT_CLOSE_TAB;
