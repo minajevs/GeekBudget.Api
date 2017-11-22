@@ -3,19 +3,24 @@ import { mockFetch, mockFetchResponse } from 'helpers/test';
 import Operation from 'models/Operation';
 
 const operationsJson = [
-    {id: 1, amount: 100, comment: 'test', currency: 'EUR', date: new Date().toString(), from: 1,  to: 2}
+    {id: 1, amount: 100, comment: 'test', currency: 'EUR', date: new Date(1990, 1, 12).toString(), from: 1,  to: 2}
 ];
 
 const operations: Operation[] = [
-    {id: 1, amount: 100, comment: 'test', currency: 'EUR', date: new Date(), from: 1,  to: 2}
+    {id: 1, amount: 100, comment: 'test', currency: 'EUR', date: new Date(1990, 1, 12), from: 1,  to: 2}
 ];
 
 describe('Operation api', () => {
     describe('getall', () => {
         it('should return operations', async () => {
+            const fetch = mockFetch(mockFetchResponse(operations, 200, 'ok'));
+            const result = await api.getAll();
+            expect(result).toEqual(operations);
+        });
+        it('should fix dates', async () => {
             const fetch = mockFetch(mockFetchResponse(operationsJson, 200, 'ok'));
             const result = await api.getAll();
-            expect(result).toEqual(operationsJson);
+            expect(result).toEqual(operations);
         });
         it('should throw an error', async () => {
             const fetch = mockFetch(mockFetchResponse('not ok', 400, 'not ok'));

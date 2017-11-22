@@ -11,7 +11,9 @@ export const getAll = async (): Promise<Operation[]> => {
         if (response.status !== 200)
             throw await response.text(); // TODO
         
-        return await response.json() as Operation[];
+        let operations = await response.json();
+        operations = operations.map((a: Operation) => ({ ...a, date: new Date(a.date) })); // fix dates for JS
+        return operations;
     } catch (e){
         throw `Fetch failed! Reason: ${e}`;
     }

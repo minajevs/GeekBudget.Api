@@ -14,6 +14,21 @@ export function padStart(fillString: string, value: string|number, length: numbe
     return (fillString + value).substr(-length);
 }
 
+export function insertItem<T>(array: T[], item: T, index: number = array.length) {
+    return [
+        ...array.slice(0, index),
+        item,
+        ...array.slice(index)
+    ];
+}
+
+export function removeItem<T>(array: T[], index: number) {
+    return [
+        ...array.slice(0, index),
+        ...array.slice(index + 1)
+    ];
+}
+
 export { 
     apiHelpers,
     testHelpers

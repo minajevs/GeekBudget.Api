@@ -23,4 +23,30 @@ describe('Common helpers', () => {
             expect(pad3).toEqual('01');
         });
     });
+
+    describe('insert item', () => {
+        it('should insert new item in to position', () => {
+            const before = [1, 2, 3, 4];
+            const after = helpers.insertItem(before, 11, 1);
+            expect(after).toEqual([1, 11, 2, 3, 4]);
+        });
+        it('should insert new item in to last place', () => {
+            const before = [1, 2, 3, 4];
+            const after = helpers.insertItem(before, 11);
+            expect(after).toEqual([1, 2, 3, 4, 11]);
+        });
+        it('should insert new item in to first place', () => {
+            const before = [1, 2, 3, 4];
+            const after = helpers.insertItem(before, 11, 0);
+            expect(after).toEqual([11, 1, 2, 3, 4]);
+        });
+    });
+
+    describe('remove item', () => {
+        it('should remove an item from position', () => {
+            const before = [1, 2, 3, 4];
+            const after = helpers.removeItem(before, 0);
+            expect(after).toEqual([2, 3, 4]);
+        });
+    });
 });
