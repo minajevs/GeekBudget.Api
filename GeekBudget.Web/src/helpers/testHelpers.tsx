@@ -59,3 +59,21 @@ export const mockApi = () => {
 
     return { operationMock, tabMock };
 };
+
+export const mockFetch = (response: Response) => {
+    const mock = jest.fn()
+        .mockImplementation(() => Promise.resolve(response));
+
+    window.fetch = mock;
+    return mock;
+};
+
+export const mockFetchResponse = (body: {}, status: number, statusText: string) => {
+    return new Response(JSON.stringify(body), {
+        status: status,
+        statusText: statusText,
+        headers: new Headers({
+            'Content-Type': 'application/json'
+        })
+    });
+};

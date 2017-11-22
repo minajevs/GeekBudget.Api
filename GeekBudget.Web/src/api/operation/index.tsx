@@ -28,7 +28,7 @@ export const add = async (operation: Operation): Promise<number> => {
             
         return await response.json() as number;
     } catch (e){
-        throw e;
+        throw `Fetch failed! Reason: ${e}`;
     }
 };
 
