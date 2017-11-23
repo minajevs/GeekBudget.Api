@@ -1,30 +1,38 @@
 # GeekBudget
-Open source budget manager for geeks. Currently unreleased & under development.
+Open source budget manager for geeks. Currently unreleased & under **heavy** development.
 
-![Build Status](https://travis-ci.org/minajevs/GeekBudget.svg?branch=master)
+![Build Status](https://travis-ci.org/minajevs/GeekBudget.Api.svg?branch=master)
 
 ## Development status
-Front-end development
+DevOps
 
 ## Roadmap
 
 **Version 0.1 (pre-alpha)**
-1) API development
-    1) preliminary development
-    2) unit tests
-    3) switch to TDD
-2) CI setup
-    1) TravisCI for API
-    2) TravisCI for WEB <<<TODO
-    3) Continuos deployments for API <<<TODO
-    3) Continuos deployments for WEB
-3) WEB development
-    1) React setup
-    2) REDUX setup
-    3) API connection setup
-    4) full API implementation
-    5) pretty views <<<TODO
-4) Testing <<<TODO
-    1) Smoke tests <<<TODO
-    2) Usecase tests <<<TODO
-5) Pre-alpha launch!
+1) [x] API development
+    1) [x] preliminary development
+    2) [x] unit tests
+    3) [x] switch to TDD
+2) [x] CI setup
+    1) [x] TravisCI for API
+    2) [x] TravisCI for WEB
+    3) [ ] Coverage report for API (optional)
+    4) [x] Coverage report for WEB (optional)
+    5) [ ] Continuos deployments for API test (optional)
+    6) [x] Continuos deployments for WEB test (optional)
+3) [x] WEB development
+    1) [x] React setup
+    2) [x] REDUX setup
+    3) [x] API connection setup
+    4) [x] full API implementation
+    5) [x] pretty views
+    6) [x] unit tests
+    7) [ ] switch to TDD (optional)
+4) [ ] DevOps
+    1) [ ] Make deployable package for API
+    2) [ ] Make deployable package for WEB
+    3) [ ] Add one-button deployments
+5) [ ] Testing
+    1) [ ] Smoke tests
+    2) [ ] Usecase tests
+6) [ ] Pre-alpha launch!
