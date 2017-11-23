@@ -1,0 +1,11 @@
+{
+  "name": "GeekBudget API",
+  "description": "A GeekBudget API",
+  "repository": "https://github.com/minajevs/GeekBudget.Api",
+  "keywords": ["GeekBudget", "API", "asp.net"],
+  "buildpacks": [
+    {
+      "url": "https://github.com/jincod/dotnetcore-buildpack"
+    }
+  ]
+}
