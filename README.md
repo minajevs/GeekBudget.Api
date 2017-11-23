@@ -3,6 +3,8 @@ Open source budget manager for geeks. Currently unreleased & under **heavy** dev
 
 ![Build Status](https://travis-ci.org/minajevs/GeekBudget.Api.svg?branch=master)
 
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+
 ## Development status
 DevOps
 
