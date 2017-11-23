@@ -35,6 +35,13 @@ describe('Operation reducers', () => {
                 expect(newState.items[1].id).toEqual(2);
                 expect(newState.items[2].id).toEqual(1);
             });
+            it('should not override existing items if result is falsy', () => {
+                // tslint:disable-next-line:no-string-literal
+                const action = (actions as {})['apiResponseAllOperations'](undefined);
+                const oldState: OperationState = { ...initialState.operations, isFetching: true, items: operations };
+                const newState = operationReducers(oldState, action);
+                expect(newState.items).toBe(operations);
+            });
         });
 
         describe('get', () => {

@@ -3,55 +3,60 @@ import { TabState, initialState, ApplicationError } from 'types';
 import { handleActions, Action } from 'redux-actions';
 
 import Tab from 'models/Tab';
+import { insertItem } from 'helpers';
 
 export const tabReducers = handleActions<TabState, Tab[] | Tab | ApplicationError | string | number | void>(
     {
-        [constants.API_REQUEST_ALL_TAB]: (state: TabState): TabState => ({ ...state, isFetching: true }),
+        [constants.API_REQUEST_ALL_TAB]: (state: TabState): TabState => ({ 
+                ...state, 
+                isFetching: true 
+            }),
         [constants.API_RESPONSE_ALL_TAB]: (state: TabState, action: Action<Tab[]>): TabState => ({
-            ...state,
-            items: action.payload || state.items,
-        }),
+                ...state,
+                items: action.payload || state.items,
+            }),
 
-        [constants.API_REQUEST_GET_TAB]: (state: TabState, action: Action<number>): TabState => ({ 
-            ...state, 
-            isFetching: true 
-        }),
-        [constants.API_RESPONSE_GET_TAB]: (state: TabState, action: Action<Tab>): TabState => {
-            const tab = action.payload as Tab;
-            if (state.items.filter(x => x.id === tab.id).length === 0)
-                state.items.push(tab);
-            return { ...state };  // Shallow copy to force rerender
-        },
+        [constants.API_REQUEST_GET_TAB]: (state: TabState, action: Action<number>): TabState => ({
+                ...state,
+                isFetching: true
+            }),
+        [constants.API_RESPONSE_GET_TAB]: (state: TabState, action: Action<Tab>): TabState => ({
+                // TODO: Should override existing tab if it exists!!
+                // TODO: Should sort array again
+                ...state,
+                items: (state.items.filter(x => x.id === (action.payload as Tab).id).length === 0)
+                    ? insertItem(state.items, (action.payload as Tab))
+                    : [...state.items]
+            }),
 
-        [constants.API_REQUEST_ADD_TAB]: (state: TabState, action: Action<Tab>): TabState => ({ 
-            ...state, 
-            isFetching: true 
-        }),
-        [constants.API_RESPONSE_ADD_TAB]: (state: TabState, action: Action<number>): TabState => {
-            // TODO: automatically select tab for edit?
-            return { ...state };  // Shallow copy to force rerender
-        },
+        [constants.API_REQUEST_ADD_TAB]: (state: TabState, action: Action<Tab>): TabState => ({
+                ...state,
+                isFetching: true
+            }),
+        [constants.API_RESPONSE_ADD_TAB]: (state: TabState, action: Action<number>): TabState => ({
+                // TODO: automatically select tab for edit?
+                ...state
+            }),
 
         [constants.API_REQUEST_REMOVE_TAB]: (state: TabState, action: Action<number>): TabState => ({
-            ...state,
-            isFetching: true
-        }),
+                ...state,
+                isFetching: true
+            }),
 
         [constants.API_REQUEST_EDIT_TAB]: (state: TabState, action: Action<Tab>): TabState => ({
-            ...state,
-            isFetching: true
-        }),
+                ...state,
+                isFetching: true
+            }),
 
-        [constants.API_RESPONSE_TAB]: (state: TabState, action: Action<string>): TabState => {
-            state.isFetching = false;
-            return { ...state };  // Shallow copy to force rerender
-        },
+        [constants.API_RESPONSE_TAB]: (state: TabState, action: Action<string>): TabState => ({
+                ...state,
+                isFetching: false
+            }),
 
         [constants.API_ERROR_TAB]: (state: TabState, action: Action<ApplicationError>): TabState => {
-            alert((action.payload as ApplicationError).text);
-            state.isFetching = false;
-            return { ...state };  // Shallow copy to force rerender
-        },
+                alert((action.payload as ApplicationError).text);
+                return { ...state, isFetching: false };  // Shallow copy to force rerender
+            },
 
         [constants.UI_EDIT_OPEN_TAB]: (state: TabState, action: Action<Tab>): TabState => (
             {
