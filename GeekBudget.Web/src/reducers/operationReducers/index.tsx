@@ -58,16 +58,15 @@ export const operationReducers =
                     isFetching: true
                 }),
 
-            [constants.API_RESPONSE_OPERATION]: (state: OperationState, action: Action<string>): OperationState => {
-                state.isFetching = false;
-                return { ...state };  // Shallow copy to force rerender
-            },
+            [constants.API_RESPONSE_OPERATION]: (state: OperationState, action: Action<string>): OperationState => ({
+                ...state,
+                isFetching: false
+            }),
 
             [constants.API_ERROR_OPERATION]: (state: OperationState,
                                               action: Action<ApplicationError>): OperationState => {
                 alert((action.payload as ApplicationError).text);
-                state.isFetching = false;
-                return { ...state };  // Shallow copy to force rerender
+                return { ...state, isFetching: false };  // Shallow copy to force rerender
             },
 
             [constants.UI_EDIT_OPEN_OPERATION]: (state: OperationState, action: Action<Operation>): OperationState => (
