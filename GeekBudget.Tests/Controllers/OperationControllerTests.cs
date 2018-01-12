@@ -110,10 +110,10 @@ namespace GeekBudget.Test.Controllers
                 var context = connection.CreateNewContext();
 
                 context.Database.EnsureCreated();
-                var tab1 = context.Tabs.Add(new Tab() { Id = 1 });
-                var tab2 = context.Tabs.Add(new Tab() { Id = 2 });
-                context.Operations.Add(new Operation() { Id = 1, Amount = 100, From = tab1.Entity, To = tab2.Entity });
-                context.Operations.Add(new Operation() { Id = 2, Amount = 600, From = tab2.Entity, To = tab1.Entity });
+                var tab1 = context.Tabs.Add(new Tab() { Id = 1, Amount = 1000});
+                var tab2 = context.Tabs.Add(new Tab() { Id = 2, Amount = 1000});
+                context.Operations.Add(new Operation() { Amount = 100, From = tab1.Entity, To = tab2.Entity });
+                context.Operations.Add(new Operation() { Amount = 600, From = tab2.Entity, To = tab1.Entity });
                 context.SaveChanges();
 
                 //Act
@@ -133,6 +133,9 @@ namespace GeekBudget.Test.Controllers
                     .FirstOrDefault(t => t.Id == 1)
                         .Operations
                         .Count());
+                
+                Assert.Equal(1100, context.Tabs.FirstOrDefault(t => t.Id == 1).Amount);
+                Assert.Equal(900, context.Tabs.FirstOrDefault(t => t.Id == 2).Amount);
             }
         }
 

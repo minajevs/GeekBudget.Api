@@ -82,13 +82,32 @@ namespace GeekBudget.Controllers
         [HttpPost("Remove/{id}")]
         public IActionResult Remove(int id)
         {
-            if (!_context.Operations.Any(o=> o.Id == id)) //If entry by id exist
-                return BadRequest(String.Format("No Operation with id '{0}' was found!", id));
+            var operation = _context.Operations
+                .Include(o => o.From)
+                .Include(o => o.To)
+                .FirstOrDefault(x => x.Id == id);
 
-            var removeOperation = new Operation() { Id = id };
-            _context.Operations.Attach(removeOperation);
-            _context.Operations.Remove(removeOperation);
+            if (operation == null)
+            {
+                ModelState.AddModelError("id", string.Format("No Operation with id '{0}' was found!", id));
+                return BadRequest(ModelState);
+            }
+            
+            var tabFrom = _context.Tabs.SingleOrDefault(x => x.Id == operation.From.Id);
+            var tabTo = _context.Tabs.SingleOrDefault(x => x.Id == operation.To.Id);
+            
+            if (tabFrom == null || tabTo == null)
+            {
+                ModelState.AddModelError("tab", "Can't find tab with provided Id!");
+                return BadRequest(ModelState);
+            }
+            
+            tabFrom.RemoveOperation(operation);
+            tabTo.RemoveOperation(operation);
+            
+            _context.Entry(operation).State = EntityState.Deleted;
             _context.SaveChanges();
+            
             return Ok();
         }
 
