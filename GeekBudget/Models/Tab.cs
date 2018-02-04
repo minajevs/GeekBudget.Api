@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using GeekBudget.Models.ViewModels;
+using GeekBudget.Entities;
 using Newtonsoft.Json;
 
 namespace GeekBudget.Models
@@ -12,6 +13,7 @@ namespace GeekBudget.Models
     {
         [Key]
         public int Id { get; set; }
+        public Enums.TabType Type { get; set; }
         public string Name { get; set; }
         public decimal Amount { get; set; }
         public string Currency { get; set; } = "EUR";
@@ -19,19 +21,25 @@ namespace GeekBudget.Models
         public List<Operation> OperationsFrom { get; set; } = new List<Operation>();
         public List<Operation> OperationsTo { get; set; } = new List<Operation>();
 
+        private bool TabTypeAllowed(Enums.TabType type) => Dictionaries.AllowedTabTypes[this.Type].Any(t => t == type);
+
         public Tab MapNewValues(TabViewModel values)
         {
             this.Name = values.Name ?? this.Name;
             this.Amount = values.Amount ?? this.Amount;
             this.Currency = values.Currency ?? this.Currency;
+            this.Type = values.Type ?? this.Type;
 
             return this;
         }
 
-        public void AddNewOperation(Operation operation)
-        {
-            if (this.Id == operation.From.Id)
+        public void AddNewOperation(Enums.TargetTabType targetType, Operation operation)
+        {                      
+            if (targetType == Enums.TargetTabType.From)
             {
+                if (!this.TabTypeAllowed(operation.To.Type))
+                    throw new InvalidOperationException("Can't add operation with that tab target types!");
+                
                 if (this.OperationsFrom.Any(o => o.Id == operation.Id))
                     throw new InvalidOperationException("Can't add same operation twice!");
                 if (operation.Currency == this.Currency) //TODO: Add currency conversion
@@ -40,8 +48,11 @@ namespace GeekBudget.Models
                     throw new NotImplementedException("Currency conversion is not supported yet!");
                 this.OperationsFrom.Add(operation);
             }
-            else if (this.Id == operation.To.Id)
+            else
             {
+                if (!this.TabTypeAllowed(operation.From.Type))
+                    throw new InvalidOperationException("Can't add operation with that tab target types!");
+                
                 if (this.OperationsTo.Any(o => o.Id == operation.Id))
                     throw new InvalidOperationException("Can't add same operation twice!");
                 if (operation.Currency == this.Currency) //TODO: Add currency conversion
@@ -49,10 +60,6 @@ namespace GeekBudget.Models
                 else
                     throw new NotImplementedException("Currency conversion is not supported yet!");
                 this.OperationsTo.Add(operation);
-            }
-            else
-            {
-                throw new ArgumentException("Wrong ID of operation passed to 'AddNewOperation' method!");
             }
         }
 

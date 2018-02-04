@@ -1,18 +1,11 @@
-﻿using GeekBudget.Controllers;
-using GeekBudget.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.Sqlite;
-using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using GeekBudget.Entities;
+using GeekBudget.Models;
 using GeekBudget.Models.ViewModels;
-using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
-using Moq;
 using Xunit;
 
-namespace GeekBudget.Test.Models
+namespace GeekBudget.Tests.Models
 {
     public class TabTests
     {
@@ -50,8 +43,8 @@ namespace GeekBudget.Test.Models
         public void CanAddNewOperation()
         {
             //Arrange
-            var tab1 = new Tab() { Id = 1,Amount = 1000 };
-            var tab2 = new Tab() { Id = 2,Amount = 500 };
+            var tab1 = new Tab() { Id = 1,Amount = 1000,Type = Enums.TabType.Account };
+            var tab2 = new Tab() { Id = 2,Amount = 500,Type = Enums.TabType.Account };
 
             var op = new Operation()
             {
@@ -62,8 +55,8 @@ namespace GeekBudget.Test.Models
             };
 
             //Act
-            tab1.AddNewOperation(op);
-            tab2.AddNewOperation(op);
+            tab1.AddNewOperation(Enums.TargetTabType.From, op);
+            tab2.AddNewOperation(Enums.TargetTabType.To, op);
 
             //Assert
             Assert.Equal(1, tab1.Operations.Count);
@@ -76,8 +69,8 @@ namespace GeekBudget.Test.Models
         public void CantAddSameOperationOnFromTab()
         {
             //Arrange
-            var tab1 = new Tab() { Id = 1, Amount = 1000 };
-            var tab2 = new Tab() { Id = 2, Amount = 500 };
+            var tab1 = new Tab() { Id = 1, Amount = 1000,Type = Enums.TabType.Account };
+            var tab2 = new Tab() { Id = 2, Amount = 500,Type = Enums.TabType.Account };
 
             var op = new Operation()
             {
@@ -88,8 +81,8 @@ namespace GeekBudget.Test.Models
             };
 
             //Act
-            tab1.AddNewOperation(op);
-            Action act = () => tab1.AddNewOperation(op);
+            tab1.AddNewOperation(Enums.TargetTabType.From, op);
+            Action act = () => tab1.AddNewOperation(Enums.TargetTabType.From, op);
 
             //Assert
             Assert.Throws<InvalidOperationException>(act);
@@ -99,8 +92,8 @@ namespace GeekBudget.Test.Models
         public void CantAddSameOperationOnToTab()
         {
             //Arrange
-            var tab1 = new Tab() { Id = 1, Amount = 1000 };
-            var tab2 = new Tab() { Id = 2, Amount = 500 };
+            var tab1 = new Tab() { Id = 1, Amount = 1000,Type = Enums.TabType.Account };
+            var tab2 = new Tab() { Id = 2, Amount = 500,Type = Enums.TabType.Account };
 
             var op = new Operation()
             {
@@ -111,8 +104,8 @@ namespace GeekBudget.Test.Models
             };
 
             //Act
-            tab2.AddNewOperation(op);
-            Action act = () => tab2.AddNewOperation(op);
+            tab2.AddNewOperation(Enums.TargetTabType.To, op);
+            Action act = () => tab2.AddNewOperation(Enums.TargetTabType.To, op);
 
             //Assert
             Assert.Throws<InvalidOperationException>(act);
@@ -122,8 +115,8 @@ namespace GeekBudget.Test.Models
         public void CanAddOperationWithAnotherCurrency()
         {
             //Arrange
-            var tab1 = new Tab() { Id = 1, Amount = 1000 };
-            var tab2 = new Tab() { Id = 2, Amount = 500 };
+            var tab1 = new Tab() { Id = 1, Amount = 1000,Type = Enums.TabType.Account };
+            var tab2 = new Tab() { Id = 2, Amount = 500,Type = Enums.TabType.Account };
 
             var op = new Operation()
             {
@@ -135,37 +128,12 @@ namespace GeekBudget.Test.Models
             };
 
             //Act
-            Action actTo = () => tab1.AddNewOperation(op);
-            Action actFrom = () => tab2.AddNewOperation(op);
+            Action actTo = () => tab1.AddNewOperation(Enums.TargetTabType.From, op);
+            Action actFrom = () => tab2.AddNewOperation(Enums.TargetTabType.To, op);
 
             //Assert
             Assert.Throws<NotImplementedException>(actTo); //TODO
             Assert.Throws<NotImplementedException>(actFrom); //TODO
-        }
-
-        [Fact]
-        public void CantAddUnknownOperation()
-        {
-            //Arrange
-            var tab1 = new Tab() { Id = 1, Amount = 1000 };
-            var tab2 = new Tab() { Id = 2, Amount = 500 };
-            var tab3 = new Tab() { Id = 3, Amount = 1 };
-
-
-            var op = new Operation()
-            {
-                Id = 1,
-                From = tab3,
-                To = tab2,
-                Amount = 100,
-                Currency = "USD"
-            };
-
-            //Act
-            Action act = () => tab1.AddNewOperation(op);
-
-            //Assert
-            Assert.Throws<ArgumentException>(act);
         }
 
         [Fact]

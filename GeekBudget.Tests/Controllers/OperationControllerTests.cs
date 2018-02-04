@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using GeekBudget.Controllers;
+using GeekBudget.Entities;
 using GeekBudget.Models;
 using GeekBudget.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using Microsoft.EntityFrameworkCore;
 using Moq;
 using Xunit;
-using Microsoft.EntityFrameworkCore;
 
-namespace GeekBudget.Test.Controllers
+namespace GeekBudget.Tests.Controllers
 {
     public class OperationControllerTests
     {
@@ -44,7 +44,7 @@ namespace GeekBudget.Test.Controllers
                 Assert.Equal(2, data.Count());
             }
         }
-
+        
         [Fact]
         public void CanGetFiltered()
         {
@@ -175,8 +175,8 @@ namespace GeekBudget.Test.Controllers
                 var context = connection.CreateNewContext();
 
                 context.Database.EnsureCreated();
-                var tab1 = context.Tabs.Add(new Tab() { Id = 1 }).Entity;
-                var tab2 = context.Tabs.Add(new Tab() { Id = 2 }).Entity;
+                var tab1 = context.Tabs.Add(new Tab() { Id = 1, Type = Enums.TabType.Account }).Entity;
+                var tab2 = context.Tabs.Add(new Tab() { Id = 2, Type = Enums.TabType.Account }).Entity;
                 context.SaveChanges();
 
                 //Act
@@ -358,8 +358,8 @@ namespace GeekBudget.Test.Controllers
                 var context = connection.CreateNewContext();
 
                 context.Database.EnsureCreated();
-                var tab1 = context.Tabs.Add(new Tab() { Id = 1, Amount = 500 }).Entity;
-                var tab2 = context.Tabs.Add(new Tab() { Id = 2, Amount = 500 }).Entity;
+                var tab1 = context.Tabs.Add(new Tab() { Id = 1, Amount = 500, Type = Enums.TabType.Account }).Entity;
+                var tab2 = context.Tabs.Add(new Tab() { Id = 2, Amount = 500, Type = Enums.TabType.Account }).Entity;
                 context.Operations.Add(new Operation() { Id = 1, From = tab1, To = tab2, Amount = 100});
                 context.SaveChanges();
 

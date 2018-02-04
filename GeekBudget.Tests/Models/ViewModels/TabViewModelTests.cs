@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using GeekBudget.Models;
+﻿using GeekBudget.Models;
 using GeekBudget.Models.ViewModels;
 using Xunit;
 
-namespace GeekBudget.Test.Models.ViewModels
+namespace GeekBudget.Tests.Models.ViewModels
 {
     public class TabViewModelTests
     {

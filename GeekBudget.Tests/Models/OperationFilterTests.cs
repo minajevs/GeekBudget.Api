@@ -1,11 +1,10 @@
-﻿using GeekBudget.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using GeekBudget.Models;
 using Xunit;
 
-namespace GeekBudget.Test.Models
+namespace GeekBudget.Tests.Models
 {
     public class OperationFilterTests
     {

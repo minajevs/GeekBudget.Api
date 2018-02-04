@@ -7,10 +7,17 @@ namespace GeekBudget.Entities
 {
     public class Enums
     {
-        public enum TabType
+        public enum TargetTabType
         {
             From,
             To
+        }
+
+        public enum TabType
+        {
+            Income,
+            Account,
+            Expense
         }
     }
 }

@@ -1,16 +1,15 @@
-﻿using GeekBudget.Models;
-using Microsoft.EntityFrameworkCore;
-using Moq;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using GeekBudget.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
+using Moq;
 
-namespace GeekBudget.Test
+namespace GeekBudget.Tests
 {
     public static class TestingHelpers
     {

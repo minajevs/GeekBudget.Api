@@ -1,14 +1,13 @@
-using GeekBudget.Middleware;
-using GeekBudget.Models;
-using Microsoft.Data.Sqlite;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using GeekBudget.Models;
+using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
 using Xunit;
 using User = GeekBudget.Models.User;
 
-namespace GeekBudget.Test.Models
+namespace GeekBudget.Tests.Models
 {
     public class TestUserRepository
     {

@@ -46,20 +46,20 @@ namespace GeekBudget.Models
             this.Amount = newAmount;
         }
 
-        public Operation UpdateTab(Enums.TabType type, Tab tab)
+        public Operation UpdateTab(Enums.TargetTabType type, Tab tab)
         {
             if (tab == null) return this;
             switch (type)
             {
-                case Enums.TabType.From:
+                case Enums.TargetTabType.From:
                     this.From?.RemoveOperation(this);
                     this.From = tab;
-                    this.From.AddNewOperation(this);
+                    this.From.AddNewOperation(type, this);
                     break;
-                case Enums.TabType.To:
+                case Enums.TargetTabType.To:
                     this.To?.RemoveOperation(this);
                     this.To = tab;
-                    this.To.AddNewOperation(this);
+                    this.To.AddNewOperation(type, this);
                     break;
             }
 

@@ -70,8 +70,8 @@ namespace GeekBudget.Controllers
 
             var operation = value
                 .MapToEntity()
-                .UpdateTab(Enums.TabType.From, tabFrom)
-                .UpdateTab(Enums.TabType.To, tabTo);
+                .UpdateTab(Enums.TargetTabType.From, tabFrom)
+                .UpdateTab(Enums.TargetTabType.To, tabTo);
             var newOperation = _context.Operations.Add(operation).Entity;
             _context.SaveChanges();
 
@@ -124,10 +124,6 @@ namespace GeekBudget.Controllers
             Tab newTabFrom = null;
             Tab newTabTo = null;
 
-            //Check if operation exsits (to save db transaction costs)
-            if (!_context.Operations.Any(o => o.Id == value.Id))
-                return BadRequest("No Operation with this id was found!");
-
             //Get operation to update
             updateOperation = _context
                 .Operations
@@ -135,6 +131,8 @@ namespace GeekBudget.Controllers
                     .Include(o => o.To)
                 .SingleOrDefault(t => t.Id == value.Id);
             
+            if (updateOperation == null)
+                return BadRequest("No Operation with this id was found!");
 
             //Get new tab From
             if (value.From != null && value.From != updateOperation.From.Id)
@@ -155,8 +153,8 @@ namespace GeekBudget.Controllers
             //Update operation
             updateOperation
                 .MapNewValues(value)
-                .UpdateTab(Enums.TabType.From, newTabFrom)
-                .UpdateTab(Enums.TabType.To, newTabTo);  //TODO: change to Attach update to not query db before update
+                .UpdateTab(Enums.TargetTabType.From, newTabFrom)
+                .UpdateTab(Enums.TargetTabType.To, newTabTo);  //TODO: change to Attach update to not query db before update
             _context.SaveChanges();
 
             //Can't happen. Argument exception raises only from Add/Remove op, and all conditions are checked before!

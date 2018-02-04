@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using GeekBudget.Middleware;
 using GeekBudget.Models;
 using Microsoft.AspNetCore.Http;
@@ -8,7 +7,7 @@ using Microsoft.Extensions.Primitives;
 using Moq;
 using Xunit;
 
-namespace GeekBudget.Test.Middleware
+namespace GeekBudget.Tests.Middleware
 {
     public class UserKeyValidatorTests
     {

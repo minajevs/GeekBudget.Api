@@ -1,20 +1,11 @@
-﻿using GeekBudget.Controllers;
-using GeekBudget.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
-using Microsoft.Data.Sqlite;
-using Microsoft.EntityFrameworkCore;
-using Moq;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using GeekBudget.Entities;
+using GeekBudget.Models;
 using GeekBudget.Models.ViewModels;
 using Xunit;
 
-namespace GeekBudget.Test.Models
+namespace GeekBudget.Tests.Models
 {
     public class OperationTests
     {
@@ -90,25 +81,29 @@ namespace GeekBudget.Test.Models
             var tab1 = new Tab()
             {
                 Id = 1,
-                Amount = 1000
+                Amount = 1000,
+                Type = Enums.TabType.Account
             };
 
             var tab2 = new Tab()
             {
                 Id = 2,
-                Amount = 1000
+                Amount = 1000,
+                Type = Enums.TabType.Account
             };
 
             var tab3 = new Tab()
             {
                 Id = 3,
-                Amount = 1000
+                Amount = 1000,
+                Type = Enums.TabType.Account
             };
 
             var tab4 = new Tab()
             {
                 Id = 4,
-                Amount = 1000
+                Amount = 1000,
+                Type = Enums.TabType.Account
             };
 
             var op = new Operation()
@@ -123,8 +118,8 @@ namespace GeekBudget.Test.Models
             tab2.OperationsTo = new List<Operation>(){op};
 
             //Act
-            op.UpdateTab(Enums.TabType.From, tab3);
-            op.UpdateTab(Enums.TabType.To, tab4);
+            op.UpdateTab(Enums.TargetTabType.From, tab3);
+            op.UpdateTab(Enums.TargetTabType.To, tab4);
 
             //Assert
             Assert.Equal(3, op.From.Id);
@@ -165,8 +160,8 @@ namespace GeekBudget.Test.Models
             };
 
             //Act
-            op.UpdateTab(Enums.TabType.From, null);
-            op.UpdateTab(Enums.TabType.To, null);
+            op.UpdateTab(Enums.TargetTabType.From, null);
+            op.UpdateTab(Enums.TargetTabType.To, null);
 
             //Assert
             Assert.Equal(1, op.From.Id);
