@@ -30,7 +30,7 @@ namespace GeekBudget.Tests.Models
             };
 
             //Act
-            tab1.MapNewValues(updateTab);
+            tab1.MapNewValuesLegacy(updateTab);
 
             //Assert
             Assert.Equal("testing-tab-1-changed", tab1.Name);

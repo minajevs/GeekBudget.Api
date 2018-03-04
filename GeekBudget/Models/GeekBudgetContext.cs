@@ -18,6 +18,11 @@ namespace GeekBudget.Models
         public virtual DbSet<Tab> Tabs { get; set; }
         public virtual DbSet<Operation> Operations { get; set; }
 
+        Task<int> IGeekBudgetContext.SaveChangesAsync()
+        {
+            return this.SaveChangesAsync();
+        }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -33,5 +38,6 @@ namespace GeekBudget.Models
                 .HasOne(o => o.To)
                 .WithMany("OperationsTo");
         }
+        
     }
 }

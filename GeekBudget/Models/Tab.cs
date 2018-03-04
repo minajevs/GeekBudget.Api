@@ -23,7 +23,7 @@ namespace GeekBudget.Models
 
         private bool TabTypeAllowed(Enums.TabType type) => Dictionaries.AllowedTabTypes[this.Type].Any(t => t == type);
 
-        public Tab MapNewValues(TabViewModel values)
+        public Tab MapNewValuesLegacy(TabViewModel values)
         {
             this.Name = values.Name ?? this.Name;
             this.Amount = values.Amount ?? this.Amount;

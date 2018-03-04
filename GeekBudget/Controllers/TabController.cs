@@ -2,90 +2,86 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using GeekBudget.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using GeekBudget.Models;
 using GeekBudget.Models.ViewModels;
+using GeekBudget.Services;
+using GeekBudget.Validators;
 using Microsoft.AspNetCore.Cors;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace GeekBudget.Controllers
 {
     [Route("api/[controller]")]
-    public class TabController : BaseController
+    public class TabController : Controller
     {
-        public TabController(GeekBudgetContext context) : base(context) { }
+        private readonly ITabService _tabService;
+        private readonly ITabValidators _tabValidators;
+
+        public TabController(ITabService tabService, ITabValidators tabValidators)
+        {
+            _tabService = tabService;
+            _tabValidators = tabValidators;
+        }
 
         // GET api/values
         [HttpGet("GetAll")]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            return Ok(_context
-                .Tabs
-                .Include(t => t.OperationsFrom)
-                .Include(t => t.OperationsTo)
-                .Select(t => TabViewModel.FromEntity(t))
-                .ToList()
-            );
+            var tabs = await _tabService.GetAll();
+            return Ok(tabs);
         }
 
         [HttpGet("Get/{id}")]
-        public IActionResult Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
-            var tab = _context.Tabs.FirstOrDefault(t => t.Id == id);
+            var tab = await _tabService.Get(id);
+            
             if (tab == null)
                 return NotFound();
             else
-                return Ok(TabViewModel.FromEntity(tab));
+                return Ok(tab);
         }
 
         // POST: api/values
         [HttpPost("Add")]
-        public IActionResult Add([FromBody]TabViewModel value)
+        public async Task<IActionResult> Add([FromBody]TabViewModel tab)
         {
-            TryValidateModel(value);
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            var errors = await tab.Validate(_tabValidators.TabTypeRequired);
 
-            var tab = value.MapToEntity();
-            _context.Tabs.Add(tab);
-            _context.SaveChanges();
+            if (errors.Any())
+                return BadRequest(errors);
 
-            return Ok(tab.Id);
+            var id = await _tabService.Add(tab);
+            
+            return Ok(id);
         }
 
         // DELETE api/values/5
-        [HttpPost("Remove/{id}")]
-        public IActionResult Remove(int id)
+        [HttpPost("Remove")]
+        public async Task<IActionResult> Remove([FromBody]TabViewModel tab)
         {
-            var tab = _context.Tabs.FirstOrDefault(t => t.Id == id);
-            if (tab == null) //If entry by id exist
-                return BadRequest(String.Format("No Tab with id '{0}' was found!", id));
+            var errors = await tab.Validate(_tabValidators.IdExists);
 
-            _context.Entry(tab).State = EntityState.Deleted;
-            _context.SaveChanges();
+            if (errors.Any())
+                return BadRequest(errors);
+            
+            await _tabService.Remove(tab.Id);
+            
             return Ok();
         }
 
         [HttpPost("Update")]
-        public IActionResult Update([FromBody]TabViewModel value)
+        public async Task<IActionResult> Update([FromBody]TabViewModel tab)
         {
-            if(value == null)
-                return BadRequest("Can't update with null value!");
+            var errors = await tab.Validate(_tabValidators.IdExists);
 
-            if (!_context.Tabs.Any(t => t.Id == value.Id)) //If entry by id exist
-                return BadRequest(String.Format("No Tab with id '{0}' was found!", value.Id));
+            if (errors.Any())
+                return BadRequest(errors);
+            
+            await _tabService.Update(tab);
 
-            TryValidateModel(value);
-            if (!ModelState.IsValid) //If model is wrong
-                return BadRequest(ModelState);
-
-            var updateTab = _context.Tabs.SingleOrDefault(t => t.Id == value.Id);
-
-            updateTab.MapNewValues(value); //TODO: change to Attach update to not query db before update
-
-            _context.SaveChanges();
             return Ok();
         }
     }

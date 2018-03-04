@@ -8,5 +8,9 @@ namespace GeekBudget.Models
 {
     public interface IGeekBudgetContext
     {
+        DbSet<User> Users { get; set; }
+        DbSet<Tab> Tabs { get; set; }
+        DbSet<Operation> Operations { get; set; }
+        Task<int> SaveChangesAsync();
     }
 }

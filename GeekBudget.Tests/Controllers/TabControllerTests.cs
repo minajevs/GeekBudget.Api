@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using GeekBudget.Controllers;
 using GeekBudget.Models;
 using GeekBudget.Models.ViewModels;
+using GeekBudget.Services;
+using GeekBudget.Services.Implementations;
+using GeekBudget.Validators;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Moq;
@@ -14,299 +18,195 @@ namespace GeekBudget.Tests.Controllers
     public class TabControllerTests
     {
         [Fact]
-        public void CanGetAll()
+        public async Task GetAll_ReturnAllTabs()
         {
-            using (var connection = new TestingConnection())
+            // Arrange
+            var tabs = new List<TabViewModel>()
             {
-                //Arrange
-                var context = connection.CreateNewContext();
+                new TabViewModel(),
+                new TabViewModel()
+            };
+            var service = new Mock<ITabService>();
+            service.Setup(x => x.GetAll()).ReturnsAsync(tabs);
+            var validators = new Mock<ITabValidators>();
+            var controller = new TabController(service.Object, validators.Object);
+            
+            // Act
+            var result = await controller.GetAll() as OkObjectResult;
 
-                context.Database.EnsureCreated();
-                context.Tabs.AddRange(new List<Tab>
-                {
-                    new Tab(){Id = 1}, new Tab(){Id=2}
-                });
-                context.SaveChanges();
-
-                //Act
-                context = connection.CreateNewContext();
-                var controller = PrepareController(context);
-
-                var result = controller.GetAll();
-
-
-                //Assert
-                Assert.IsType<OkObjectResult>(result);
-                var data = ((OkObjectResult)result).Value as IEnumerable<TabViewModel>;
-                Assert.NotNull(data);
-                Assert.Equal(2, data.Count());
-            }
+            // Assert
+            Assert.NotNull(result);
+            var data = result.Value as IEnumerable<TabViewModel>;
+            Assert.NotNull(data);
+            Assert.Equal(2, data.Count());
         }
 
         [Fact]
-        public void CanGetById()
+        public async Task Get_ReturnsCorrectFoundTab()
         {
-            using (var connection = new TestingConnection())
-            {
-                //Arrange
-                var context = connection.CreateNewContext();
+            // Arrange
+            var tab = new TabViewModel(){Name = "testing-tab"};
+            var service = new Mock<ITabService>();
+            service.Setup(x => x.Get(It.IsAny<int>())).ReturnsAsync(tab);
+            var validators = new Mock<ITabValidators>();
+            var controller = new TabController(service.Object, validators.Object);
+            
+            // Act
+            var result = await controller.Get(1) as OkObjectResult;
 
-                context.Database.EnsureCreated();
-                context.Tabs.AddRange(new List<Tab>
-                {
-                    new Tab() {Id = 1},
-                    new Tab() {Id = 2}
-                });
-                context.SaveChanges();
-
-                //Act 
-                context = connection.CreateNewContext();
-                var controller = PrepareController(context);
-                var result = controller.Get(2);
-
-                //Assert
-                Assert.IsType<OkObjectResult>(result);
-                var data = ((OkObjectResult)result).Value as TabViewModel;
-                Assert.NotNull(data);
-                Assert.Equal(2, data.Id);
-            }
+            // Assert
+            Assert.NotNull(result);
+            var data = result.Value as TabViewModel;
+            Assert.NotNull(data);
+            Assert.Equal("testing-tab", data.Name);
         }
 
         [Fact]
-        public void CantFindUnknownIdTab()
+        public async Task Get_ReturnsNotFoundForNotFoundTab()
         {
-            using (var connection = new TestingConnection())
-            {
-                //Arrange
-                var context = connection.CreateNewContext();
+            // Arrange
+            var tab = new TabViewModel(){Name = "testing-tab"};
+            var service = new Mock<ITabService>();
+            service.Setup(x => x.Get(It.IsAny<int>())).ReturnsAsync((TabViewModel)null);
+            var validators = new Mock<ITabValidators>();
+            var controller = new TabController(service.Object, validators.Object);
+            
+            // Act
+            var result = await controller.Get(1) as NotFoundResult;
 
-                context.Database.EnsureCreated();
-                context.Tabs.AddRange(new List<Tab>
-                {
-                    new Tab() {Id = 1},
-                    new Tab() {Id = 2}
-                });
-                context.SaveChanges();
-
-                //Act 
-                context = connection.CreateNewContext();
-                var controller = PrepareController(context);
-                var tab = controller.Get(99);
-
-                //Assert
-                Assert.IsType<NotFoundResult>(tab);
-            }
+            // Assert
+            Assert.NotNull(result);
         }
 
         [Fact]
-        public void CanAddTab()
+        public async Task Add_AddsCorrectTab()
         {
-            using (var connection = new TestingConnection())
-            {
-                //Arrange
-                var context = connection.CreateNewContext();
+            // Arrange
+            var tab = new TabViewModel(){Name = "testing-tab"};
+            var service = new Mock<ITabService>();
+            service.Setup(x => x.Add(It.IsAny<TabViewModel>())).ReturnsAsync(1);
+            var validators = new Mock<ITabValidators>();
+            validators.Setup(x => x.TabTypeRequired(It.IsAny<TabViewModel>())).ReturnsAsync(new Error[0]);
+            var controller = new TabController(service.Object, validators.Object);
+            
+            // Act
+            var result = await controller.Add(tab) as OkObjectResult;
 
-                context.Database.EnsureCreated();
-                context.Tabs.Add(new Tab() {Id = 1});
-                context.SaveChanges();
-
-                //Act 
-                context = connection.CreateNewContext();
-                var controller = PrepareController(context);
-                var result = controller.Add(new TabViewModel(){Amount = 123, Name = "new-tab"});
-
-                //Assert
-                context = connection.CreateNewContext();
-                Assert.IsType<OkObjectResult>(result);
-                var data = ((OkObjectResult)result).Value as int?;
-                Assert.NotNull(data);
-                Assert.Equal(2, data);
-                Assert.Equal(2, context.Tabs.Count());
-                Assert.True(context.Tabs.Any(t => t.Name == "new-tab"));
-            }
+            // Assert
+            Assert.NotNull(result);
+            var data = (int) result.Value;
+            Assert.Equal(1, data);
         }
 
         [Fact]
-        public void CanеAddWrongModeledTab()
+        public async Task Add_DoesNotAddsIncorrectTab()
         {
-            using (var connection = new TestingConnection())
+            // Arrange
+            var tab = new TabViewModel(){Name = "testing-tab"};
+            var service = new Mock<ITabService>();
+            service.Setup(x => x.Add(It.IsAny<TabViewModel>())).ReturnsAsync(1);
+            var validators = new Mock<ITabValidators>();
+            validators.Setup(x => x.TabTypeRequired(It.IsAny<TabViewModel>())).ReturnsAsync(new List<Error>()
             {
-                //Arrange
-                var context = connection.CreateNewContext();
+                new Error(){Id = 999, Description = "testing-error"}
+            });
+            var controller = new TabController(service.Object, validators.Object);
+            
+            // Act
+            var result = await controller.Add(tab) as BadRequestObjectResult;
 
-                context.Database.EnsureCreated();
-                context.Tabs.Add(new Tab() { Id = 1 });
-                context.SaveChanges();
-
-                //Act 
-                context = connection.CreateNewContext();
-                var controller = PrepareController(context);
-                controller.ModelState.AddModelError("ModelValidation", "TestError");
-                var result = controller.Add(new TabViewModel() { Amount = 123, Name = "new-tab" });
-
-                //Assert
-                context = connection.CreateNewContext();
-                Assert.IsType<BadRequestObjectResult>(result);
-                Assert.False(context.Tabs.Any(t => t.Name == "new-tab"));
-            }
+            // Assert
+            Assert.NotNull(result);
+            var data = (List<Error>) result.Value;
+            Assert.Single(data);
+            Assert.Equal(999, data.SingleOrDefault()?.Id);
+            Assert.Equal("testing-error", data.SingleOrDefault()?.Description);
         }
 
         [Fact]
-        public void CanRemoveTab()
+        public async Task Remove_RemovesTab()
         {
-            using (var connection = new TestingConnection())
-            {
-                //Arrange
-                var context = connection.CreateNewContext();
+            // Arrange
+            var tab = new TabViewModel(){Id = 1};
+            var service = new Mock<ITabService>();
+            service.Setup(x => x.Remove(It.IsAny<int>())).Returns(Task.CompletedTask);
+            var validators = new Mock<ITabValidators>();
+            validators.Setup(x => x.IdExists(It.IsAny<TabViewModel>())).ReturnsAsync(new Error[0]);
+            var controller = new TabController(service.Object, validators.Object);
+            
+            // Act
+            var result = await controller.Remove(tab) as OkResult;
 
-                context.Database.EnsureCreated();
-                context.Tabs.Add(new Tab() { Id = 1 });
-                context.Tabs.Add(new Tab() { Id = 2 });
-                context.SaveChanges();
-
-                //Act 
-                context = connection.CreateNewContext();
-                var controller = PrepareController(context);
-                var result = controller.Remove(1);
-
-                //Assert
-                context = connection.CreateNewContext();
-                Assert.IsType<OkResult>(result);
-                Assert.Equal(1, context.Tabs.Count());
-                Assert.True(context.Tabs.Any(t => t.Id == 2));
-            }
+            // Assert
+            Assert.NotNull(result);
         }
 
         [Fact]
-        public void CantRemoveNotExistingTab()
+        public async Task Remove_DoNotRemoveNonExistingTab()
         {
-            using (var connection = new TestingConnection())
+            // Arrange
+            var tab = new TabViewModel(){Name = "testing-tab"};
+            var service = new Mock<ITabService>();
+            service.Setup(x => x.Remove(It.IsAny<int>())).Returns(Task.CompletedTask);
+            var validators = new Mock<ITabValidators>();
+            validators.Setup(x => x.IdExists(It.IsAny<TabViewModel>())).ReturnsAsync(new List<Error>()
             {
-                //Arrange
-                var context = connection.CreateNewContext();
+                new Error(){Id = 999, Description = "testing-error"}
+            });
+            var controller = new TabController(service.Object, validators.Object);
+            
+            // Act
+            var result = await controller.Remove(tab) as BadRequestObjectResult;
 
-                context.Database.EnsureCreated();
-                context.Tabs.Add(new Tab() { Id = 1 });
-                context.Tabs.Add(new Tab() { Id = 2 });
-                context.SaveChanges();
-
-                //Act 
-                context = connection.CreateNewContext();
-                var controller = PrepareController(context);
-                var result = controller.Remove(99);
-
-                //Assert
-                context = connection.CreateNewContext();
-                Assert.IsType<BadRequestObjectResult>(result);
-                Assert.Equal(2, context.Tabs.Count());
-            }
+            // Assert
+            Assert.NotNull(result);
+            var data = (List<Error>) result.Value;
+            Assert.Single(data);
+            Assert.Equal(999, data.SingleOrDefault()?.Id);
+            Assert.Equal("testing-error", data.SingleOrDefault()?.Description);
         }
 
         [Fact]
-        public void CanUpdateTab()
+        public async Task Update_UpdatesCorrectTab()
         {
-            using (var connection = new TestingConnection())
-            {
-                //Arrange
-                var context = connection.CreateNewContext();
+            // Arrange
+            var tab = new TabViewModel(){Id = 1};
+            var service = new Mock<ITabService>();
+            service.Setup(x => x.Update(It.IsAny<TabViewModel>())).Returns(Task.CompletedTask);
+            var validators = new Mock<ITabValidators>();
+            validators.Setup(x => x.IdExists(It.IsAny<TabViewModel>())).ReturnsAsync(new Error[0]);
+            var controller = new TabController(service.Object, validators.Object);
+            
+            // Act
+            var result = await controller.Update(tab) as OkResult;
 
-                context.Database.EnsureCreated();
-                context.Tabs.Add(new Tab() { Id = 1, Name = "test-tab-1"});
-                context.SaveChanges();
-
-                //Act 
-                context = connection.CreateNewContext();
-                var controller = PrepareController(context);
-                var result = controller.Update(new TabViewModel(){Id = 1, Name = "test-tab-1-updated"});
-
-                //Assert
-                context = connection.CreateNewContext();
-                Assert.IsType<OkResult>(result);
-                Assert.Equal("test-tab-1-updated", context.Tabs.FirstOrDefault(t => t.Id == 1).Name);
-            }
+            // Assert
+            Assert.NotNull(result);
         }
 
         [Fact]
-        public void CantUpdateTabWithNullValue()
+        public async Task Update_DoNotUpdateIfDoesNotExist()
         {
-            using (var connection = new TestingConnection())
+            // Arrange
+            var tab = new TabViewModel(){Name = "testing-tab"};
+            var service = new Mock<ITabService>();
+            service.Setup(x => x.Update(It.IsAny<TabViewModel>())).Returns(Task.CompletedTask);
+            var validators = new Mock<ITabValidators>();
+            validators.Setup(x => x.IdExists(It.IsAny<TabViewModel>())).ReturnsAsync(new List<Error>()
             {
-                //Arrange
-                var context = connection.CreateNewContext();
+                new Error(){Id = 999, Description = "testing-error"}
+            });
+            var controller = new TabController(service.Object, validators.Object);
+            
+            // Act
+            var result = await controller.Remove(tab) as BadRequestObjectResult;
 
-                context.Database.EnsureCreated();
-                context.Tabs.Add(new Tab() { Id = 1, Name = "test-tab-1" });
-                context.SaveChanges();
-
-                //Act 
-                context = connection.CreateNewContext();
-                var controller = PrepareController(context);
-                var result = controller.Update(null);
-
-                //Assert
-                context = connection.CreateNewContext();
-                Assert.IsType<BadRequestObjectResult>(result);
-            }
-        }
-
-        [Fact]
-        public void CantUpdateTabWithNotExistingId()
-        {
-            using (var connection = new TestingConnection())
-            {
-                //Arrange
-                var context = connection.CreateNewContext();
-
-                context.Database.EnsureCreated();
-                context.Tabs.Add(new Tab() { Id = 1, Name = "test-tab-1" });
-                context.SaveChanges();
-
-                //Act 
-                context = connection.CreateNewContext();
-                var controller = PrepareController(context);
-                var result = controller.Update(new TabViewModel(){Id = 99, Name = "test-tab-99-changed"});
-
-                //Assert
-                context = connection.CreateNewContext();
-                Assert.IsType<BadRequestObjectResult>(result);
-            }
-        }
-
-        [Fact]
-        public void CantUpdateTabWithWrongModel()
-        {
-            using (var connection = new TestingConnection())
-            {
-                //Arrange
-                var context = connection.CreateNewContext();
-
-                context.Database.EnsureCreated();
-                context.Tabs.Add(new Tab() { Id = 1, Name = "test-tab-1"});
-                context.SaveChanges();
-
-                //Act 
-                context = connection.CreateNewContext();
-                var controller = PrepareController(context);
-                controller.ModelState.AddModelError("ModelValidation", "TestError");
-                var result = controller.Update(new TabViewModel() { Id = 1, Name = "test-tab-1-changed" });
-
-                //Assert
-                context = connection.CreateNewContext();
-                Assert.IsType<BadRequestObjectResult>(result);
-                Assert.Equal("test-tab-1", context.Tabs.FirstOrDefault(t => t.Id == 1).Name);
-            }
-        }
-
-        private TabController PrepareController(GeekBudgetContext context)
-        {
-            var controller = new TabController(context);
-            var objectValidator = new Mock<IObjectModelValidator>();
-            objectValidator.Setup(o => o.Validate(It.IsAny<ActionContext>(),
-                                              It.IsAny<ValidationStateDictionary>(),
-                                              It.IsAny<string>(),
-                                              It.IsAny<Object>()));
-            controller.ObjectValidator = objectValidator.Object;
-            return controller;
+            // Assert
+            Assert.NotNull(result);
+            var data = (List<Error>) result.Value;
+            Assert.Single(data);
+            Assert.Equal(999, data.SingleOrDefault()?.Id);
+            Assert.Equal("testing-error", data.SingleOrDefault()?.Description);
         }
     }
 }
