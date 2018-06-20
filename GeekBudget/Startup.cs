@@ -15,6 +15,10 @@ using GeekBudget.Models;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using System.Text;
+using GeekBudget.Services;
+using GeekBudget.Services.Implementations;
+using GeekBudget.Validators;
+using GeekBudget.Validators.Implementations;
 using Newtonsoft.Json;
 
 namespace GeekBudget
@@ -36,7 +40,7 @@ namespace GeekBudget
         // This method gets called by the runtime. Use this method to add services to the container.
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
-            //register cors
+            // register cors
             services.AddCors();
 
             // Add framework services.
@@ -45,20 +49,28 @@ namespace GeekBudget
                 //options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
             });
 
-            //Dependency injection
+            // Dependency injection
 
-            //register dbcontext as a singleton
+            // register dbcontext as a singleton
             services.AddDbContext<GeekBudgetContext>(
                 options => options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
 
-            //register geekcontext
+            // register geekcontext
             services.AddTransient<IGeekBudgetContext, GeekBudgetContext>();
 
-            //register contact repo
+            // register contact repo
             services.AddTransient<IUserRepository, UserRepository>();
+            
+            // register services
+            services.AddTransient<IMappingService, MappingService>();
+            services.AddTransient<ITabService, TabService>();
+            services.AddTransient<IOperationService, OperationService>();
 
-            //register swagger generator
-            //services.AddSwaggerGen()
+            services.AddTransient<ITabValidators, TabValidators>();
+            services.AddTransient<IOperationValidators, OperationValidators>();
+            
+            // register swagger generator
+            // services.AddSwaggerGen()
 
             var serviceProvider = services.BuildServiceProvider();
 

@@ -9,5 +9,8 @@ namespace GeekBudget.Services
         Tab Map(TabViewModel tab);
         TabViewModel Map(Tab tab);
         IEnumerable<TabViewModel> Map(IEnumerable<Tab> tabs);
+        
+        Operation Map(OperationViewModel operation);
+        OperationViewModel Map(Operation operation);
     }
 }

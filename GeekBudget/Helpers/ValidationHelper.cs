@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using GeekBudget.Models;
 
@@ -13,7 +14,11 @@ namespace GeekBudget.Helpers
 
             foreach (var validator in validators)
             {
-                errors.AddRange(await validator(value));
+                var validatorErrors = await validator(value);
+                errors.AddRange(validatorErrors);
+                // stop validating if encountered any errors
+                if (errors.Any())
+                    break;
             }
 
             return errors;

@@ -3,167 +3,106 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GeekBudget.Entities;
+using GeekBudget.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using GeekBudget.Models;
 using GeekBudget.Models.ViewModels;
+using GeekBudget.Services;
+using GeekBudget.Validators;
 
 namespace GeekBudget.Controllers
 {
     [Route("api/[controller]")]
-    public class OperationController : BaseController
+    public class OperationController : Controller
     {
-        public OperationController(GeekBudgetContext context) : base(context) { }
+        private readonly IOperationService _operationService;
+        private readonly IOperationValidators _operationValidators;
+        
+        public OperationController(GeekBudgetContext context, IOperationService operationService,
+            IOperationValidators operationValidators)
+        {
+            _operationService = operationService;
+            _operationValidators = operationValidators;
+        }
 
         [HttpGet("GetAll")]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            return Ok(_context
-                .Operations
-                .Include(o => o.From)
-                .Include(o => o.To)
-                .Select(o => OperationViewModel.FromEntity(o))
-                .ToList()
-            );
+            var result  = await _operationService.GetAll();
+            
+            if (result.Failed)
+                return Ok(result.Data);
+            else
+                return BadRequest(result.Errors);
         }
 
         [HttpPost("Get")]
-        public IActionResult Get([FromBody]OperationFilter filter)
+        public async Task<IActionResult> Get([FromBody] OperationFilter filter)
         {
-            var data = filter.CreateQuery(_context.Operations);
+            var result = await _operationService.Get(filter);
 
-            if (!data.Any())
-                return NotFound();
+            if (result.Failed)
+            {
+                if (!result.Data.Any())
+                    return NotFound();
+                else
+                    return Ok(result.Data);
+            }
             else
-                return Ok(data
-                    .Include(o => o.From)
-                    .Include(o => o.To)
-                    .Select(o => OperationViewModel.FromEntity(o))
-                    .ToList()
-                    );
+                return BadRequest(result.Errors);
         }
 
         // GET: api/values
         [HttpPost("Add")]
-        public IActionResult Add([FromBody]OperationViewModel value)
+        public async Task<IActionResult> Add([FromBody] OperationViewModel vm)
         {
-            TryValidateModel(value);
-
-            if (value.From == null)
-                ModelState.AddModelError("From", "'From' id can't be null!");
-
-            if (value.To == null)
-                ModelState.AddModelError("To", "'To' id can't be null!");
-
-            if (value.From == value.To) //no need to check for null first.
-                ModelState.AddModelError("Tabs", "'From' tab and 'To' tab are same!");
-
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var tabFrom = _context.Tabs.SingleOrDefault(x => x.Id == value.From);
-            var tabTo = _context.Tabs.SingleOrDefault(x => x.Id == value.To);
-
-            if (tabFrom == null || tabTo == null)
-                return BadRequest("Can't find tab with provided Id!");
-
-
-            var operation = value
-                .MapToEntity()
-                .UpdateTab(Enums.TargetTabType.From, tabFrom)
-                .UpdateTab(Enums.TargetTabType.To, tabTo);
-            var newOperation = _context.Operations.Add(operation).Entity;
-            _context.SaveChanges();
-
-            return Ok(newOperation.Id);
+            var errors = await vm.Validate(
+                _operationValidators.NotNull,
+                _operationValidators.FromNotNull,
+                _operationValidators.ToNotNull,
+                _operationValidators.FromAndToAreNotEqual,
+                _operationValidators.FromTabExists,
+                _operationValidators.ToTabExists
+            );
+            
+            if (errors.Any())
+                return BadRequest(errors);
+            
+            var result = await _operationService.Add(vm);
+            
+            if (result.Failed)
+                return Ok(result.Data);
+            else
+                return BadRequest(result.Errors);
         }
 
         // DELETE api/values/5
         [HttpPost("Remove/{id}")]
-        public IActionResult Remove(int id)
+        public async Task<IActionResult> Remove(int id)
         {
-            var operation = _context.Operations
-                .Include(o => o.From)
-                .Include(o => o.To)
-                .FirstOrDefault(x => x.Id == id);
+            var result = await _operationService.Remove(id);
 
-            if (operation == null)
-            {
-                ModelState.AddModelError("id", string.Format("No Operation with id '{0}' was found!", id));
-                return BadRequest(ModelState);
-            }
-            
-            var tabFrom = _context.Tabs.SingleOrDefault(x => x.Id == operation.From.Id);
-            var tabTo = _context.Tabs.SingleOrDefault(x => x.Id == operation.To.Id);
-            
-            if (tabFrom == null || tabTo == null)
-            {
-                ModelState.AddModelError("tab", "Can't find tab with provided Id!");
-                return BadRequest(ModelState);
-            }
-            
-            tabFrom.RemoveOperation(operation);
-            tabTo.RemoveOperation(operation);
-            
-            _context.Entry(operation).State = EntityState.Deleted;
-            _context.SaveChanges();
-            
-            return Ok();
+            if (result.Failed)
+                return Ok(result.Data);
+            else
+                return BadRequest(result.Errors);
         }
 
         [HttpPost("Update")]
-        public IActionResult Update([FromBody]OperationViewModel value)
+        public async Task<IActionResult> Update([FromBody] OperationViewModel vm)
         {
-            if (value == null)
-                return BadRequest("Can't update with null value!");
-            TryValidateModel(value);
-            if (!ModelState.IsValid) //If model is wrong
-                return BadRequest(ModelState);
+            var errors = await vm.Validate(
+                _operationValidators.NotNull,
+                _operationValidators.FromAndToAreNotEqual
+            );
 
-            Operation updateOperation = null;
-            Tab newTabFrom = null;
-            Tab newTabTo = null;
-
-            //Get operation to update
-            updateOperation = _context
-                .Operations
-                    .Include(o => o.From)
-                    .Include(o => o.To)
-                .SingleOrDefault(t => t.Id == value.Id);
+            var result = await _operationService.Update(vm);
             
-            if (updateOperation == null)
-                return BadRequest("No Operation with this id was found!");
-
-            //Get new tab From
-            if (value.From != null && value.From != updateOperation.From.Id)
-            {
-                newTabFrom = _context.Tabs.SingleOrDefault(t => t.Id == value.From);
-                if (newTabFrom == null) //If Tab by id does not exist
-                    return BadRequest("No Tab with this id was found!");
-            }
-
-            //Get new tab To
-            if (value.To != null && value.To != updateOperation.To.Id)
-            {
-                newTabTo = _context.Tabs.SingleOrDefault(t => t.Id == value.From);
-                if (newTabTo == null) //If Tab by id does not exist
-                    return BadRequest("No Tab with this id was found!");
-            }
-
-            //Update operation
-            updateOperation
-                .MapNewValues(value)
-                .UpdateTab(Enums.TargetTabType.From, newTabFrom)
-                .UpdateTab(Enums.TargetTabType.To, newTabTo);  //TODO: change to Attach update to not query db before update
-            _context.SaveChanges();
-
-            //Can't happen. Argument exception raises only from Add/Remove op, and all conditions are checked before!
-            //catch (ArgumentException ex)
-            //{
-            //    return BadRequest(ex.Message);
-            //}
-            return Ok();
+            if (result.Failed)
+                return Ok(result.Data);
+            else
+                return BadRequest(result.Errors);
         }
-
     }
 }

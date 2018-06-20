@@ -8,7 +8,7 @@ namespace GeekBudget.Services.Implementations
 {
     public class MappingService : IMappingService
     {
-        public Tab Map(TabViewModel tab) => new Tab()
+        public Tab Map(TabViewModel tab) => new Tab
         {
             Name = tab.Name,
             Amount = tab.Amount ?? 0,
@@ -26,5 +26,24 @@ namespace GeekBudget.Services.Implementations
         };
 
         public IEnumerable<TabViewModel> Map(IEnumerable<Tab> tabs) => tabs.Select(Map);
+        
+        public Operation Map(OperationViewModel operation) => new Operation
+        {
+            Comment = operation.Comment,
+            Amount = operation.Amount ?? 0,
+            Currency = operation.Currency,
+            Date = operation.Date
+        };
+
+        public OperationViewModel Map(Operation operation) => new OperationViewModel
+        {
+            Id = operation.Id,
+            Comment = operation.Comment,
+            Amount = operation.Amount,
+            Currency = operation.Currency,
+            From = operation.From.Id,
+            To = operation.To.Id,
+            Date = operation.Date
+        };
     }
 }

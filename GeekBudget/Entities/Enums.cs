@@ -19,5 +19,12 @@ namespace GeekBudget.Entities
             Account,
             Expense
         }
+        
+        public enum ServiceResultStatus
+        {
+            Success,
+            Warning,
+            Failure
+        }
     }
 }

@@ -4,77 +4,133 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
+using GeekBudget.Entities;
 using GeekBudget.Helpers;
 using GeekBudget.Models;
 using GeekBudget.Models.ViewModels;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace GeekBudget.Services.Implementations
 {
     public class TabService : ITabService
     {
-        private readonly IGeekBudgetContext _context;
-        private readonly IMappingService _mappingService;
+        private static Error NoTabWithId(int id) =>
+            new Error {Id = 1101, Description = $"No Tab with id '{id}' was found!"};
+        
+        private static Error OperationAlreadyExists(int operationId, int tabId) =>
+            new Error {Id = 1102, Description = $"Operation with id '{operationId}' already exists on Tab with id '{tabId}'!"};
 
-        public TabService(IGeekBudgetContext context, IMappingService mappingService)
+        private readonly IGeekBudgetContext _context;
+
+        public TabService(IGeekBudgetContext context)
         {
             _context = context;
-            _mappingService = mappingService;
         }
 
-        public Task<IEnumerable<TabViewModel>> GetAll()
+        public async Task<ServiceResult<IEnumerable<Tab>>> GetAll()
         {
-            return Task.FromResult(_context.Tabs.Select(_mappingService.Map));
+            var tabs = await _context.Tabs
+                .AsNoTracking()
+                .ToListAsync();
+
+            return new ServiceResult<IEnumerable<Tab>>(tabs);
         }
 
-        public async Task<TabViewModel> Get(int id)
+        public async Task<ServiceResult<Tab>> Get(int id)
         {
             var tab = await _context.Tabs
                 .AsNoTracking()
                 .SingleOrDefaultAsync(x => Equals(x.Id, id));
-            
-            return tab != null
-                ? _mappingService.Map(tab)
-                : null;
+
+            return new ServiceResult<Tab>(tab);
         }
 
-        public async Task<int> Add(TabViewModel vm)
+        public async Task<ServiceResult<int>> Add(Tab tab)
         {
-            var tab = _mappingService.Map(vm);
             var addedTab = _context.Tabs
                 .Add(tab);
+
             await _context.SaveChangesAsync();
-            return addedTab.Entity.Id;
+
+            return new ServiceResult<int>(addedTab.Entity.Id);
         }
 
-        public async Task Remove(int id)
+        public async Task<ServiceResult> Remove(int id)
         {
             var tab = await _context.Tabs
                 .AsNoTracking()
                 .FirstOrDefaultAsync(t => Equals(t.Id, id));
-            
-            if (tab == null) //If entry by id exist should not do anything
-                return;
+
+            if (tab == null)
+                return new ServiceResult(Enums.ServiceResultStatus.Warning, NoTabWithId(id));
 
             _context.Tabs.Remove(tab);
+
             await _context.SaveChangesAsync();
+
+            return new ServiceResult(Enums.ServiceResultStatus.Success);
         }
 
-        public async Task Update(TabViewModel vm)
+        public async Task<ServiceResult> Update(int id, Tab source)
         {
-            var tab = await _context.Tabs
-                .AsNoTracking()
-                .FirstOrDefaultAsync(t => Equals(t.Id, vm.Id));
-
-            var updateTab = _mappingService.Map(vm);
+            var result = await Get(id);
             
-            tab.MapNewValues(updateTab,
+            if(result.Failed)
+                return ServiceResult.From(result);
+            
+            var tab = result.Data;
+
+            if (tab == null)
+                return new ServiceResult(Enums.ServiceResultStatus.Failure, NoTabWithId(id));
+
+            tab.MapNewValues(source,
                 x => x.Name,
                 x => x.Amount,
                 x => x.Currency,
                 x => x.Type);
-            
+
             await _context.SaveChangesAsync();
+
+            return new ServiceResult(Enums.ServiceResultStatus.Success);
+        }
+
+        public Task<ServiceResult<bool>> IsTabOperationAllowed(Tab tabFrom, Tab tabTo)
+        {
+            var tabOperationAllowed = Dictionaries.AllowedTabTypes[tabFrom.Type].Any(t => t == tabTo.Type);
+            return Task.FromResult(new ServiceResult<bool>(tabOperationAllowed));
+        }
+        
+        public async Task<ServiceResult> AddOperation(int id, Operation operation, Enums.TargetTabType targetType)
+        {
+            var result = await Get(id);
+            
+            if(result.Failed)
+                return ServiceResult.From(result);
+            
+            var tab = result.Data;
+
+            if (tab == null)
+                return new ServiceResult(Enums.ServiceResultStatus.Failure, NoTabWithId(id));
+
+            var tabOperations = targetType == Enums.TargetTabType.From
+                ? tab.OperationsFrom
+                : tab.OperationsTo;
+            
+            if(tabOperations.Any(o => o.Id == operation.Id))
+                return new ServiceResult(Enums.ServiceResultStatus.Failure, OperationAlreadyExists(operation.Id, tab.Id));
+            
+            // TODO: implement currency check and adjust!
+
+            var amount = targetType == Enums.TargetTabType.From
+                ? -operation.Amount
+                : operation.Amount;
+
+            tab.Amount += amount;
+
+            await _context.SaveChangesAsync();
+            
+            return new ServiceResult(Enums.ServiceResultStatus.Success);
         }
     }
 }

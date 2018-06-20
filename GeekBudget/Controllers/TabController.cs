@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using GeekBudget.Entities;
 using GeekBudget.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ using GeekBudget.Models.ViewModels;
 using GeekBudget.Services;
 using GeekBudget.Validators;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace GeekBudget.Controllers
 {
@@ -18,71 +20,106 @@ namespace GeekBudget.Controllers
     {
         private readonly ITabService _tabService;
         private readonly ITabValidators _tabValidators;
+        private readonly IMappingService _mappingService;
 
-        public TabController(ITabService tabService, ITabValidators tabValidators)
+        public TabController(ITabService tabService, ITabValidators tabValidators, IMappingService mappingService)
         {
             _tabService = tabService;
             _tabValidators = tabValidators;
+            _mappingService = mappingService;
         }
 
         // GET api/values
         [HttpGet("GetAll")]
         public async Task<IActionResult> GetAll()
         {
-            var tabs = await _tabService.GetAll();
-            return Ok(tabs);
+            var result = await _tabService.GetAll();
+
+            if (result.Status != Enums.ServiceResultStatus.Failure)
+                return Ok(_mappingService.Map(result.Data));
+            else
+                return BadRequest(result.Errors);
         }
 
         [HttpGet("Get/{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            var tab = await _tabService.Get(id);
-            
-            if (tab == null)
-                return NotFound();
+            var result = await _tabService.Get(id);
+
+            if (result.Status != Enums.ServiceResultStatus.Failure)
+            {
+                if (result.Data != null)
+                    return Ok(_mappingService.Map(result.Data));
+                else
+                    return NotFound();
+            }
             else
-                return Ok(tab);
+                return BadRequest(result.Errors);
+            
+            
         }
 
         // POST: api/values
         [HttpPost("Add")]
-        public async Task<IActionResult> Add([FromBody]TabViewModel tab)
+        public async Task<IActionResult> Add([FromBody]TabViewModel vm)
         {
-            var errors = await tab.Validate(_tabValidators.TabTypeRequired);
+            var errors = await vm.Validate(
+                _tabValidators.NotNull,
+                _tabValidators.TabTypeRequired
+            );
 
             if (errors.Any())
                 return BadRequest(errors);
 
-            var id = await _tabService.Add(tab);
+            var tab = _mappingService.Map(vm);
             
-            return Ok(id);
+            var result = await _tabService.Add(tab);
+            
+            if (result.Status != Enums.ServiceResultStatus.Failure)
+                return Ok(result.Data);
+            else
+                return BadRequest(result.Errors);
         }
 
-        // DELETE api/values/5
+        // DELETE api/values
         [HttpPost("Remove")]
-        public async Task<IActionResult> Remove([FromBody]TabViewModel tab)
+        public async Task<IActionResult> Remove([FromBody]TabViewModel vm)
         {
-            var errors = await tab.Validate(_tabValidators.IdExists);
+            var errors = await vm.Validate(
+                _tabValidators.NotNull,
+                _tabValidators.IdExists
+            );
 
             if (errors.Any())
                 return BadRequest(errors);
             
-            await _tabService.Remove(tab.Id);
+            var result = await _tabService.Remove(vm.Id);
             
-            return Ok();
+            if (result.Status != Enums.ServiceResultStatus.Failure)
+                return Ok();
+            else
+                return BadRequest(result.Errors);
         }
 
         [HttpPost("Update")]
-        public async Task<IActionResult> Update([FromBody]TabViewModel tab)
+        public async Task<IActionResult> Update([FromBody]TabViewModel vm)
         {
-            var errors = await tab.Validate(_tabValidators.IdExists);
+            var errors = await vm.Validate(
+                _tabValidators.NotNull,
+                _tabValidators.IdExists
+            );
 
             if (errors.Any())
                 return BadRequest(errors);
             
-            await _tabService.Update(tab);
+            var tab = _mappingService.Map(vm);
+            
+            var result = await _tabService.Update(vm.Id, tab);
 
-            return Ok();
+            if (result.Status != Enums.ServiceResultStatus.Failure)
+                return Ok();
+            else
+                return BadRequest(result.Errors);
         }
     }
 }
