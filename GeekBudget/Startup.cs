@@ -85,13 +85,13 @@ namespace GeekBudget
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
-            //Authentication
+            // Authentication
             app.UseMiddleware<UserKeyValidator>();
 
-            //Exception handling
-            app.UseMiddleware<ErrorWrapper>();
+            // Exception handling
+            // app.UseMiddleware<ErrorWrapper>(); // TODO: Is it still needed?!
 
-            //Enable CORS
+            // Enable CORS
             app.UseCors(builder => builder
                 .AllowAnyOrigin()           //TODO: setup allowed urls
                 .AllowAnyMethod()           
