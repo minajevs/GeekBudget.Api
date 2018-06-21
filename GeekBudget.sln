@@ -8,6 +8,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{45F1A7AC-12DE-4B9F-935B-84D4E381263A}"
 	ProjectSection(SolutionItems) = preProject
 		.travis.yml = .travis.yml
+		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeekBudget.Tests", "GeekBudget.Tests\GeekBudget.Tests.csproj", "{B6357802-EF27-4681-9481-6EEB87A9A7C2}"
