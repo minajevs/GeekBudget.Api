@@ -18,12 +18,13 @@ namespace GeekBudget.Controllers
     {
         private readonly IOperationService _operationService;
         private readonly IOperationValidators _operationValidators;
-        
-        public OperationController(GeekBudgetContext context, IOperationService operationService,
-            IOperationValidators operationValidators)
+        private readonly IMappingService _mappingService;
+
+        public OperationController(IOperationService operationService, IOperationValidators operationValidators, IMappingService mappingService)
         {
             _operationService = operationService;
             _operationValidators = operationValidators;
+            _mappingService = mappingService;
         }
 
         [HttpGet("GetAll")]
@@ -31,8 +32,8 @@ namespace GeekBudget.Controllers
         {
             var result  = await _operationService.GetAll();
             
-            if (result.Failed)
-                return Ok(result.Data);
+            if (!result.Failed)
+                return Ok(_mappingService.Map(result.Data));
             else
                 return BadRequest(result.Errors);
         }
@@ -42,12 +43,12 @@ namespace GeekBudget.Controllers
         {
             var result = await _operationService.Get(filter);
 
-            if (result.Failed)
+            if (!result.Failed)
             {
                 if (!result.Data.Any())
                     return NotFound();
                 else
-                    return Ok(result.Data);
+                    return Ok(_mappingService.Map(result.Data));
             }
             else
                 return BadRequest(result.Errors);
@@ -68,10 +69,12 @@ namespace GeekBudget.Controllers
             
             if (errors.Any())
                 return BadRequest(errors);
+
+            var operation = _mappingService.Map(vm);
+
+            var result = await _operationService.Add(operation, vm.From ?? -1, vm.To ?? -1); // not null should be validated before
             
-            var result = await _operationService.Add(vm);
-            
-            if (result.Failed)
+            if (!result.Failed)
                 return Ok(result.Data);
             else
                 return BadRequest(result.Errors);
@@ -83,8 +86,8 @@ namespace GeekBudget.Controllers
         {
             var result = await _operationService.Remove(id);
 
-            if (result.Failed)
-                return Ok(result.Data);
+            if (!result.Failed)
+                return Ok();
             else
                 return BadRequest(result.Errors);
         }
@@ -94,13 +97,19 @@ namespace GeekBudget.Controllers
         {
             var errors = await vm.Validate(
                 _operationValidators.NotNull,
+                _operationValidators.IdExists,
                 _operationValidators.FromAndToAreNotEqual
             );
 
-            var result = await _operationService.Update(vm);
+            if (errors.Any())
+                return BadRequest(errors);
+
+            var operation = _mappingService.Map(vm);
+
+            var result = await _operationService.Update(vm.Id, operation, vm);
             
-            if (result.Failed)
-                return Ok(result.Data);
+            if (!result.Failed)
+                return Ok();
             else
                 return BadRequest(result.Errors);
         }

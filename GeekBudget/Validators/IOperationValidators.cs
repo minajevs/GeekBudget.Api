@@ -7,6 +7,7 @@ namespace GeekBudget.Validators
 {
     public interface IOperationValidators
     {
+        Task<IEnumerable<Error>> IdExists(OperationViewModel operation);
         Task<IEnumerable<Error>> FromNotNull(OperationViewModel operation);
         Task<IEnumerable<Error>> ToNotNull(OperationViewModel operation);
         Task<IEnumerable<Error>> FromAndToAreNotEqual(OperationViewModel operation);

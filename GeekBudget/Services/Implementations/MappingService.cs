@@ -45,5 +45,7 @@ namespace GeekBudget.Services.Implementations
             To = operation.To.Id,
             Date = operation.Date
         };
+
+        public IEnumerable<OperationViewModel> Map(IEnumerable<Operation> operations) => operations.Select(Map);
     }
 }

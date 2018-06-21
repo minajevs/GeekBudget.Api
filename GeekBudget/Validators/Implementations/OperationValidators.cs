@@ -14,8 +14,7 @@ namespace GeekBudget.Validators.Implementations
         private static Error FromIsNull() =>  new Error{Id = 201, Description = $"'From' id can't be null!"};
         private static Error ToIsNull() =>  new Error{Id = 202, Description = $"'To' id can't be null!"};
         private static Error FromAndToAreEqual() =>  new Error{Id = 203, Description = $"'From' tab and 'To' tab should not be same!"};
-        private static Error NoOperationWithId(int id) =>  new Error{Id = 203, Description = $"No Operation with id '{id}' was found!"};
-        private static Error TabTypeIsRequired() =>  new Error{Id = 102, Description = $"Tab Type is required!"};
+        private static Error NoOperationWithId(int id) =>  new Error{Id = 204, Description = $"No Operation with id '{id}' was found!"};
         
         private readonly IGeekBudgetContext _context;
         private readonly ITabValidators _tabValidators;
@@ -25,7 +24,17 @@ namespace GeekBudget.Validators.Implementations
             _context = context;
             _tabValidators = tabValidators;
         }
-        
+
+        public async Task<IEnumerable<Error>> IdExists(OperationViewModel operation)
+        {
+            var errors = new List<Error>();
+
+            if (!await _context.Tabs.AnyAsync(t => Equals(t.Id, operation.Id)))
+                errors.Add(NoOperationWithId(operation.Id));
+
+            return await Task.FromResult(errors);
+        }
+
         public async Task<IEnumerable<Error>> FromNotNull(OperationViewModel operation)
         {
             var errors = new List<Error>();

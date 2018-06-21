@@ -1,353 +1,173 @@
-﻿//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using GeekBudget.Controllers;
-//using GeekBudget.Entities;
-//using GeekBudget.Models;
-//using GeekBudget.Models.ViewModels;
-//using Microsoft.AspNetCore.Mvc;
-//using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
-//using Microsoft.EntityFrameworkCore;
-//using Moq;
-//using Xunit;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using GeekBudget.Controllers;
+using GeekBudget.Entities;
+using GeekBudget.Models;
+using GeekBudget.Models.ViewModels;
+using GeekBudget.Services;
+using GeekBudget.Services.Implementations;
+using GeekBudget.Validators;
+using Microsoft.AspNetCore.JsonPatch.Operations;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using Microsoft.EntityFrameworkCore;
+using Moq;
+using Xunit;
+using Operation = GeekBudget.Models.Operation;
 
-//namespace GeekBudget.Tests.Controllers
-//{
-//    public class OperationControllerTests
-//    {
-//        [Fact]
-//        public void CanGetAll()
-//        {
-//            using (var connection = new TestingConnection())
-//            {
-//                //Arrange
-//                var context = connection.CreateNewContext();
+namespace GeekBudget.Tests.Controllers
+{
+    public class OperationControllerTests
+    {
+        [Fact]
+        public async Task GetAll_ReturnsAllOperations()
+        {
+            //Arrange
+            var operations = new List<Operation>()
+            {
+                new Operation(){To = new Tab(){Id = 1}, From = new Tab(){Id = 2}},
+                new Operation(){To = new Tab(){Id = 2}, From = new Tab(){Id = 1}},
+            };
+            var service = new Mock<IOperationService>();
+            service.Setup(x => x.GetAll()).ReturnsAsyncServiceResult(operations);
+            var validators = new Mock<IOperationValidators>();
+            var mapping = new MappingService();
+            var controller = new OperationController(service.Object, validators.Object, mapping);
 
-//                context.Database.EnsureCreated();
-//                var tab1 = context.Tabs.Add(new Tab() {Id = 1});
-//                var tab2 = context.Tabs.Add(new Tab() {Id = 2});
-//                context.Operations.Add(new Operation(){Id = 1, From = tab1.Entity, To = tab2.Entity});
-//                context.Operations.Add(new Operation(){Id = 2, From = tab2.Entity, To = tab1.Entity});
-//                context.SaveChanges();
+            //Act
+            var result = await controller.GetAll() as OkObjectResult;
 
-//                //Act
-//                context = connection.CreateNewContext();
-//                var controller = PrepareController(context);
+            //Assert
+            Assert.NotNull(result);
+            var data = result.Value as IEnumerable<OperationViewModel>;
+            Assert.NotNull(data);
+            Assert.Equal(2, data.Count());
+        }
 
-//                var result = controller.GetAll();
+        [Fact]
+        public async Task Get_ReturnsFilteredOperations()
+        {
+            //Arrange
+            var operations = new List<Operation>()
+            {
+                new Operation(){To = new Tab(){Id = 1}, From = new Tab(){Id = 2}},
+                new Operation(){To = new Tab(){Id = 2}, From = new Tab(){Id = 1}},
+            };
+            var service = new Mock<IOperationService>();
+            service.Setup(x => x.Get(It.IsAny<OperationFilter>())).ReturnsAsyncServiceResult(operations);
+            var validators = new Mock<IOperationValidators>();
+            var mapping = new MappingService();
+            var controller = new OperationController(service.Object, validators.Object, mapping);
 
+            //Act
+            var result = await controller.Get(new OperationFilter()) as OkObjectResult;
 
-//                //Assert
-//                Assert.IsType<OkObjectResult>(result);
-//                var data = ((OkObjectResult)result).Value as IEnumerable<OperationViewModel>;
-//                Assert.NotNull(data);
-//                Assert.Equal(2, data.Count());
-//            }
-//        }
-        
-//        [Fact]
-//        public void CanGetFiltered()
-//        {
-//            using (var connection = new TestingConnection())
-//            {
-//                //Arrange
-//                var context = connection.CreateNewContext();
+            //Assert
+            Assert.NotNull(result);
+            var data = result.Value as IEnumerable<OperationViewModel>;
+            Assert.NotNull(data);
+            Assert.Equal(2, data.Count());
+        }
 
-//                context.Database.EnsureCreated();
-//                var tab1 = context.Tabs.Add(new Tab() { Id = 1 });
-//                var tab2 = context.Tabs.Add(new Tab() { Id = 2 });
-//                context.Operations.Add(new Operation() { Id = 1, Amount = 100, From = tab1.Entity, To = tab2.Entity });
-//                context.Operations.Add(new Operation() { Id = 2, Amount = 600, From = tab2.Entity, To = tab1.Entity });
-//                context.SaveChanges();
+        [Fact]
+        public async Task Get_ReturnsNotFoundIfNoOperations()
+        {
+            //Arrange
+            var operations = new List<Operation>();
+            var service = new Mock<IOperationService>();
+            service.Setup(x => x.Get(It.IsAny<OperationFilter>())).ReturnsAsyncServiceResult(operations);
+            var validators = new Mock<IOperationValidators>();
+            var mapping = new MappingService();
+            var controller = new OperationController(service.Object, validators.Object, mapping);
 
-//                //Act
-//                context = connection.CreateNewContext();
-//                var controller = PrepareController(context);
+            //Act
+            var result = await controller.Get(new OperationFilter()) as NotFoundResult;
 
-//                var result = controller.Get(new OperationFilter(){Amount = new MinMaxFilter<decimal>(){Min = 100, Max = 500}});
+            //Assert
+            Assert.NotNull(result);
+        }
 
-//                //Assert
-//                Assert.IsType<OkObjectResult>(result);
-//                var data = ((OkObjectResult)result).Value as IEnumerable<OperationViewModel>;
-//                Assert.NotNull(data);
-//                Assert.Equal(1, data.Count());
-//                Assert.Equal(1, data.FirstOrDefault().Id);
-//            }
-//        }
+        [Fact]
+        public async Task Add_OperationAdded()
+        {
+            //Arrange
+            var service = new Mock<IOperationService>();
+            service.Setup(x => x.Add(It.IsAny<Operation>(), It.IsAny<int>(), It.IsAny<int>())).ReturnsAsyncServiceResult(1);
+            var validators = new Mock<IOperationValidators>();
+            var mapping = new MappingService();
+            var controller = new OperationController(service.Object, validators.Object, mapping);
 
-//        [Fact]
-//        public void CantGetNotExistingFiltered()
-//        {
-//            using (var connection = new TestingConnection())
-//            {
-//                //Arrange
-//                var context = connection.CreateNewContext();
+            //Act
+            var result = await controller.Add(new OperationViewModel()) as OkObjectResult;
 
-//                context.Database.EnsureCreated();
-//                var tab1 = context.Tabs.Add(new Tab() { Id = 1 });
-//                var tab2 = context.Tabs.Add(new Tab() { Id = 2 });
-//                context.Operations.Add(new Operation() { Id = 1, Amount = 100, From = tab1.Entity, To = tab2.Entity });
-//                context.Operations.Add(new Operation() { Id = 2, Amount = 600, From = tab2.Entity, To = tab1.Entity });
-//                context.SaveChanges();
+            //Assert
+            Assert.NotNull(result);
+            var data = (int)result.Value;
+            Assert.Equal(1, data);
+        }
 
-//                //Act
-//                context = connection.CreateNewContext();
-//                var controller = PrepareController(context);
+        [Fact]
+        public async Task Add_DoesNotAddIncorrectOperation()
+        {
+            //Arrange
+            var service = new Mock<IOperationService>();
+            service.Setup(x => x.Add(It.IsAny<Operation>(), It.IsAny<int>(), It.IsAny<int>())).ReturnsAsyncServiceResult(1);
+            var validators = new Mock<IOperationValidators>();
+            validators.Setup(x => x.NotNull(It.IsAny<OperationViewModel>())).ReturnsAsync(new List<Error>()
+            {
+                new Error() {Id = 999, Description = "testing-error"}
+            });
+            var mapping = new MappingService();
+            var controller = new OperationController(service.Object, validators.Object, mapping);
 
-//                var result = controller.Get(new OperationFilter() { Amount = new MinMaxFilter<decimal>() { Min = 800 } });
+            //Act
+            var result = await controller.Add(new OperationViewModel()) as BadRequestObjectResult;
 
-//                //Assert
-//                Assert.IsType<NotFoundResult>(result);
-//            }
-//        }
+            //Assert
+            Assert.NotNull(result);
+            var data = (List<Error>)result.Value;
+            Assert.Single(data);
+            Assert.Equal(999, data.SingleOrDefault()?.Id);
+            Assert.Equal("testing-error", data.SingleOrDefault()?.Description);
+        }
 
-//        [Fact]
-//        public void CanRemoveById()
-//        {
-//            using (var connection = new TestingConnection())
-//            {
-//                //Arrange
-//                var context = connection.CreateNewContext();
+        [Fact]
+        public async Task Remove_RemovesOperation()
+        {
+            //Arrange
+            var service = new Mock<IOperationService>();
+            service.Setup(x => x.Remove(It.IsAny<int>())).ReturnsAsyncServiceResult();
+            var validators = new Mock<IOperationValidators>();
+            var mapping = new MappingService();
+            var controller = new OperationController(service.Object, validators.Object, mapping);
 
-//                context.Database.EnsureCreated();
-//                var tab1 = context.Tabs.Add(new Tab() { Id = 1, Amount = 1000});
-//                var tab2 = context.Tabs.Add(new Tab() { Id = 2, Amount = 1000});
-//                context.Operations.Add(new Operation() { Amount = 100, From = tab1.Entity, To = tab2.Entity });
-//                context.Operations.Add(new Operation() { Amount = 600, From = tab2.Entity, To = tab1.Entity });
-//                context.SaveChanges();
+            //Act
+            var result = await controller.Remove(1) as OkResult;
 
-//                //Act
-//                context = connection.CreateNewContext();
-//                var controller = PrepareController(context);
+            //Assert
+            Assert.NotNull(result);
+        }
 
-//                var result = controller.Remove(1);
+        [Fact]
+        public async Task Update_UdpdatesCorrectOperation()
+        {
+            //Arrange
+            var service = new Mock<IOperationService>();
+            service.Setup(x => x.Update(It.IsAny<int>(), It.IsAny<Operation>(), It.IsAny<OperationViewModel>())).ReturnsAsyncServiceResult();
+            var validators = new Mock<IOperationValidators>();
+            var mapping = new MappingService();
+            var controller = new OperationController(service.Object, validators.Object, mapping);
 
-//                //Assert
-//                context = connection.CreateNewContext();
-//                Assert.IsType<OkResult>(result);
-//                Assert.False(context.Operations.Any(t => t.Id == 1));
-//                Assert.Equal(1, context
-//                    .Tabs
-//                        .Include(t => t.OperationsFrom)
-//                        .Include(t => t.OperationsTo)
-//                    .FirstOrDefault(t => t.Id == 1)
-//                        .Operations
-//                        .Count());
-                
-//                Assert.Equal(1100, context.Tabs.FirstOrDefault(t => t.Id == 1).Amount);
-//                Assert.Equal(900, context.Tabs.FirstOrDefault(t => t.Id == 2).Amount);
-//            }
-//        }
+            //Act
+            var result = await controller.Update(new OperationViewModel()) as OkResult;
 
-//        [Fact]
-//        public void CantRemoveByUnknownId()
-//        {
-//            using (var connection = new TestingConnection())
-//            {
-//                //Arrange
-//                var context = connection.CreateNewContext();
-
-//                context.Database.EnsureCreated();
-//                var tab1 = context.Tabs.Add(new Tab() { Id = 1 });
-//                var tab2 = context.Tabs.Add(new Tab() { Id = 2 });
-//                context.Operations.Add(new Operation() { Id = 1, Amount = 100, From = tab1.Entity, To = tab2.Entity });
-//                context.Operations.Add(new Operation() { Id = 2, Amount = 600, From = tab2.Entity, To = tab1.Entity });
-//                context.SaveChanges();
-
-//                //Act
-//                context = connection.CreateNewContext();
-//                var controller = PrepareController(context);
-
-//                var result = controller.Remove(99);
-
-//                //Assert
-//                context = connection.CreateNewContext();
-//                Assert.IsType<BadRequestObjectResult>(result);
-//            }
-//        }
-
-//        [Fact]
-//        public void CanAddNewOperation()
-//        {
-//            using (var connection = new TestingConnection())
-//            {
-//                //Arrange
-//                var context = connection.CreateNewContext();
-
-//                context.Database.EnsureCreated();
-//                var tab1 = context.Tabs.Add(new Tab() { Id = 1, Type = Enums.TabType.Account }).Entity;
-//                var tab2 = context.Tabs.Add(new Tab() { Id = 2, Type = Enums.TabType.Account }).Entity;
-//                context.SaveChanges();
-
-//                //Act
-//                context = connection.CreateNewContext();
-//                var controller = PrepareController(context);
-
-//                var result = controller.Add(new OperationViewModel(){Amount = 100, From = 1, To = 2});
-
-//                //Assert
-//                context = connection.CreateNewContext();
-//                Assert.IsType<OkObjectResult>(result);
-//                var data = ((OkObjectResult)result).Value as int?;
-//                Assert.NotNull(data);
-//                Assert.Equal(1, data);
-//                Assert.Equal(1, context
-//                    .Tabs
-//                        .Include(t => t.OperationsFrom)
-//                        .Include(t => t.OperationsTo)
-//                    .FirstOrDefault(t => t.Id == 1)
-//                        .Operations
-//                        .Count());
-//            }
-//        }
-
-//        [Fact]
-//        public void CantAddNewOperationWithWrongModel()
-//        {
-//            using (var connection = new TestingConnection())
-//            {
-//                //Arrange
-//                var context = connection.CreateNewContext();
-
-//                context.Database.EnsureCreated();
-//                var tab1 = context.Tabs.Add(new Tab() { Id = 1 }).Entity;
-//                var tab2 = context.Tabs.Add(new Tab() { Id = 2 }).Entity;
-//                context.SaveChanges();
-
-//                //Act
-//                context = connection.CreateNewContext();
-//                var controller = PrepareController(context);
-//                controller.ModelState.AddModelError("ModelValidation", "TestError");
-
-//                var result = controller.Add(new OperationViewModel() { Amount = 100, From = 1, To = 2 });
-
-//                //Assert
-//                Assert.IsType<BadRequestObjectResult>(result);
-//            }
-//        }
-
-//        [Fact]
-//        public void CantAddNewOperationWithoutFromTab()
-//        {
-//            using (var connection = new TestingConnection())
-//            {
-//                //Arrange
-//                var context = connection.CreateNewContext();
-
-//                context.Database.EnsureCreated();
-//                var tab1 = context.Tabs.Add(new Tab() { Id = 1 }).Entity;
-//                var tab2 = context.Tabs.Add(new Tab() { Id = 2 }).Entity;
-//                context.SaveChanges();
-
-//                //Act
-//                context = connection.CreateNewContext();
-//                var controller = PrepareController(context);
-//                controller.ModelState.AddModelError("ModelValidation", "TestError");
-
-//                var result = controller.Add(new OperationViewModel() { Amount = 100, /*From = 1,*/ To = 2 });
-
-//                //Assert
-//                Assert.IsType<BadRequestObjectResult>(result);
-//            }
-//        }
-
-//        [Fact]
-//        public void CantAddNewOperationWithoutToTab()
-//        {
-//            using (var connection = new TestingConnection())
-//            {
-//                //Arrange
-//                var context = connection.CreateNewContext();
-
-//                context.Database.EnsureCreated();
-//                var tab1 = context.Tabs.Add(new Tab() { Id = 1 }).Entity;
-//                var tab2 = context.Tabs.Add(new Tab() { Id = 2 }).Entity;
-//                context.SaveChanges();
-
-//                //Act
-//                context = connection.CreateNewContext();
-//                var controller = PrepareController(context);
-//                controller.ModelState.AddModelError("ModelValidation", "TestError");
-
-//                var result = controller.Add(new OperationViewModel() { Amount = 100, From = 1, /*To = 2*/ });
-
-//                //Assert
-//                Assert.IsType<BadRequestObjectResult>(result);
-//            }
-//        }
-
-//        [Fact]
-//        public void CantAddNewOperationWithSameTabs()
-//        {
-//            using (var connection = new TestingConnection())
-//            {
-//                //Arrange
-//                var context = connection.CreateNewContext();
-
-//                context.Database.EnsureCreated();
-//                var tab1 = context.Tabs.Add(new Tab() { Id = 1 }).Entity;
-//                var tab2 = context.Tabs.Add(new Tab() { Id = 2 }).Entity;
-//                context.SaveChanges();
-
-//                //Act
-//                context = connection.CreateNewContext();
-//                var controller = PrepareController(context);
-//                controller.ModelState.AddModelError("ModelValidation", "TestError");
-
-//                var result = controller.Add(new OperationViewModel() { Amount = 100, From = 2, To = 2 });
-
-//                //Assert
-//                Assert.IsType<BadRequestObjectResult>(result);
-//            }
-//        }
-
-//        [Fact]
-//        public void CantAddNewOperationWithNotExistingFromTab()
-//        {
-//            using (var connection = new TestingConnection())
-//            {
-//                //Arrange
-//                var context = connection.CreateNewContext();
-
-//                context.Database.EnsureCreated();
-//                var tab1 = context.Tabs.Add(new Tab() { Id = 1 }).Entity;
-//                var tab2 = context.Tabs.Add(new Tab() { Id = 2 }).Entity;
-//                context.SaveChanges();
-
-//                //Act
-//                context = connection.CreateNewContext();
-//                var controller = PrepareController(context);
-
-//                var result = controller.Add(new OperationViewModel() { Amount = 100, From = 99, To = 1 });
-
-//                //Assert
-//                Assert.IsType<BadRequestObjectResult>(result);
-//            }
-//        }
-
-//        [Fact]
-//        public void CantAddNewOperationWithNotExistingToTab()
-//        {
-//            using (var connection = new TestingConnection())
-//            {
-//                //Arrange
-//                var context = connection.CreateNewContext();
-
-//                context.Database.EnsureCreated();
-//                var tab1 = context.Tabs.Add(new Tab() { Id = 1 }).Entity;
-//                var tab2 = context.Tabs.Add(new Tab() { Id = 2 }).Entity;
-//                context.SaveChanges();
-
-//                //Act
-//                context = connection.CreateNewContext();
-//                var controller = PrepareController(context);
-
-//                var result = controller.Add(new OperationViewModel() { Amount = 100, From = 1, To = 99 });
-
-//                //Assert
-//                Assert.IsType<BadRequestObjectResult>(result);
-//            }
-//        }
+            //Assert
+            Assert.NotNull(result);
+        }
+    }
+}
 
 //        [Fact]
 //        public void CanUpdate()
@@ -360,14 +180,14 @@
 //                context.Database.EnsureCreated();
 //                var tab1 = context.Tabs.Add(new Tab() { Id = 1, Amount = 500, Type = Enums.TabType.Account }).Entity;
 //                var tab2 = context.Tabs.Add(new Tab() { Id = 2, Amount = 500, Type = Enums.TabType.Account }).Entity;
-//                context.Operations.Add(new Operation() { Id = 1, From = tab1, To = tab2, Amount = 100});
+//                context.Operations.Add(new Operation() { Id = 1, From = tab1, To = tab2, Amount = 100 });
 //                context.SaveChanges();
 
 //                //Act
 //                context = connection.CreateNewContext();
 //                var controller = PrepareController(context);
 
-//                var result = controller.Update(new OperationViewModel() {Id = 1, Amount = 200, From = 2, To = 1});
+//                var result = controller.Update(new OperationViewModel() { Id = 1, Amount = 200, From = 2, To = 1 });
 
 //                //Assert
 //                context = connection.CreateNewContext();
@@ -507,18 +327,6 @@
 //                context = connection.CreateNewContext();
 //                Assert.IsType<BadRequestObjectResult>(result);
 //            }
-//        }
-
-//        private OperationController PrepareController(GeekBudgetContext context)
-//        {
-//            var controller = new OperationController(context);
-//            var objectValidator = new Mock<IObjectModelValidator>();
-//            objectValidator.Setup(o => o.Validate(It.IsAny<ActionContext>(),
-//                It.IsAny<ValidationStateDictionary>(),
-//                It.IsAny<string>(),
-//                It.IsAny<Object>()));
-//            controller.ObjectValidator = objectValidator.Object;
-//            return controller;
 //        }
 //    }
 //}

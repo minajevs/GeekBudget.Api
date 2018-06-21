@@ -10,8 +10,8 @@ namespace GeekBudget.Services
     {
         Task<ServiceResult<IEnumerable<Operation>>> GetAll();
         Task<ServiceResult<IEnumerable<Operation>>> Get(OperationFilter filter);
-        Task<ServiceResult<int>> Add(OperationViewModel vm);
+        Task<ServiceResult<int>> Add(Operation operation, int from, int to);
         Task<ServiceResult> Remove(int id);
-        Task<ServiceResult> Update(OperationViewModel vm);
+        Task<ServiceResult> Update(int id, Operation source, OperationViewModel vm);
      }
  }

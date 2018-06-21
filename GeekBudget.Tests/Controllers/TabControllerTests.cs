@@ -105,7 +105,7 @@ namespace GeekBudget.Tests.Controllers
         }
 
         [Fact]
-        public async Task Add_DoesNotAddsIncorrectTab()
+        public async Task Add_DoesNotAddIncorrectTab()
         {
             // Arrange
             var tab = new TabViewModel(){Name = "testing-tab"};
@@ -134,7 +134,6 @@ namespace GeekBudget.Tests.Controllers
         public async Task Remove_RemovesTab()
         {
             // Arrange
-            var tab = new TabViewModel(){Id = 1};
             var service = new Mock<ITabService>();
             service.Setup(x => x.Remove(It.IsAny<int>())).ReturnsAsyncServiceResult();
             var validators = new Mock<ITabValidators>();
@@ -143,36 +142,10 @@ namespace GeekBudget.Tests.Controllers
             var controller = new TabController(service.Object, validators.Object, mapping);
 
             // Act
-            var result = await controller.Remove(tab) as OkResult;
+            var result = await controller.Remove(1) as OkResult;
 
             // Assert
             Assert.NotNull(result);
-        }
-
-        [Fact]
-        public async Task Remove_DoNotRemoveNonExistingTab()
-        {
-            // Arrange
-            var tab = new TabViewModel(){Name = "testing-tab"};
-            var service = new Mock<ITabService>();
-            service.Setup(x => x.Remove(It.IsAny<int>())).ReturnsAsyncServiceResult();
-            var validators = new Mock<ITabValidators>();
-            validators.Setup(x => x.IdExists(It.IsAny<TabViewModel>())).ReturnsAsync(new List<Error>()
-            {
-                new Error(){Id = 999, Description = "testing-error"}
-            });
-            var mapping = new MappingService();
-            var controller = new TabController(service.Object, validators.Object, mapping);
-
-            // Act
-            var result = await controller.Remove(tab) as BadRequestObjectResult;
-
-            // Assert
-            Assert.NotNull(result);
-            var data = (List<Error>) result.Value;
-            Assert.Single(data);
-            Assert.Equal(999, data.SingleOrDefault()?.Id);
-            Assert.Equal("testing-error", data.SingleOrDefault()?.Description);
         }
 
         [Fact]
@@ -210,7 +183,7 @@ namespace GeekBudget.Tests.Controllers
             var controller = new TabController(service.Object, validators.Object, mapping);
 
             // Act
-            var result = await controller.Remove(tab) as BadRequestObjectResult;
+            var result = await controller.Update(tab) as BadRequestObjectResult;
 
             // Assert
             Assert.NotNull(result);

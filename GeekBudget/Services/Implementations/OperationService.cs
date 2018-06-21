@@ -24,13 +24,11 @@ namespace GeekBudget.Services.Implementations
 
         private readonly IGeekBudgetContext _context;
         private readonly ITabService _tabService;
-        private readonly IMappingService _mappingService;
   
-        public OperationService(IGeekBudgetContext context, ITabService tabService, IMappingService mappingService)
+        public OperationService(IGeekBudgetContext context, ITabService tabService)
         {
             _context = context;
             _tabService = tabService;
-            _mappingService = mappingService;
         }
 
         public async Task<ServiceResult<IEnumerable<Operation>>> GetAll()
@@ -54,19 +52,17 @@ namespace GeekBudget.Services.Implementations
             return new ServiceResult<IEnumerable<Operation>>(operations);
         }
 
-        public async Task<ServiceResult<int>> Add(OperationViewModel vm)
+        public async Task<ServiceResult<int>> Add(Operation operation, int from, int to)
         {
-            var operation = _mappingService.Map(vm);
-            
             // Get 'From' tab
-            var resultFrom = await _tabService.Get(vm.From ?? -1);
+            var resultFrom = await _tabService.Get(from);
             if(resultFrom.Failed)
                 return ServiceResult<int>.From(resultFrom);
             
             var tabFrom = resultFrom.Data;
             
             // Get 'To' tab
-            var resultTo = await _tabService.Get(vm.To ?? -1);
+            var resultTo = await _tabService.Get(to);
             if(resultTo.Failed)
                 return ServiceResult<int>.From(resultFrom);
             
@@ -138,18 +134,16 @@ namespace GeekBudget.Services.Implementations
             return new ServiceResult(Enums.ServiceResultStatus.Success);
         }
 
-        public async Task<ServiceResult> Update(OperationViewModel vm)
+        public async Task<ServiceResult> Update(int id, Operation source, OperationViewModel vm) // TODO: refactor not to use VM in service?
         {
-            var result = await Get(new OperationFilter {Id = vm.Id});
+            var result = await Get(new OperationFilter {Id = id});
 
             if (result.Failed)
                 return ServiceResult.From(result);
 
             var operation = result.Data.FirstOrDefault();
             if (operation == null)
-                return new ServiceResult(Enums.ServiceResultStatus.Failure, NoOperationWithId(vm.Id));
-
-            var source = _mappingService.Map(vm);
+                return new ServiceResult(Enums.ServiceResultStatus.Failure, NoOperationWithId(id));
 
             using (var scope = new TransactionScope())
             {

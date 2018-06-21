@@ -35,7 +35,7 @@ namespace GeekBudget.Controllers
         {
             var result = await _tabService.GetAll();
 
-            if (result.Status != Enums.ServiceResultStatus.Failure)
+            if (!result.Failed)
                 return Ok(_mappingService.Map(result.Data));
             else
                 return BadRequest(result.Errors);
@@ -46,7 +46,7 @@ namespace GeekBudget.Controllers
         {
             var result = await _tabService.Get(id);
 
-            if (result.Status != Enums.ServiceResultStatus.Failure)
+            if (!result.Failed)
             {
                 if (result.Data != null)
                     return Ok(_mappingService.Map(result.Data));
@@ -75,27 +75,19 @@ namespace GeekBudget.Controllers
             
             var result = await _tabService.Add(tab);
             
-            if (result.Status != Enums.ServiceResultStatus.Failure)
+            if (!result.Failed)
                 return Ok(result.Data);
             else
                 return BadRequest(result.Errors);
         }
 
         // DELETE api/values
-        [HttpPost("Remove")]
-        public async Task<IActionResult> Remove([FromBody]TabViewModel vm)
+        [HttpPost("Remove/{id}")]
+        public async Task<IActionResult> Remove(int id)
         {
-            var errors = await vm.Validate(
-                _tabValidators.NotNull,
-                _tabValidators.IdExists
-            );
-
-            if (errors.Any())
-                return BadRequest(errors);
+            var result = await _tabService.Remove(id);
             
-            var result = await _tabService.Remove(vm.Id);
-            
-            if (result.Status != Enums.ServiceResultStatus.Failure)
+            if (!result.Failed)
                 return Ok();
             else
                 return BadRequest(result.Errors);
@@ -116,7 +108,7 @@ namespace GeekBudget.Controllers
             
             var result = await _tabService.Update(vm.Id, tab);
 
-            if (result.Status != Enums.ServiceResultStatus.Failure)
+            if (!result.Failed)
                 return Ok();
             else
                 return BadRequest(result.Errors);

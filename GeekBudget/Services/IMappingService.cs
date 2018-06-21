@@ -12,5 +12,6 @@ namespace GeekBudget.Services
         
         Operation Map(OperationViewModel operation);
         OperationViewModel Map(Operation operation);
+        IEnumerable<OperationViewModel> Map(IEnumerable<Operation> data);
     }
 }
