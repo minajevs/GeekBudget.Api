@@ -49,7 +49,6 @@ namespace GeekBudget.Tests.Controllers
                 context.SaveChanges();
 
                 //Act
-                context = connection.CreateNewContext();
                 var controller = new UserController(context);
 
                 var result = controller.Add("test-user");

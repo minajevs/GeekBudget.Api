@@ -37,7 +37,7 @@ namespace GeekBudget.Validators.Implementations
         {
             var errors = new List<Error>();
 
-            if (tab.Type == null);
+            if (tab.Type == null)
                 errors.Add(TabTypeIsRequired());
             
             return await Task.FromResult(errors);
@@ -47,7 +47,7 @@ namespace GeekBudget.Validators.Implementations
         {
             var errors = new List<Error>();
 
-            if (tab == null);
+            if (tab == null)
                 errors.Add(TabViewModelIsNull());
             
             return await Task.FromResult(errors);

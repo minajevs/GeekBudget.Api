@@ -38,7 +38,7 @@ namespace GeekBudget.Tests
 
     public class TestingConnection : IDisposable
     {
-        private readonly SqliteConnection _connection;
+        private SqliteConnection _connection;
         public DbContextOptions Options => new DbContextOptionsBuilder<GeekBudgetContext>()
             .UseSqlite(_connection)
             .Options;
@@ -47,20 +47,40 @@ namespace GeekBudget.Tests
 
         public TestingConnection()
         {
+            this.Init();
+        }
+
+        private void Init()
+        {
+            if (this._connection != null)
+            {
+                this._connection.Close();
+                this._connection = null;
+            }
             //Create new in-memory db
             this._connection = new SqliteConnection("DataSource=:memory:");
             this._connection.Open();
         }
 
+        /// <summary>
+        /// Recreates database connection and context
+        /// Returns context for connecting to empty database!
+        /// </summary>
+        /// <returns></returns>
         public GeekBudgetContext CreateNewContext()
         {
+            this.Init();
+
             if (this._context != null)
             {
                 this._context.Dispose();
                 this._context = null;
             }
 
-            return this._context = new GeekBudgetContext(this.Options);
+            this._context = new GeekBudgetContext(this.Options);
+            // this._context.Database.Migrate(); // reset data
+            this._context.Database.EnsureCreated();
+            return this._context;
         }
 
         public void Dispose()

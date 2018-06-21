@@ -133,9 +133,6 @@
       "89": {
        "Hits": 0
       },
-      "92": {
-       "Hits": 0
-      },
       "95": {
        "Hits": 0
       },
@@ -157,13 +154,13 @@
      },
      "Branches": {
       "95": [{
-       "Offset": 71,
-       "EndOffset": 73,
+       "Offset": 59,
+       "EndOffset": 61,
        "Path": 0,
        "Ordinal": 0
       }, {
-       "Offset": 71,
-       "EndOffset": 96,
+       "Offset": 59,
+       "EndOffset": 84,
        "Path": 1,
        "Ordinal": 1
       }]
@@ -200,7 +197,7 @@
     "GeekBudget.Models.Error GeekBudget.Validators.Implementations.OperationValidators::OperationViewModelIsNull()": {
      "Lines": {
       "13": {
-       "Hits": 0
+       "Hits": 1
       }
      },
      "Branches": {
@@ -209,7 +206,7 @@
     "GeekBudget.Models.Error GeekBudget.Validators.Implementations.OperationValidators::FromIsNull()": {
      "Lines": {
       "14": {
-       "Hits": 0
+       "Hits": 1
       }
      },
      "Branches": {
@@ -218,7 +215,7 @@
     "GeekBudget.Models.Error GeekBudget.Validators.Implementations.OperationValidators::ToIsNull()": {
      "Lines": {
       "15": {
-       "Hits": 0
+       "Hits": 1
       }
      },
      "Branches": {
@@ -227,7 +224,7 @@
     "GeekBudget.Models.Error GeekBudget.Validators.Implementations.OperationValidators::FromAndToAreEqual()": {
      "Lines": {
       "16": {
-       "Hits": 0
+       "Hits": 1
       }
      },
      "Branches": {
@@ -236,7 +233,7 @@
     "GeekBudget.Models.Error GeekBudget.Validators.Implementations.OperationValidators::NoOperationWithId(System.Int32)": {
      "Lines": {
       "17": {
-       "Hits": 0
+       "Hits": 1
       }
      },
      "Branches": {
@@ -247,22 +244,22 @@
     "System.Void GeekBudget.Validators.Implementations.OperationValidators/<IdExists>d__8::MoveNext()": {
      "Lines": {
       "29": {
-       "Hits": 0
+       "Hits": 2
       },
       "30": {
-       "Hits": 0
+       "Hits": 2
       },
       "32": {
-       "Hits": 0
+       "Hits": 2
       },
       "33": {
-       "Hits": 0
+       "Hits": 1
       },
       "35": {
-       "Hits": 0
+       "Hits": 2
       },
       "36": {
-       "Hits": 0
+       "Hits": 2
       }
      },
      "Branches": {
@@ -316,22 +313,22 @@
     "System.Void GeekBudget.Validators.Implementations.OperationValidators/<FromNotNull>d__9::MoveNext()": {
      "Lines": {
       "39": {
-       "Hits": 0
+       "Hits": 2
       },
       "40": {
-       "Hits": 0
+       "Hits": 2
       },
       "42": {
-       "Hits": 0
+       "Hits": 2
       },
       "43": {
-       "Hits": 0
+       "Hits": 1
       },
       "45": {
-       "Hits": 0
+       "Hits": 2
       },
       "46": {
-       "Hits": 0
+       "Hits": 2
       }
      },
      "Branches": {
@@ -364,22 +361,22 @@
     "System.Void GeekBudget.Validators.Implementations.OperationValidators/<ToNotNull>d__10::MoveNext()": {
      "Lines": {
       "49": {
-       "Hits": 0
+       "Hits": 2
       },
       "50": {
-       "Hits": 0
+       "Hits": 2
       },
       "52": {
-       "Hits": 0
+       "Hits": 2
       },
       "53": {
-       "Hits": 0
+       "Hits": 1
       },
       "55": {
-       "Hits": 0
+       "Hits": 2
       },
       "56": {
-       "Hits": 0
+       "Hits": 2
       }
      },
      "Branches": {
@@ -412,28 +409,28 @@
     "System.Void GeekBudget.Validators.Implementations.OperationValidators/<FromAndToAreNotEqual>d__11::MoveNext()": {
      "Lines": {
       "59": {
-       "Hits": 0
+       "Hits": 3
       },
       "60": {
-       "Hits": 0
+       "Hits": 3
       },
       "62": {
-       "Hits": 0
+       "Hits": 3
       },
       "63": {
-       "Hits": 0
+       "Hits": 1
       },
       "65": {
-       "Hits": 0
+       "Hits": 2
       },
       "66": {
-       "Hits": 0
+       "Hits": 1
       },
       "68": {
-       "Hits": 0
+       "Hits": 2
       },
       "69": {
-       "Hits": 0
+       "Hits": 3
       }
      },
      "Branches": {
@@ -519,19 +516,19 @@
     "System.Void GeekBudget.Validators.Implementations.OperationValidators/<FromTabExists>d__12::MoveNext()": {
      "Lines": {
       "72": {
-       "Hits": 0
+       "Hits": 2
       },
       "73": {
-       "Hits": 0
+       "Hits": 2
       },
       "77": {
-       "Hits": 0
+       "Hits": 2
       },
       "79": {
-       "Hits": 0
+       "Hits": 2
       },
       "80": {
-       "Hits": 0
+       "Hits": 2
       }
      },
      "Branches": {
@@ -553,19 +550,19 @@
     "System.Void GeekBudget.Validators.Implementations.OperationValidators/<ToTabExists>d__13::MoveNext()": {
      "Lines": {
       "83": {
-       "Hits": 0
+       "Hits": 2
       },
       "84": {
-       "Hits": 0
+       "Hits": 2
       },
       "88": {
-       "Hits": 0
+       "Hits": 2
       },
       "90": {
-       "Hits": 0
+       "Hits": 2
       },
       "91": {
-       "Hits": 0
+       "Hits": 2
       }
      },
      "Branches": {
@@ -587,22 +584,22 @@
     "System.Void GeekBudget.Validators.Implementations.OperationValidators/<NotNull>d__14::MoveNext()": {
      "Lines": {
       "94": {
-       "Hits": 0
+       "Hits": 2
       },
       "95": {
-       "Hits": 0
+       "Hits": 2
       },
       "97": {
-       "Hits": 0
+       "Hits": 2
       },
       "98": {
-       "Hits": 0
+       "Hits": 1
       },
       "100": {
-       "Hits": 0
+       "Hits": 2
       },
       "101": {
-       "Hits": 0
+       "Hits": 2
       }
      },
      "Branches": {
@@ -637,7 +634,7 @@
     "GeekBudget.Models.Error GeekBudget.Validators.Implementations.TabValidators::TabViewModelIsNull()": {
      "Lines": {
       "15": {
-       "Hits": 0
+       "Hits": 1
       }
      },
      "Branches": {
@@ -646,7 +643,7 @@
     "GeekBudget.Models.Error GeekBudget.Validators.Implementations.TabValidators::NoTabWithId(System.Int32)": {
      "Lines": {
       "16": {
-       "Hits": 0
+       "Hits": 1
       }
      },
      "Branches": {
@@ -655,7 +652,7 @@
     "GeekBudget.Models.Error GeekBudget.Validators.Implementations.TabValidators::TabTypeIsRequired()": {
      "Lines": {
       "17": {
-       "Hits": 0
+       "Hits": 1
       }
      },
      "Branches": {
@@ -666,22 +663,22 @@
     "System.Void GeekBudget.Validators.Implementations.TabValidators/<IdExists>d__5::MoveNext()": {
      "Lines": {
       "27": {
-       "Hits": 0
+       "Hits": 2
       },
       "28": {
-       "Hits": 0
+       "Hits": 2
       },
       "30": {
-       "Hits": 0
+       "Hits": 2
       },
       "31": {
-       "Hits": 0
+       "Hits": 1
       },
       "33": {
-       "Hits": 0
+       "Hits": 2
       },
       "34": {
-       "Hits": 0
+       "Hits": 2
       }
      },
      "Branches": {
@@ -735,22 +732,22 @@
     "System.Void GeekBudget.Validators.Implementations.TabValidators/<TabTypeRequired>d__6::MoveNext()": {
      "Lines": {
       "37": {
-       "Hits": 0
+       "Hits": 2
       },
       "38": {
-       "Hits": 0
+       "Hits": 2
       },
       "40": {
-       "Hits": 0
+       "Hits": 2
       },
       "41": {
-       "Hits": 0
+       "Hits": 1
       },
       "43": {
-       "Hits": 0
+       "Hits": 2
       },
       "44": {
-       "Hits": 0
+       "Hits": 2
       }
      },
      "Branches": {
@@ -761,18 +758,18 @@
        "Ordinal": 0
       }, {
        "Offset": 50,
-       "EndOffset": 53,
+       "EndOffset": 69,
        "Path": 1,
        "Ordinal": 1
       }],
       "43": [{
-       "Offset": 95,
-       "EndOffset": 97,
+       "Offset": 94,
+       "EndOffset": 96,
        "Path": 0,
        "Ordinal": 2
       }, {
-       "Offset": 95,
-       "EndOffset": 164,
+       "Offset": 94,
+       "EndOffset": 163,
        "Path": 1,
        "Ordinal": 3
       }]
@@ -783,22 +780,22 @@
     "System.Void GeekBudget.Validators.Implementations.TabValidators/<NotNull>d__7::MoveNext()": {
      "Lines": {
       "47": {
-       "Hits": 0
+       "Hits": 2
       },
       "48": {
-       "Hits": 0
+       "Hits": 2
       },
       "50": {
-       "Hits": 0
+       "Hits": 2
       },
       "51": {
-       "Hits": 0
+       "Hits": 1
       },
       "53": {
-       "Hits": 0
+       "Hits": 2
       },
       "54": {
-       "Hits": 0
+       "Hits": 2
       }
      },
      "Branches": {
@@ -809,18 +806,18 @@
        "Ordinal": 0
       }, {
        "Offset": 37,
-       "EndOffset": 40,
+       "EndOffset": 56,
        "Path": 1,
        "Ordinal": 1
       }],
       "53": [{
-       "Offset": 81,
-       "EndOffset": 83,
+       "Offset": 80,
+       "EndOffset": 82,
        "Path": 0,
        "Ordinal": 2
       }, {
-       "Offset": 81,
-       "EndOffset": 148,
+       "Offset": 80,
+       "EndOffset": 147,
        "Path": 1,
        "Ordinal": 3
       }]
@@ -920,25 +917,25 @@
     "GeekBudget.Models.Operation GeekBudget.Services.Implementations.MappingService::Map(GeekBudget.Models.ViewModels.OperationViewModel)": {
      "Lines": {
       "30": {
-       "Hits": 1
+       "Hits": 2
       },
       "31": {
-       "Hits": 1
+       "Hits": 2
       },
       "32": {
-       "Hits": 1
+       "Hits": 2
       },
       "33": {
-       "Hits": 1
+       "Hits": 2
       },
       "34": {
-       "Hits": 1
+       "Hits": 2
       },
       "35": {
-       "Hits": 1
+       "Hits": 2
       },
       "36": {
-       "Hits": 1
+       "Hits": 2
       }
      },
      "Branches": {
@@ -2693,7 +2690,7 @@
     "System.Int32 GeekBudget.Models.Error::get_Id()": {
      "Lines": {
       "5": {
-       "Hits": 6
+       "Hits": 14
       }
      },
      "Branches": {
@@ -2702,7 +2699,7 @@
     "System.String GeekBudget.Models.Error::get_Description()": {
      "Lines": {
       "6": {
-       "Hits": 6
+       "Hits": 14
       }
      },
      "Branches": {
@@ -2715,7 +2712,7 @@
     "Microsoft.EntityFrameworkCore.DbSet`1<GeekBudget.Models.User> GeekBudget.Models.GeekBudgetContext::get_Users()": {
      "Lines": {
       "17": {
-       "Hits": 49
+       "Hits": 52
       }
      },
      "Branches": {
@@ -2724,7 +2721,7 @@
     "Microsoft.EntityFrameworkCore.DbSet`1<GeekBudget.Models.Tab> GeekBudget.Models.GeekBudgetContext::get_Tabs()": {
      "Lines": {
       "18": {
-       "Hits": 20
+       "Hits": 27
       }
      },
      "Branches": {
@@ -2733,7 +2730,7 @@
     "Microsoft.EntityFrameworkCore.DbSet`1<GeekBudget.Models.Operation> GeekBudget.Models.GeekBudgetContext::get_Operations()": {
      "Lines": {
       "19": {
-       "Hits": 20
+       "Hits": 27
       }
      },
      "Branches": {
@@ -2822,7 +2819,7 @@
     "System.Int32 GeekBudget.Models.Operation::get_Id()": {
      "Lines": {
       "14": {
-       "Hits": 46
+       "Hits": 68
       }
      },
      "Branches": {
@@ -2831,7 +2828,7 @@
     "System.String GeekBudget.Models.Operation::get_Comment()": {
      "Lines": {
       "15": {
-       "Hits": 44
+       "Hits": 53
       }
      },
      "Branches": {
@@ -2840,7 +2837,7 @@
     "System.Decimal GeekBudget.Models.Operation::get_Amount()": {
      "Lines": {
       "16": {
-       "Hits": 55
+       "Hits": 64
       }
      },
      "Branches": {
@@ -2849,7 +2846,7 @@
     "System.String GeekBudget.Models.Operation::get_Currency()": {
      "Lines": {
       "17": {
-       "Hits": 37
+       "Hits": 46
       }
      },
      "Branches": {
@@ -2858,7 +2855,7 @@
     "GeekBudget.Models.Tab GeekBudget.Models.Operation::get_From()": {
      "Lines": {
       "18": {
-       "Hits": 39
+       "Hits": 49
       }
      },
      "Branches": {
@@ -2867,7 +2864,7 @@
     "GeekBudget.Models.Tab GeekBudget.Models.Operation::get_To()": {
      "Lines": {
       "19": {
-       "Hits": 39
+       "Hits": 49
       }
      },
      "Branches": {
@@ -2876,7 +2873,7 @@
     "System.DateTime GeekBudget.Models.Operation::get_Date()": {
      "Lines": {
       "20": {
-       "Hits": 53
+       "Hits": 62
       }
      },
      "Branches": {
@@ -3114,7 +3111,7 @@
     "System.Int32 GeekBudget.Models.Tab::get_Id()": {
      "Lines": {
       "15": {
-       "Hits": 61
+       "Hits": 87
       }
      },
      "Branches": {
@@ -3123,7 +3120,7 @@
     "GeekBudget.Entities.Enums/TabType GeekBudget.Models.Tab::get_Type()": {
      "Lines": {
       "16": {
-       "Hits": 8
+       "Hits": 16
       }
      },
      "Branches": {
@@ -3132,7 +3129,7 @@
     "System.String GeekBudget.Models.Tab::get_Name()": {
      "Lines": {
       "17": {
-       "Hits": 36
+       "Hits": 44
       }
      },
      "Branches": {
@@ -3141,7 +3138,7 @@
     "System.Decimal GeekBudget.Models.Tab::get_Amount()": {
      "Lines": {
       "18": {
-       "Hits": 35
+       "Hits": 43
       }
      },
      "Branches": {
@@ -3150,7 +3147,7 @@
     "System.String GeekBudget.Models.Tab::get_Currency()": {
      "Lines": {
       "19": {
-       "Hits": 35
+       "Hits": 43
       }
      },
      "Branches": {
@@ -3168,7 +3165,7 @@
     "System.Collections.Generic.List`1<GeekBudget.Models.Operation> GeekBudget.Models.Tab::get_OperationsFrom()": {
      "Lines": {
       "21": {
-       "Hits": 48
+       "Hits": 56
       }
      },
      "Branches": {
@@ -3177,7 +3174,7 @@
     "System.Collections.Generic.List`1<GeekBudget.Models.Operation> GeekBudget.Models.Tab::get_OperationsTo()": {
      "Lines": {
       "22": {
-       "Hits": 40
+       "Hits": 48
       }
      },
      "Branches": {
@@ -3383,7 +3380,7 @@
     "System.Int32 GeekBudget.Models.ViewModels.OperationViewModel::get_Id()": {
      "Lines": {
       "11": {
-       "Hits": 4
+       "Hits": 10
       }
      },
      "Branches": {
@@ -3392,7 +3389,7 @@
     "System.String GeekBudget.Models.ViewModels.OperationViewModel::get_Comment()": {
      "Lines": {
       "12": {
-       "Hits": 5
+       "Hits": 6
       }
      },
      "Branches": {
@@ -3401,7 +3398,7 @@
     "System.Nullable`1<System.Decimal> GeekBudget.Models.ViewModels.OperationViewModel::get_Amount()": {
      "Lines": {
       "13": {
-       "Hits": 5
+       "Hits": 6
       }
      },
      "Branches": {
@@ -3410,7 +3407,7 @@
     "System.String GeekBudget.Models.ViewModels.OperationViewModel::get_Currency()": {
      "Lines": {
       "14": {
-       "Hits": 5
+       "Hits": 6
       }
      },
      "Branches": {
@@ -3419,7 +3416,7 @@
     "System.Nullable`1<System.Int32> GeekBudget.Models.ViewModels.OperationViewModel::get_From()": {
      "Lines": {
       "15": {
-       "Hits": 5
+       "Hits": 19
       }
      },
      "Branches": {
@@ -3428,7 +3425,7 @@
     "System.Nullable`1<System.Int32> GeekBudget.Models.ViewModels.OperationViewModel::get_To()": {
      "Lines": {
       "16": {
-       "Hits": 5
+       "Hits": 19
       }
      },
      "Branches": {
@@ -3437,7 +3434,7 @@
     "System.DateTime GeekBudget.Models.ViewModels.OperationViewModel::get_Date()": {
      "Lines": {
       "17": {
-       "Hits": 5
+       "Hits": 6
       }
      },
      "Branches": {
@@ -3450,7 +3447,7 @@
     "System.Int32 GeekBudget.Models.ViewModels.TabViewModel::get_Id()": {
      "Lines": {
       "12": {
-       "Hits": 10
+       "Hits": 19
       }
      },
      "Branches": {
@@ -3459,7 +3456,7 @@
     "System.Nullable`1<GeekBudget.Entities.Enums/TabType> GeekBudget.Models.ViewModels.TabViewModel::get_Type()": {
      "Lines": {
       "13": {
-       "Hits": 8
+       "Hits": 11
       }
      },
      "Branches": {
@@ -3593,92 +3590,26 @@
     }
    }
   },
-  "C:\\Users\\dmitrijs.minajevs\\Source\\Repos\\GeekBudget.Api\\GeekBudget\\Migrations\\20170814101356_InitialCreate.cs": {
+  "C:\\Users\\dmitrijs.minajevs\\Source\\Repos\\GeekBudget.Api\\GeekBudget\\Migrations\\20180621141236_InitialCreate.cs": {
    "GeekBudget.Migrations.InitialCreate": {
     "System.Void GeekBudget.Migrations.InitialCreate::Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)": {
      "Lines": {
+      "8": {
+       "Hits": 0
+      },
       "10": {
-       "Hits": 0
-      },
-      "11": {
-       "Hits": 0
-      },
-      "12": {
-       "Hits": 0
-      },
-      "13": {
-       "Hits": 0
-      },
-      "14": {
-       "Hits": 0
-      },
-      "15": {
-       "Hits": 0
-      },
-      "16": {
-       "Hits": 0
-      },
-      "17": {
-       "Hits": 0
-      },
-      "18": {
-       "Hits": 0
-      },
-      "19": {
-       "Hits": 0
-      },
-      "20": {
-       "Hits": 0
-      },
-      "21": {
-       "Hits": 0
-      },
-      "22": {
-       "Hits": 0
-      },
-      "23": {
-       "Hits": 0
-      },
-      "24": {
        "Hits": 0
       }
      },
      "Branches": {
-      "11": [{
-       "Offset": 13,
-       "EndOffset": 15,
-       "Path": 0,
-       "Ordinal": 0
-      }, {
-       "Offset": 13,
-       "EndOffset": 38,
-       "Path": 1,
-       "Ordinal": 1
-      }, {
-       "Offset": 45,
-       "EndOffset": 47,
-       "Path": 0,
-       "Ordinal": 2
-      }, {
-       "Offset": 45,
-       "EndOffset": 70,
-       "Path": 1,
-       "Ordinal": 3
-      }]
      }
     },
     "System.Void GeekBudget.Migrations.InitialCreate::Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)": {
      "Lines": {
-      "27": {
+      "13": {
        "Hits": 0
       },
-      "28": {
-       "Hits": 0
-      },
-      "29": {
-       "Hits": 0
-      },
-      "30": {
+      "15": {
        "Hits": 0
       }
      },
@@ -3687,23 +3618,17 @@
     }
    }
   },
-  "C:\\Users\\dmitrijs.minajevs\\Source\\Repos\\GeekBudget.Api\\GeekBudget\\Migrations\\20170814101356_InitialCreate.Designer.cs": {
+  "C:\\Users\\dmitrijs.minajevs\\Source\\Repos\\GeekBudget.Api\\GeekBudget\\Migrations\\20180621141236_InitialCreate.Designer.cs": {
    "GeekBudget.Migrations.InitialCreate": {
     "System.Void GeekBudget.Migrations.InitialCreate::BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)": {
      "Lines": {
-      "15": {
-       "Hits": 0
-      },
       "16": {
        "Hits": 0
       },
-      "17": {
+      "18": {
        "Hits": 0
       },
       "19": {
-       "Hits": 0
-      },
-      "20": {
        "Hits": 0
       },
       "21": {
@@ -3719,93 +3644,6 @@
        "Hits": 0
       },
       "25": {
-       "Hits": 0
-      },
-      "26": {
-       "Hits": 0
-      },
-      "27": {
-       "Hits": 0
-      },
-      "28": {
-       "Hits": 0
-      },
-      "29": {
-       "Hits": 0
-      },
-      "30": {
-       "Hits": 0
-      },
-      "31": {
-       "Hits": 0
-      },
-      "32": {
-       "Hits": 0
-      }
-     },
-     "Branches": {
-      "19": [{
-       "Offset": 30,
-       "EndOffset": 32,
-       "Path": 0,
-       "Ordinal": 0
-      }, {
-       "Offset": 30,
-       "EndOffset": 55,
-       "Path": 1,
-       "Ordinal": 1
-      }]
-     }
-    }
-   }
-  },
-  "C:\\Users\\dmitrijs.minajevs\\Source\\Repos\\GeekBudget.Api\\GeekBudget\\Migrations\\20170927124220_AddedTabsAndOperations.cs": {
-   "GeekBudget.Migrations.AddedTabsAndOperations": {
-    "System.Void GeekBudget.Migrations.AddedTabsAndOperations::Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)": {
-     "Lines": {
-      "10": {
-       "Hits": 0
-      },
-      "11": {
-       "Hits": 0
-      },
-      "12": {
-       "Hits": 0
-      },
-      "13": {
-       "Hits": 0
-      },
-      "14": {
-       "Hits": 0
-      },
-      "15": {
-       "Hits": 0
-      },
-      "16": {
-       "Hits": 0
-      },
-      "17": {
-       "Hits": 0
-      },
-      "18": {
-       "Hits": 0
-      },
-      "19": {
-       "Hits": 0
-      },
-      "20": {
-       "Hits": 0
-      },
-      "21": {
-       "Hits": 0
-      },
-      "22": {
-       "Hits": 0
-      },
-      "23": {
-       "Hits": 0
-      },
-      "24": {
        "Hits": 0
       },
       "26": {
@@ -3868,214 +3706,6 @@
       "45": {
        "Hits": 0
       },
-      "46": {
-       "Hits": 0
-      },
-      "47": {
-       "Hits": 0
-      },
-      "48": {
-       "Hits": 0
-      },
-      "49": {
-       "Hits": 0
-      },
-      "50": {
-       "Hits": 0
-      },
-      "51": {
-       "Hits": 0
-      },
-      "52": {
-       "Hits": 0
-      },
-      "53": {
-       "Hits": 0
-      },
-      "54": {
-       "Hits": 0
-      },
-      "56": {
-       "Hits": 0
-      },
-      "57": {
-       "Hits": 0
-      },
-      "58": {
-       "Hits": 0
-      },
-      "59": {
-       "Hits": 0
-      },
-      "61": {
-       "Hits": 0
-      },
-      "62": {
-       "Hits": 0
-      },
-      "63": {
-       "Hits": 0
-      },
-      "64": {
-       "Hits": 0
-      },
-      "65": {
-       "Hits": 0
-      }
-     },
-     "Branches": {
-      "11": [{
-       "Offset": 13,
-       "EndOffset": 15,
-       "Path": 0,
-       "Ordinal": 0
-      }, {
-       "Offset": 13,
-       "EndOffset": 38,
-       "Path": 1,
-       "Ordinal": 1
-      }, {
-       "Offset": 45,
-       "EndOffset": 47,
-       "Path": 0,
-       "Ordinal": 2
-      }, {
-       "Offset": 45,
-       "EndOffset": 70,
-       "Path": 1,
-       "Ordinal": 3
-      }],
-      "26": [{
-       "Offset": 88,
-       "EndOffset": 90,
-       "Path": 0,
-       "Ordinal": 4
-      }, {
-       "Offset": 88,
-       "EndOffset": 113,
-       "Path": 1,
-       "Ordinal": 5
-      }, {
-       "Offset": 120,
-       "EndOffset": 122,
-       "Path": 0,
-       "Ordinal": 6
-      }, {
-       "Offset": 120,
-       "EndOffset": 145,
-       "Path": 1,
-       "Ordinal": 7
-      }]
-     }
-    },
-    "System.Void GeekBudget.Migrations.AddedTabsAndOperations::Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)": {
-     "Lines": {
-      "68": {
-       "Hits": 0
-      },
-      "69": {
-       "Hits": 0
-      },
-      "70": {
-       "Hits": 0
-      },
-      "72": {
-       "Hits": 0
-      },
-      "73": {
-       "Hits": 0
-      },
-      "74": {
-       "Hits": 0
-      }
-     },
-     "Branches": {
-     }
-    }
-   }
-  },
-  "C:\\Users\\dmitrijs.minajevs\\Source\\Repos\\GeekBudget.Api\\GeekBudget\\Migrations\\20170927124220_AddedTabsAndOperations.Designer.cs": {
-   "GeekBudget.Migrations.AddedTabsAndOperations": {
-    "System.Void GeekBudget.Migrations.AddedTabsAndOperations::BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)": {
-     "Lines": {
-      "18": {
-       "Hits": 0
-      },
-      "20": {
-       "Hits": 0
-      },
-      "21": {
-       "Hits": 0
-      },
-      "23": {
-       "Hits": 0
-      },
-      "24": {
-       "Hits": 0
-      },
-      "25": {
-       "Hits": 0
-      },
-      "26": {
-       "Hits": 0
-      },
-      "27": {
-       "Hits": 0
-      },
-      "28": {
-       "Hits": 0
-      },
-      "29": {
-       "Hits": 0
-      },
-      "30": {
-       "Hits": 0
-      },
-      "31": {
-       "Hits": 0
-      },
-      "32": {
-       "Hits": 0
-      },
-      "33": {
-       "Hits": 0
-      },
-      "34": {
-       "Hits": 0
-      },
-      "35": {
-       "Hits": 0
-      },
-      "37": {
-       "Hits": 0
-      },
-      "38": {
-       "Hits": 0
-      },
-      "39": {
-       "Hits": 0
-      },
-      "40": {
-       "Hits": 0
-      },
-      "41": {
-       "Hits": 0
-      },
-      "42": {
-       "Hits": 0
-      },
-      "43": {
-       "Hits": 0
-      },
-      "44": {
-       "Hits": 0
-      },
-      "45": {
-       "Hits": 0
-      },
-      "46": {
-       "Hits": 0
-      },
       "47": {
        "Hits": 0
       },
@@ -4121,10 +3751,10 @@
       "61": {
        "Hits": 0
       },
-      "63": {
+      "62": {
        "Hits": 0
       },
-      "64": {
+      "63": {
        "Hits": 0
       },
       "65": {
@@ -4201,7 +3831,7 @@
       }
      },
      "Branches": {
-      "23": [{
+      "21": [{
        "Offset": 30,
        "EndOffset": 32,
        "Path": 0,
@@ -4212,7 +3842,7 @@
        "Path": 1,
        "Ordinal": 1
       }],
-      "37": [{
+      "47": [{
        "Offset": 73,
        "EndOffset": 75,
        "Path": 0,
@@ -4223,7 +3853,7 @@
        "Path": 1,
        "Ordinal": 3
       }],
-      "63": [{
+      "65": [{
        "Offset": 116,
        "EndOffset": 118,
        "Path": 0,
@@ -4253,6 +3883,12 @@
    "GeekBudget.Migrations.GeekBudgetContextModelSnapshot": {
     "System.Void GeekBudget.Migrations.GeekBudgetContextModelSnapshot::BuildModel(Microsoft.EntityFrameworkCore.ModelBuilder)": {
      "Lines": {
+      "14": {
+       "Hits": 0
+      },
+      "16": {
+       "Hits": 0
+      },
       "17": {
        "Hits": 0
       },
@@ -4260,6 +3896,9 @@
        "Hits": 0
       },
       "20": {
+       "Hits": 0
+      },
+      "21": {
        "Hits": 0
       },
       "22": {
@@ -4272,246 +3911,6 @@
        "Hits": 0
       },
       "25": {
-       "Hits": 0
-      },
-      "26": {
-       "Hits": 0
-      },
-      "27": {
-       "Hits": 0
-      },
-      "28": {
-       "Hits": 0
-      },
-      "29": {
-       "Hits": 0
-      },
-      "30": {
-       "Hits": 0
-      },
-      "31": {
-       "Hits": 0
-      },
-      "32": {
-       "Hits": 0
-      },
-      "33": {
-       "Hits": 0
-      },
-      "34": {
-       "Hits": 0
-      },
-      "36": {
-       "Hits": 0
-      },
-      "37": {
-       "Hits": 0
-      },
-      "38": {
-       "Hits": 0
-      },
-      "39": {
-       "Hits": 0
-      },
-      "40": {
-       "Hits": 0
-      },
-      "41": {
-       "Hits": 0
-      },
-      "42": {
-       "Hits": 0
-      },
-      "43": {
-       "Hits": 0
-      },
-      "44": {
-       "Hits": 0
-      },
-      "45": {
-       "Hits": 0
-      },
-      "46": {
-       "Hits": 0
-      },
-      "47": {
-       "Hits": 0
-      },
-      "48": {
-       "Hits": 0
-      },
-      "49": {
-       "Hits": 0
-      },
-      "50": {
-       "Hits": 0
-      },
-      "51": {
-       "Hits": 0
-      },
-      "52": {
-       "Hits": 0
-      },
-      "53": {
-       "Hits": 0
-      },
-      "54": {
-       "Hits": 0
-      },
-      "55": {
-       "Hits": 0
-      },
-      "56": {
-       "Hits": 0
-      },
-      "57": {
-       "Hits": 0
-      },
-      "58": {
-       "Hits": 0
-      },
-      "59": {
-       "Hits": 0
-      },
-      "60": {
-       "Hits": 0
-      },
-      "62": {
-       "Hits": 0
-      },
-      "63": {
-       "Hits": 0
-      },
-      "64": {
-       "Hits": 0
-      },
-      "65": {
-       "Hits": 0
-      },
-      "66": {
-       "Hits": 0
-      },
-      "67": {
-       "Hits": 0
-      },
-      "68": {
-       "Hits": 0
-      },
-      "69": {
-       "Hits": 0
-      },
-      "70": {
-       "Hits": 0
-      },
-      "71": {
-       "Hits": 0
-      },
-      "72": {
-       "Hits": 0
-      },
-      "73": {
-       "Hits": 0
-      },
-      "74": {
-       "Hits": 0
-      },
-      "75": {
-       "Hits": 0
-      },
-      "76": {
-       "Hits": 0
-      },
-      "78": {
-       "Hits": 0
-      },
-      "79": {
-       "Hits": 0
-      },
-      "80": {
-       "Hits": 0
-      },
-      "81": {
-       "Hits": 0
-      },
-      "82": {
-       "Hits": 0
-      },
-      "83": {
-       "Hits": 0
-      },
-      "84": {
-       "Hits": 0
-      },
-      "85": {
-       "Hits": 0
-      },
-      "86": {
-       "Hits": 0
-      },
-      "87": {
-       "Hits": 0
-      },
-      "89": {
-       "Hits": 0
-      }
-     },
-     "Branches": {
-      "22": [{
-       "Offset": 30,
-       "EndOffset": 32,
-       "Path": 0,
-       "Ordinal": 0
-      }, {
-       "Offset": 30,
-       "EndOffset": 55,
-       "Path": 1,
-       "Ordinal": 1
-      }],
-      "36": [{
-       "Offset": 73,
-       "EndOffset": 75,
-       "Path": 0,
-       "Ordinal": 2
-      }, {
-       "Offset": 73,
-       "EndOffset": 98,
-       "Path": 1,
-       "Ordinal": 3
-      }],
-      "62": [{
-       "Offset": 116,
-       "EndOffset": 118,
-       "Path": 0,
-       "Ordinal": 4
-      }, {
-       "Offset": 116,
-       "EndOffset": 141,
-       "Path": 1,
-       "Ordinal": 5
-      }],
-      "78": [{
-       "Offset": 159,
-       "EndOffset": 161,
-       "Path": 0,
-       "Ordinal": 6
-      }, {
-       "Offset": 159,
-       "EndOffset": 184,
-       "Path": 1,
-       "Ordinal": 7
-      }]
-     }
-    }
-   }
-  },
-  "C:\\Users\\dmitrijs.minajevs\\Source\\Repos\\GeekBudget.Api\\GeekBudget\\Middleware\\ErrorWrapper.cs": {
-   "GeekBudget.Middleware.ErrorWrapper/<Invoke>d__2": {
-    "System.Void GeekBudget.Middleware.ErrorWrapper/<Invoke>d__2::MoveNext()": {
-     "Lines": {
-      "23": {
-       "Hits": 0
-      },
-      "24": {
        "Hits": 0
       },
       "26": {
@@ -4562,6 +3961,9 @@
       "41": {
        "Hits": 0
       },
+      "42": {
+       "Hits": 0
+      },
       "43": {
        "Hits": 0
       },
@@ -4582,6 +3984,240 @@
       },
       "50": {
        "Hits": 0
+      },
+      "51": {
+       "Hits": 0
+      },
+      "52": {
+       "Hits": 0
+      },
+      "53": {
+       "Hits": 0
+      },
+      "54": {
+       "Hits": 0
+      },
+      "55": {
+       "Hits": 0
+      },
+      "56": {
+       "Hits": 0
+      },
+      "57": {
+       "Hits": 0
+      },
+      "58": {
+       "Hits": 0
+      },
+      "59": {
+       "Hits": 0
+      },
+      "60": {
+       "Hits": 0
+      },
+      "61": {
+       "Hits": 0
+      },
+      "63": {
+       "Hits": 0
+      },
+      "64": {
+       "Hits": 0
+      },
+      "65": {
+       "Hits": 0
+      },
+      "66": {
+       "Hits": 0
+      },
+      "67": {
+       "Hits": 0
+      },
+      "68": {
+       "Hits": 0
+      },
+      "69": {
+       "Hits": 0
+      },
+      "70": {
+       "Hits": 0
+      },
+      "71": {
+       "Hits": 0
+      },
+      "72": {
+       "Hits": 0
+      },
+      "73": {
+       "Hits": 0
+      },
+      "74": {
+       "Hits": 0
+      },
+      "75": {
+       "Hits": 0
+      },
+      "77": {
+       "Hits": 0
+      },
+      "78": {
+       "Hits": 0
+      },
+      "79": {
+       "Hits": 0
+      },
+      "80": {
+       "Hits": 0
+      },
+      "81": {
+       "Hits": 0
+      },
+      "82": {
+       "Hits": 0
+      },
+      "83": {
+       "Hits": 0
+      },
+      "84": {
+       "Hits": 0
+      },
+      "85": {
+       "Hits": 0
+      },
+      "86": {
+       "Hits": 0
+      },
+      "88": {
+       "Hits": 0
+      }
+     },
+     "Branches": {
+      "19": [{
+       "Offset": 30,
+       "EndOffset": 32,
+       "Path": 0,
+       "Ordinal": 0
+      }, {
+       "Offset": 30,
+       "EndOffset": 55,
+       "Path": 1,
+       "Ordinal": 1
+      }],
+      "45": [{
+       "Offset": 73,
+       "EndOffset": 75,
+       "Path": 0,
+       "Ordinal": 2
+      }, {
+       "Offset": 73,
+       "EndOffset": 98,
+       "Path": 1,
+       "Ordinal": 3
+      }],
+      "63": [{
+       "Offset": 116,
+       "EndOffset": 118,
+       "Path": 0,
+       "Ordinal": 4
+      }, {
+       "Offset": 116,
+       "EndOffset": 141,
+       "Path": 1,
+       "Ordinal": 5
+      }],
+      "77": [{
+       "Offset": 159,
+       "EndOffset": 161,
+       "Path": 0,
+       "Ordinal": 6
+      }, {
+       "Offset": 159,
+       "EndOffset": 184,
+       "Path": 1,
+       "Ordinal": 7
+      }]
+     }
+    }
+   }
+  },
+  "C:\\Users\\dmitrijs.minajevs\\Source\\Repos\\GeekBudget.Api\\GeekBudget\\Middleware\\ErrorWrapper.cs": {
+   "GeekBudget.Middleware.ErrorWrapper/<Invoke>d__2": {
+    "System.Void GeekBudget.Middleware.ErrorWrapper/<Invoke>d__2::MoveNext()": {
+     "Lines": {
+      "23": {
+       "Hits": 1
+      },
+      "24": {
+       "Hits": 1
+      },
+      "26": {
+       "Hits": 1
+      },
+      "27": {
+       "Hits": 1
+      },
+      "28": {
+       "Hits": 1
+      },
+      "29": {
+       "Hits": 0
+      },
+      "30": {
+       "Hits": 0
+      },
+      "31": {
+       "Hits": 0
+      },
+      "32": {
+       "Hits": 0
+      },
+      "33": {
+       "Hits": 0
+      },
+      "34": {
+       "Hits": 0
+      },
+      "35": {
+       "Hits": 0
+      },
+      "36": {
+       "Hits": 0
+      },
+      "37": {
+       "Hits": 0
+      },
+      "38": {
+       "Hits": 0
+      },
+      "39": {
+       "Hits": 0
+      },
+      "40": {
+       "Hits": 0
+      },
+      "41": {
+       "Hits": 0
+      },
+      "43": {
+       "Hits": 0
+      },
+      "45": {
+       "Hits": 1
+      },
+      "46": {
+       "Hits": 1
+      },
+      "47": {
+       "Hits": 1
+      },
+      "48": {
+       "Hits": 1
+      },
+      "49": {
+       "Hits": 1
+      },
+      "50": {
+       "Hits": 1
       }
      },
      "Branches": {
@@ -4954,37 +4590,37 @@
     "System.Void GeekBudget.Helpers.ValidationHelper/<Validate>d__0`1::MoveNext()": {
      "Lines": {
       "12": {
-       "Hits": 6
+       "Hits": 7
       },
       "13": {
-       "Hits": 6
+       "Hits": 7
       },
       "15": {
-       "Hits": 45
+       "Hits": 54
       },
       "16": {
-       "Hits": 15
+       "Hits": 18
       },
       "17": {
-       "Hits": 15
+       "Hits": 18
       },
       "18": {
-       "Hits": 15
+       "Hits": 18
       },
       "20": {
-       "Hits": 15
+       "Hits": 18
       },
       "21": {
        "Hits": 3
       },
       "22": {
-       "Hits": 12
+       "Hits": 15
       },
       "24": {
-       "Hits": 6
+       "Hits": 7
       },
       "25": {
-       "Hits": 6
+       "Hits": 7
       }
      },
      "Branches": {
@@ -5058,7 +4694,7 @@
     "GeekBudget.Entities.Enums/ServiceResultStatus GeekBudget.Entities.ServiceResult`1::get_Status()": {
      "Lines": {
       "24": {
-       "Hits": 25
+       "Hits": 27
       }
      },
      "Branches": {
@@ -5094,7 +4730,7 @@
     "System.Boolean GeekBudget.Entities.ServiceResult`1::get_Failed()": {
      "Lines": {
       "29": {
-       "Hits": 11
+       "Hits": 12
       }
      },
      "Branches": {
@@ -5435,46 +5071,46 @@
     "System.Void GeekBudget.Controllers.OperationController/<Update>d__8::MoveNext()": {
      "Lines": {
       "97": {
-       "Hits": 0
+       "Hits": 1
       },
       "98": {
-       "Hits": 0
+       "Hits": 1
       },
       "99": {
-       "Hits": 0
+       "Hits": 1
       },
       "100": {
-       "Hits": 0
+       "Hits": 1
       },
       "101": {
-       "Hits": 0
+       "Hits": 1
       },
       "102": {
-       "Hits": 0
+       "Hits": 1
       },
       "104": {
-       "Hits": 0
+       "Hits": 1
       },
       "105": {
        "Hits": 0
       },
       "107": {
-       "Hits": 0
+       "Hits": 1
       },
       "109": {
-       "Hits": 0
+       "Hits": 1
       },
       "111": {
-       "Hits": 0
+       "Hits": 1
       },
       "112": {
-       "Hits": 0
+       "Hits": 1
       },
       "114": {
        "Hits": 0
       },
       "115": {
-       "Hits": 0
+       "Hits": 1
       }
      },
      "Branches": {

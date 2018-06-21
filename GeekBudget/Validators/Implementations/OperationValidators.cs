@@ -29,7 +29,7 @@ namespace GeekBudget.Validators.Implementations
         {
             var errors = new List<Error>();
 
-            if (!await _context.Tabs.AnyAsync(t => Equals(t.Id, operation.Id)))
+            if (!await _context.Operations.AnyAsync(t => Equals(t.Id, operation.Id)))
                 errors.Add(NoOperationWithId(operation.Id));
 
             return await Task.FromResult(errors);
