@@ -166,6 +166,26 @@ namespace GeekBudget.Tests.Controllers
             //Assert
             Assert.NotNull(result);
         }
+
+        [Fact]
+        public async Task Update_DoesNotUpdateIncorrectOperation()
+        {
+            //Arrange
+            var service = new Mock<IOperationService>();
+            var validators = new Mock<IOperationValidators>();
+            validators.Setup(x => x.NotNull(It.IsAny<OperationViewModel>())).ReturnsAsync(new List<Error>()
+            {
+                new Error() {Id = 999, Description = "testing-error"}
+            });
+            var mapping = new MappingService();
+            var controller = new OperationController(service.Object, validators.Object, mapping);
+
+            //Act
+            var result = await controller.Update(new OperationViewModel()) as BadRequestObjectResult;
+
+            //Assert
+            Assert.NotNull(result);
+        }
     }
 }
 

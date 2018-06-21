@@ -63,7 +63,7 @@ namespace GeekBudget.Tests.Validators
             var validator = new TabValidators(context.Object);
 
             // Act
-            var result = await validator.TabTypeRequired(new TabViewModel() { Type = Enums.TabType.Account});
+            var result = await validator.TabTypeRequired(new TabViewModel() { Type = TabType.Account});
 
             // Assert
             Assert.Empty(result);
