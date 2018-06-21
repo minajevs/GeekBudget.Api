@@ -15,6 +15,6 @@ namespace GeekBudget.Services
         Task<ServiceResult> Remove(int id);
         Task<ServiceResult> Update(int id, Tab source);
         Task<ServiceResult<bool>> IsTabOperationAllowed(Tab tabFrom, Tab tabTo);
-        Task<ServiceResult> AddOperation(int id, Operation operation, Enums.TargetTabType targetType);
+        Task<ServiceResult> AddOperation(int id, Operation operation, TargetTabType targetType);
     }
 }

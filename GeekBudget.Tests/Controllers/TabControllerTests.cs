@@ -7,7 +7,6 @@ using GeekBudget.Models;
 using GeekBudget.Models.ViewModels;
 using GeekBudget.Services;
 using GeekBudget.Entities;
-using static GeekBudget.Entities.Enums;
 using GeekBudget.Services.Implementations;
 using GeekBudget.Validators;
 using Microsoft.AspNetCore.Mvc;

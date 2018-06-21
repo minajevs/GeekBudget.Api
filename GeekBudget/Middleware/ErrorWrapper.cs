@@ -36,7 +36,7 @@ namespace GeekBudget.Middleware
                 context.Response.StatusCode = 400;
                 errorMsg = ex.Message;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 context.Response.StatusCode = 500;
                 //errorMsg = "internal server error";

@@ -74,21 +74,21 @@ namespace GeekBudget.Services.Implementations
                 return ServiceResult<int>.From(resultOperationAllowed);
             
             if(!resultOperationAllowed.Data)
-                return new ServiceResult<int>(Enums.ServiceResultStatus.Failure, AddOperationNotAllowed());
+                return new ServiceResult<int>(ServiceResultStatus.Failure, AddOperationNotAllowed());
 
             using (var scope = new TransactionScope())
             {
                 // Add operation to 'From' tab
                 operation.From = tabFrom;
 
-                var resultAddFrom = await _tabService.AddOperation(tabFrom.Id, operation, Enums.TargetTabType.From);
+                var resultAddFrom = await _tabService.AddOperation(tabFrom.Id, operation, TargetTabType.From);
                 if(resultAddFrom.Failed)
                     return ServiceResult<int>.From(resultAddFrom);
             
                 // Add operation to 'To' tab
                 operation.To = tabTo;
             
-                var resultAddTo = await _tabService.AddOperation(tabTo.Id, operation, Enums.TargetTabType.To);
+                var resultAddTo = await _tabService.AddOperation(tabTo.Id, operation, TargetTabType.To);
                 if(resultAddTo.Failed)
                     return ServiceResult<int>.From(resultAddTo);
             
@@ -113,7 +113,7 @@ namespace GeekBudget.Services.Implementations
 
             var operation = resultGet.Data.FirstOrDefault();
             if(operation == null)
-                return new ServiceResult(Enums.ServiceResultStatus.Warning, NoOperationWithId(id));
+                return new ServiceResult(ServiceResultStatus.Warning, NoOperationWithId(id));
      
             using (var scope = new TransactionScope())
             {
@@ -131,7 +131,7 @@ namespace GeekBudget.Services.Implementations
                 scope.Complete();
             }
 
-            return new ServiceResult(Enums.ServiceResultStatus.Success);
+            return new ServiceResult(ServiceResultStatus.Success);
         }
 
         public async Task<ServiceResult> Update(int id, Operation source, OperationViewModel vm) // TODO: refactor not to use VM in service?
@@ -143,7 +143,7 @@ namespace GeekBudget.Services.Implementations
 
             var operation = result.Data.FirstOrDefault();
             if (operation == null)
-                return new ServiceResult(Enums.ServiceResultStatus.Failure, NoOperationWithId(id));
+                return new ServiceResult(ServiceResultStatus.Failure, NoOperationWithId(id));
 
             using (var scope = new TransactionScope())
             {
@@ -203,7 +203,7 @@ namespace GeekBudget.Services.Implementations
                     return ServiceResult.From(resultOperationAllowed);
             
                 if(!resultOperationAllowed.Data)
-                    return new ServiceResult(Enums.ServiceResultStatus.Failure, ChangeOperationNotAllowed());
+                    return new ServiceResult(ServiceResultStatus.Failure, ChangeOperationNotAllowed());
 
                 
                 if (fromTabChange)
@@ -222,7 +222,7 @@ namespace GeekBudget.Services.Implementations
                 
                 scope.Complete();
 
-                return new ServiceResult(Enums.ServiceResultStatus.Success);
+                return new ServiceResult(ServiceResultStatus.Success);
             }
         }
 

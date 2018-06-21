@@ -4,11 +4,11 @@ namespace GeekBudget.Entities
 {
     public static class Dictionaries
     {
-        public static Dictionary<Enums.TabType, IEnumerable<Enums.TabType>> AllowedTabTypes = new Dictionary<Enums.TabType, IEnumerable<Enums.TabType>>()
+        public static Dictionary<TabType, IEnumerable<TabType>> AllowedTabTypes = new Dictionary<TabType, IEnumerable<TabType>>()
         {
-            {Enums.TabType.Income, new [] { Enums.TabType.Account}},
-            {Enums.TabType.Account, new [] { Enums.TabType.Account, Enums.TabType.Expense}},
-            {Enums.TabType.Expense, new Enums.TabType [] {}}            
+            {TabType.Income, new [] { TabType.Account}},
+            {TabType.Account, new [] { TabType.Account, TabType.Expense}},
+            {TabType.Expense, new TabType [] {}}            
         };
     }
 } 

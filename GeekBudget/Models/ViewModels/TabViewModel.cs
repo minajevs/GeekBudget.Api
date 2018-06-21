@@ -10,7 +10,7 @@ namespace GeekBudget.Models.ViewModels
     public class TabViewModel
     {
         public int Id { get; set; }
-        public Enums.TabType? Type { get; set; }
+        public TabType? Type { get; set; }
         public string Name { get; set; }
         public decimal? Amount { get; set; }
         public string Currency { get; set; } = "EUR";

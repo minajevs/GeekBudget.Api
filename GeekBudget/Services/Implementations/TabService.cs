@@ -63,13 +63,13 @@ namespace GeekBudget.Services.Implementations
                 .FirstOrDefaultAsync(t => Equals(t.Id, id));
 
             if (tab == null)
-                return new ServiceResult(Enums.ServiceResultStatus.Warning, NoTabWithId(id));
+                return new ServiceResult(ServiceResultStatus.Warning, NoTabWithId(id));
 
             _context.Tabs.Remove(tab);
 
             await _context.SaveChangesAsync();
 
-            return new ServiceResult(Enums.ServiceResultStatus.Success);
+            return new ServiceResult(ServiceResultStatus.Success);
         }
 
         public async Task<ServiceResult> Update(int id, Tab source)
@@ -82,7 +82,7 @@ namespace GeekBudget.Services.Implementations
             var tab = result.Data;
 
             if (tab == null)
-                return new ServiceResult(Enums.ServiceResultStatus.Failure, NoTabWithId(id));
+                return new ServiceResult(ServiceResultStatus.Failure, NoTabWithId(id));
 
             tab.MapNewValues(source,
                 x => x.Name,
@@ -92,7 +92,7 @@ namespace GeekBudget.Services.Implementations
 
             await _context.SaveChangesAsync();
 
-            return new ServiceResult(Enums.ServiceResultStatus.Success);
+            return new ServiceResult(ServiceResultStatus.Success);
         }
 
         public Task<ServiceResult<bool>> IsTabOperationAllowed(Tab tabFrom, Tab tabTo)
@@ -101,7 +101,7 @@ namespace GeekBudget.Services.Implementations
             return Task.FromResult(new ServiceResult<bool>(tabOperationAllowed));
         }
         
-        public async Task<ServiceResult> AddOperation(int id, Operation operation, Enums.TargetTabType targetType)
+        public async Task<ServiceResult> AddOperation(int id, Operation operation, TargetTabType targetType)
         {
             var result = await Get(id);
             
@@ -111,18 +111,18 @@ namespace GeekBudget.Services.Implementations
             var tab = result.Data;
 
             if (tab == null)
-                return new ServiceResult(Enums.ServiceResultStatus.Failure, NoTabWithId(id));
+                return new ServiceResult(ServiceResultStatus.Failure, NoTabWithId(id));
 
-            var tabOperations = targetType == Enums.TargetTabType.From
+            var tabOperations = targetType == TargetTabType.From
                 ? tab.OperationsFrom
                 : tab.OperationsTo;
             
             if(tabOperations.Any(o => o.Id == operation.Id))
-                return new ServiceResult(Enums.ServiceResultStatus.Failure, OperationAlreadyExists(operation.Id, tab.Id));
+                return new ServiceResult(ServiceResultStatus.Failure, OperationAlreadyExists(operation.Id, tab.Id));
             
             // TODO: implement currency check and adjust!
 
-            var amount = targetType == Enums.TargetTabType.From
+            var amount = targetType == TargetTabType.From
                 ? -operation.Amount
                 : operation.Amount;
 
@@ -130,7 +130,7 @@ namespace GeekBudget.Services.Implementations
 
             await _context.SaveChangesAsync();
             
-            return new ServiceResult(Enums.ServiceResultStatus.Success);
+            return new ServiceResult(ServiceResultStatus.Success);
         }
     }
 }

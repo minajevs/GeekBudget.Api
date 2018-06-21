@@ -5,26 +5,23 @@ using System.Threading.Tasks;
 
 namespace GeekBudget.Entities
 {
-    public class Enums
+    public enum TargetTabType
     {
-        public enum TargetTabType
-        {
-            From,
-            To
-        }
-
-        public enum TabType
-        {
-            Income,
-            Account,
-            Expense
-        }
-        
-        public enum ServiceResultStatus
-        {
-            Success,
-            Warning,
-            Failure
-        }
+        From,
+        To
+    }
+    
+    public enum TabType
+    {
+        Income,
+        Account,
+        Expense
+    }
+    
+    public enum ServiceResultStatus
+    {
+        Success,
+        Warning,
+        Failure
     }
 }
