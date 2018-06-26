@@ -14,7 +14,8 @@ using GeekBudget.Validators;
 namespace GeekBudget.Controllers
 {
     [Route("api/[controller]")]
-    public class OperationController : Controller
+    [ApiController]
+    public class OperationController : ControllerBase
     {
         private readonly IOperationService _operationService;
         private readonly IOperationValidators _operationValidators;
@@ -28,7 +29,7 @@ namespace GeekBudget.Controllers
         }
 
         [HttpGet("GetAll")]
-        public async Task<IActionResult> GetAll()
+        public async Task<ActionResult<IEnumerable<OperationViewModel>>> GetAll()
         {
             var result  = await _operationService.GetAll();
             
@@ -39,7 +40,7 @@ namespace GeekBudget.Controllers
         }
 
         [HttpPost("Get")]
-        public async Task<IActionResult> Get([FromBody] OperationFilter filter)
+        public async Task<ActionResult<IEnumerable<OperationViewModel>>> Get([FromBody] OperationFilter filter)
         {
             var result = await _operationService.Get(filter);
 
@@ -56,7 +57,7 @@ namespace GeekBudget.Controllers
 
         // GET: api/values
         [HttpPost("Add")]
-        public async Task<IActionResult> Add([FromBody] OperationViewModel vm)
+        public async Task<ActionResult<int>> Add([FromBody] OperationViewModel vm)
         {
             var errors = await vm.Validate(
                 _operationValidators.NotNull,

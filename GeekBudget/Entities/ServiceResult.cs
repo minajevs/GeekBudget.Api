@@ -13,7 +13,7 @@ namespace GeekBudget.Entities
         
         public ServiceResult(ServiceResultStatus status, Error error) : this(status, new List<Error>{error}){}
 
-        public static ServiceResult From<T>(ServiceResult<T> result)
+        public new static ServiceResult From<T>(ServiceResult<T> result)
         {
             return new ServiceResult(result.Status, result.Errors);
         }
