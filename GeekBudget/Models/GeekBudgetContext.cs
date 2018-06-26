@@ -11,8 +11,11 @@ namespace GeekBudget.Models
     {
         //public GeekBudgetContext() { }
         public GeekBudgetContext(DbContextOptions options)
-            :base(options)
-        { }
+            : base(options)
+        {
+            base.Database.EnsureCreated();
+            //base.Database.Migrate();
+        }
 
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<Tab> Tabs { get; set; }

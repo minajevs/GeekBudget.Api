@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.Security.Cryptography.X509Certificates;
 using System.IdentityModel.Tokens.Jwt;
+using System.IO;
 using GeekBudget.Middleware;
 using Microsoft.EntityFrameworkCore;
 using GeekBudget.Models;
@@ -19,14 +20,20 @@ using GeekBudget.Services;
 using GeekBudget.Services.Implementations;
 using GeekBudget.Validators;
 using GeekBudget.Validators.Implementations;
+using Microsoft.Data.Sqlite;
 using Newtonsoft.Json;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace GeekBudget
 {
     public class Startup
     {
+        private IHostingEnvironment _appHost;
+
         public Startup(IHostingEnvironment env)
         {
+            _appHost = env;
+
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
@@ -40,6 +47,13 @@ namespace GeekBudget
         // This method gets called by the runtime. Use this method to add services to the container.
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
+            // Add swagger
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Info {Title = "GeekBudget API", Version = "v1"});
+            });
+            services.ConfigureSwaggerGen(x => x.CustomSchemaIds(y => y.FullName));
+
             // register cors
             services.AddCors();
 
@@ -68,7 +82,7 @@ namespace GeekBudget
 
             services.AddTransient<ITabValidators, TabValidators>();
             services.AddTransient<IOperationValidators, OperationValidators>();
-            
+
             // register swagger generator
             // services.AddSwaggerGen()
 
@@ -91,6 +105,13 @@ namespace GeekBudget
             // Exception handling
             // app.UseMiddleware<ErrorWrapper>(); // TODO: Is it still needed?!
 
+            // Enable Swagger
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "GeekBudget API v1");
+            });
+
             // Enable CORS
             app.UseCors(builder => builder
                 .AllowAnyOrigin()           //TODO: setup allowed urls
@@ -104,7 +125,7 @@ namespace GeekBudget
         {
             using (var scope = serviceProvider.GetService<IServiceScopeFactory>().CreateScope())
             {
-                scope.ServiceProvider.GetRequiredService<GeekBudgetContext>().Database.Migrate();
+                // scope.ServiceProvider.GetRequiredService<GeekBudgetContext>().Database.Migrate();
             }
         }
     }
