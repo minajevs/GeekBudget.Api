@@ -14,7 +14,6 @@ namespace GeekBudget.Models
             : base(options)
         {
             base.Database.EnsureCreated();
-            //base.Database.Migrate();
         }
 
         public virtual DbSet<User> Users { get; set; }

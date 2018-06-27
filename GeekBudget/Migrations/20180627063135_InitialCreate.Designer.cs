@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GeekBudget.Migrations
 {
     [DbContext(typeof(GeekBudgetContext))]
-    [Migration("20180621141236_InitialCreate")]
+    [Migration("20180627063135_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
