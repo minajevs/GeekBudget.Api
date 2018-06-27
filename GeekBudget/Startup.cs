@@ -20,7 +20,6 @@ using GeekBudget.Services;
 using GeekBudget.Services.Implementations;
 using GeekBudget.Validators;
 using GeekBudget.Validators.Implementations;
-using Microsoft.Data.Sqlite;
 using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.Swagger;
 

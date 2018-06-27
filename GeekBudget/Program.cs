@@ -13,15 +13,11 @@ namespace GeekBudget
     {
         public static void Main(string[] args)
         {
-            //you must must have a method/function name "BuildWebHost" 
-            //otherwise EF Core Migrations will throw an execption 
-            //that you need to have an implementation of IDesignTimeDbContextFactory
-            BuildWebHost(args).Run();
+            CreateWebHostBuilder(args).Build().Run();
         }
 
-        public static IWebHost BuildWebHost(string[] args) =>
+        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>()
-                .Build();
+                .UseStartup<Startup>();
     }
 }

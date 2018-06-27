@@ -9,7 +9,6 @@ using GeekBudget.Models.ViewModels;
 using GeekBudget.Queries;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Extensions.Internal;
-using Microsoft.VisualStudio.Web.CodeGeneration.Templating;
 
 namespace GeekBudget.Services.Implementations
 {
