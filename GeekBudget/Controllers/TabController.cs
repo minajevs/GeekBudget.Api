@@ -16,7 +16,8 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 namespace GeekBudget.Controllers
 {
     [Route("api/[controller]")]
-    public class TabController : Controller
+    [ApiController]
+    public class TabController : ControllerBase
     {
         private readonly ITabService _tabService;
         private readonly ITabValidators _tabValidators;
@@ -31,7 +32,7 @@ namespace GeekBudget.Controllers
 
         // GET api/values
         [HttpGet("GetAll")]
-        public async Task<IActionResult> GetAll()
+        public async Task<ActionResult<IEnumerable<TabViewModel>>> GetAll()
         {
             var result = await _tabService.GetAll();
 
@@ -42,7 +43,7 @@ namespace GeekBudget.Controllers
         }
 
         [HttpGet("Get/{id}")]
-        public async Task<IActionResult> Get(int id)
+        public async Task<ActionResult<TabViewModel>> Get(int id)
         {
             var result = await _tabService.Get(id);
 
@@ -61,7 +62,7 @@ namespace GeekBudget.Controllers
 
         // POST: api/values
         [HttpPost("Add")]
-        public async Task<IActionResult> Add([FromBody]TabViewModel vm)
+        public async Task<ActionResult<int>> Add([FromBody]TabViewModel vm)
         {
             var errors = await vm.Validate(
                 _tabValidators.NotNull,

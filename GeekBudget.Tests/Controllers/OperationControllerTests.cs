@@ -37,11 +37,10 @@ namespace GeekBudget.Tests.Controllers
             var controller = new OperationController(service.Object, validators.Object, mapping);
 
             //Act
-            var result = await controller.GetAll() as OkObjectResult;
+            var result = await controller.GetAll();
 
             //Assert
-            Assert.NotNull(result);
-            var data = result.Value as IEnumerable<OperationViewModel>;
+            var data = result.Value;
             Assert.NotNull(data);
             Assert.Equal(2, data.Count());
         }
@@ -62,11 +61,10 @@ namespace GeekBudget.Tests.Controllers
             var controller = new OperationController(service.Object, validators.Object, mapping);
 
             //Act
-            var result = await controller.Get(new OperationFilter()) as OkObjectResult;
+            var result = await controller.Get(new OperationFilter());
 
             //Assert
-            Assert.NotNull(result);
-            var data = result.Value as IEnumerable<OperationViewModel>;
+            var data = result.Value;
             Assert.NotNull(data);
             Assert.Equal(2, data.Count());
         }
@@ -83,10 +81,10 @@ namespace GeekBudget.Tests.Controllers
             var controller = new OperationController(service.Object, validators.Object, mapping);
 
             //Act
-            var result = await controller.Get(new OperationFilter()) as NotFoundResult;
+            var result = await controller.Get(new OperationFilter());
 
             //Assert
-            Assert.NotNull(result);
+            Assert.Null(result.Value);
         }
 
         [Fact]
@@ -100,12 +98,10 @@ namespace GeekBudget.Tests.Controllers
             var controller = new OperationController(service.Object, validators.Object, mapping);
 
             //Act
-            var result = await controller.Add(new OperationViewModel()) as OkObjectResult;
+            var result = await controller.Add(new OperationViewModel());
 
             //Assert
-            Assert.NotNull(result);
-            var data = (int)result.Value;
-            Assert.Equal(1, data);
+            Assert.Equal(1, result.Value);
         }
 
         [Fact]
@@ -123,14 +119,16 @@ namespace GeekBudget.Tests.Controllers
             var controller = new OperationController(service.Object, validators.Object, mapping);
 
             //Act
-            var result = await controller.Add(new OperationViewModel()) as BadRequestObjectResult;
+            var result = await controller.Add(new OperationViewModel());
+            var innerResult = result.Result as BadRequestObjectResult;
 
-            //Assert
-            Assert.NotNull(result);
-            var data = (List<Error>)result.Value;
-            Assert.Single(data);
-            Assert.Equal(999, data.SingleOrDefault()?.Id);
-            Assert.Equal("testing-error", data.SingleOrDefault()?.Description);
+            // Assert
+            Assert.NotNull(innerResult);
+            var errors = innerResult.Value as List<Error>;
+            Assert.NotNull(errors);
+            Assert.Single(errors);
+            Assert.Equal(999, errors.SingleOrDefault()?.Id);
+            Assert.Equal("testing-error", errors.SingleOrDefault()?.Description);
         }
 
         [Fact]
@@ -188,165 +186,3 @@ namespace GeekBudget.Tests.Controllers
         }
     }
 }
-
-//        [Fact]
-//        public void CanUpdate()
-//        {
-//            using (var connection = new TestingConnection())
-//            {
-//                //Arrange
-//                var context = connection.CreateNewContext();
-
-//                context.Database.EnsureCreated();
-//                var tab1 = context.Tabs.Add(new Tab() { Id = 1, Amount = 500, Type = Enums.TabType.Account }).Entity;
-//                var tab2 = context.Tabs.Add(new Tab() { Id = 2, Amount = 500, Type = Enums.TabType.Account }).Entity;
-//                context.Operations.Add(new Operation() { Id = 1, From = tab1, To = tab2, Amount = 100 });
-//                context.SaveChanges();
-
-//                //Act
-//                context = connection.CreateNewContext();
-//                var controller = PrepareController(context);
-
-//                var result = controller.Update(new OperationViewModel() { Id = 1, Amount = 200, From = 2, To = 1 });
-
-//                //Assert
-//                context = connection.CreateNewContext();
-//                Assert.IsType<OkResult>(result);
-//                Assert.Equal(200, context.Operations.FirstOrDefault(o => o.Id == 1).Amount);
-//                Assert.Equal(600, context.Tabs.FirstOrDefault(t => t.Id == 1).Amount);
-//                Assert.Equal(400, context.Tabs.FirstOrDefault(t => t.Id == 2).Amount);
-//            }
-//        }
-
-//        [Fact]
-//        public void CantUpdateWithNullValue()
-//        {
-//            using (var connection = new TestingConnection())
-//            {
-//                //Arrange
-//                var context = connection.CreateNewContext();
-
-//                context.Database.EnsureCreated();
-//                var tab1 = context.Tabs.Add(new Tab() { Id = 1, Amount = 500 }).Entity;
-//                var tab2 = context.Tabs.Add(new Tab() { Id = 2, Amount = 500 }).Entity;
-//                context.Operations.Add(new Operation() { Id = 1, From = tab1, To = tab2, Amount = 100 });
-//                context.SaveChanges();
-
-//                //Act
-//                context = connection.CreateNewContext();
-//                var controller = PrepareController(context);
-
-//                var result = controller.Update(null);
-
-//                //Assert
-//                context = connection.CreateNewContext();
-//                Assert.IsType<BadRequestObjectResult>(result);
-//            }
-//        }
-
-//        [Fact]
-//        public void CantUpdateWithWrongValue()
-//        {
-//            using (var connection = new TestingConnection())
-//            {
-//                //Arrange
-//                var context = connection.CreateNewContext();
-
-//                context.Database.EnsureCreated();
-//                var tab1 = context.Tabs.Add(new Tab() { Id = 1, Amount = 500 }).Entity;
-//                var tab2 = context.Tabs.Add(new Tab() { Id = 2, Amount = 500 }).Entity;
-//                context.Operations.Add(new Operation() { Id = 1, From = tab1, To = tab2, Amount = 100 });
-//                context.SaveChanges();
-
-//                //Act
-//                context = connection.CreateNewContext();
-//                var controller = PrepareController(context);
-//                controller.ModelState.AddModelError("ModelValidation", "TestError");
-
-//                var result = controller.Update(new OperationViewModel() { Id = 1, Amount = 200 });
-
-//                //Assert
-//                context = connection.CreateNewContext();
-//                Assert.IsType<BadRequestObjectResult>(result);
-//            }
-//        }
-
-//        [Fact]
-//        public void CantUpdateNotExistingOperation()
-//        {
-//            using (var connection = new TestingConnection())
-//            {
-//                //Arrange
-//                var context = connection.CreateNewContext();
-
-//                context.Database.EnsureCreated();
-//                var tab1 = context.Tabs.Add(new Tab() { Id = 1, Amount = 500 }).Entity;
-//                var tab2 = context.Tabs.Add(new Tab() { Id = 2, Amount = 500 }).Entity;
-//                context.Operations.Add(new Operation() { Id = 1, From = tab1, To = tab2, Amount = 100 });
-//                context.SaveChanges();
-
-//                //Act
-//                context = connection.CreateNewContext();
-//                var controller = PrepareController(context);
-
-//                var result = controller.Update(new OperationViewModel() { Id = 99, Amount = 200 });
-
-//                //Assert
-//                context = connection.CreateNewContext();
-//                Assert.IsType<BadRequestObjectResult>(result);
-//            }
-//        }
-
-//        [Fact]
-//        public void CantUpdateWithWrongNewFromTab()
-//        {
-//            using (var connection = new TestingConnection())
-//            {
-//                //Arrange
-//                var context = connection.CreateNewContext();
-
-//                context.Database.EnsureCreated();
-//                var tab1 = context.Tabs.Add(new Tab() { Id = 1, Amount = 500 }).Entity;
-//                var tab2 = context.Tabs.Add(new Tab() { Id = 2, Amount = 500 }).Entity;
-//                context.Operations.Add(new Operation() { Id = 1, From = tab1, To = tab2, Amount = 100 });
-//                context.SaveChanges();
-
-//                //Act
-//                context = connection.CreateNewContext();
-//                var controller = PrepareController(context);
-
-//                var result = controller.Update(new OperationViewModel() { Id = 1, Amount = 200, From = 99 });
-
-//                //Assert
-//                context = connection.CreateNewContext();
-//                Assert.IsType<BadRequestObjectResult>(result);
-//            }
-//        }
-
-//        [Fact]
-//        public void CantUpdateWithWrongNewToTab()
-//        {
-//            using (var connection = new TestingConnection())
-//            {
-//                //Arrange
-//                var context = connection.CreateNewContext();
-
-//                context.Database.EnsureCreated();
-//                var tab1 = context.Tabs.Add(new Tab() { Id = 1, Amount = 500 }).Entity;
-//                var tab2 = context.Tabs.Add(new Tab() { Id = 2, Amount = 500 }).Entity;
-//                context.Operations.Add(new Operation() { Id = 1, From = tab1, To = tab2, Amount = 100 });
-//                context.SaveChanges();
-
-//                //Act
-//                context = connection.CreateNewContext();
-//                var controller = PrepareController(context);
-
-//                var result = controller.Update(new OperationViewModel() { Id = 1, Amount = 200, To = 99 });
-
-//                //Assert
-//                context = connection.CreateNewContext();
-//                Assert.IsType<BadRequestObjectResult>(result);
-//            }
-//        }
-//    }
-//}

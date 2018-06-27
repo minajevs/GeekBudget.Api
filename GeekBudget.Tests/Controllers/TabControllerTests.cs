@@ -34,11 +34,10 @@ namespace GeekBudget.Tests.Controllers
             var controller = new TabController(service.Object, validators.Object, mapping);
             
             // Act
-            var result = await controller.GetAll() as OkObjectResult;
+            var result = await controller.GetAll();
 
             // Assert
-            Assert.NotNull(result);
-            var data = result.Value as IEnumerable<TabViewModel>;
+            var data = result.Value;
             Assert.NotNull(data);
             Assert.Equal(2, data.Count());
         }
@@ -55,11 +54,10 @@ namespace GeekBudget.Tests.Controllers
             var controller = new TabController(service.Object, validators.Object, mapping);
 
             // Act
-            var result = await controller.Get(1) as OkObjectResult;
+            var result = await controller.Get(1);
 
             // Assert
-            Assert.NotNull(result);
-            var data = result.Value as TabViewModel;
+            var data = result.Value;
             Assert.NotNull(data);
             Assert.Equal("testing-tab", data.Name);
         }
@@ -76,10 +74,10 @@ namespace GeekBudget.Tests.Controllers
             var controller = new TabController(service.Object, validators.Object, mapping);
 
             // Act
-            var result = await controller.Get(1) as NotFoundResult;
+            var result = await controller.Get(1);
 
             // Assert
-            Assert.NotNull(result);
+            Assert.Null(result.Value);
         }
 
         [Fact]
@@ -95,12 +93,10 @@ namespace GeekBudget.Tests.Controllers
             var controller = new TabController(service.Object, validators.Object, mapping);
 
             // Act
-            var result = await controller.Add(tab) as OkObjectResult;
+            var result = await controller.Add(tab);
 
             // Assert
-            Assert.NotNull(result);
-            var data = (int) result.Value;
-            Assert.Equal(1, data);
+            Assert.Equal(1, result.Value);
         }
 
         [Fact]
@@ -119,14 +115,15 @@ namespace GeekBudget.Tests.Controllers
             var controller = new TabController(service.Object, validators.Object, mapping);
 
             // Act
-            var result = await controller.Add(tab) as BadRequestObjectResult;
+            var result = await controller.Add(tab);
+            var innerResult = result.Result as BadRequestObjectResult;
 
             // Assert
-            Assert.NotNull(result);
-            var data = (List<Error>) result.Value;
-            Assert.Single(data);
-            Assert.Equal(999, data.SingleOrDefault()?.Id);
-            Assert.Equal("testing-error", data.SingleOrDefault()?.Description);
+            Assert.NotNull(innerResult);
+            var errors = innerResult.Value as List<Error>;
+            Assert.NotNull(errors);
+            Assert.Equal(999, errors.SingleOrDefault()?.Id);
+            Assert.Equal("testing-error", errors.SingleOrDefault()?.Description);
         }
 
         [Fact]
