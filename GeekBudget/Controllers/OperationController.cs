@@ -4,17 +4,19 @@ using System.Linq;
 using System.Threading.Tasks;
 using GeekBudget.Entities;
 using GeekBudget.Helpers;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 using GeekBudget.Models;
 using GeekBudget.Models.ViewModels;
 using GeekBudget.Services;
 using GeekBudget.Validators;
+using Microsoft.AspNetCore.Mvc;
 
 namespace GeekBudget.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
+    [Produces("application/json")]
     public class OperationController : ControllerBase
     {
         private readonly IOperationService _operationService;
@@ -29,18 +31,23 @@ namespace GeekBudget.Controllers
         }
 
         [HttpGet("GetAll")]
-        public async Task<ActionResult<IEnumerable<OperationViewModel>>> GetAll()
+        [ProducesResponseType(typeof(Error[]), 400)]
+        public async Task<ActionResult<OperationViewModel[]>> GetAll()
         {
             var result  = await _operationService.GetAll();
-            
+
             if (!result.Failed)
-                return Ok(_mappingService.Map(result.Data));
+                return _mappingService
+                    .Map(result.Data)
+                    .ToArray();
             else
                 return BadRequest(result.Errors);
         }
 
         [HttpPost("Get")]
-        public async Task<ActionResult<IEnumerable<OperationViewModel>>> Get([FromBody] OperationFilter filter)
+        [ProducesResponseType(typeof(Error[]), 400)]
+        [ProducesResponseType(404)]
+        public async Task<ActionResult<OperationViewModel[]>> Get([FromBody] OperationFilter filter)
         {
             var result = await _operationService.Get(filter);
 
@@ -49,14 +56,16 @@ namespace GeekBudget.Controllers
                 if (!result.Data.Any())
                     return NotFound();
                 else
-                    return Ok(_mappingService.Map(result.Data));
+                    return _mappingService
+                        .Map(result.Data)
+                        .ToArray();
             }
             else
                 return BadRequest(result.Errors);
         }
 
-        // GET: api/values
         [HttpPost("Add")]
+        [ProducesResponseType(typeof(Error[]), 400)]
         public async Task<ActionResult<int>> Add([FromBody] OperationViewModel vm)
         {
             var errors = await vm.Validate(
@@ -67,7 +76,7 @@ namespace GeekBudget.Controllers
                 _operationValidators.FromTabExists,
                 _operationValidators.ToTabExists
             );
-            
+
             if (errors.Any())
                 return BadRequest(errors);
 
@@ -76,14 +85,15 @@ namespace GeekBudget.Controllers
             var result = await _operationService.Add(operation, vm.From ?? -1, vm.To ?? -1); // not null should be validated before
             
             if (!result.Failed)
-                return Ok(result.Data);
+                return result.Data;
             else
                 return BadRequest(result.Errors);
         }
 
         // DELETE api/values/5
         [HttpPost("Remove/{id}")]
-        public async Task<IActionResult> Remove(int id)
+        [ProducesResponseType(typeof(Error[]), 400)]
+        public async Task<ActionResult> Remove(int id)
         {
             var result = await _operationService.Remove(id);
 
@@ -94,7 +104,8 @@ namespace GeekBudget.Controllers
         }
 
         [HttpPost("Update")]
-        public async Task<IActionResult> Update([FromBody] OperationViewModel vm)
+        [ProducesResponseType(typeof(Error[]), 400)]
+        public async Task<ActionResult> Update([FromBody] OperationViewModel vm)
         {
             var errors = await vm.Validate(
                 _operationValidators.NotNull,

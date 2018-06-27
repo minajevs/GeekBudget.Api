@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using GeekBudget.Models;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
@@ -22,7 +23,7 @@ namespace GeekBudget.Entities
     public class ServiceResult<T>
     {
         public ServiceResultStatus Status { get; set; }
-        public IEnumerable<Error> Errors { get; set; }
+        public Error[] Errors { get; set; }
         public T Data { get; set; }
 
         public bool Succeeded => Status.Equals(ServiceResultStatus.Success);
@@ -35,7 +36,7 @@ namespace GeekBudget.Entities
         
         public ServiceResult(ServiceResultStatus status, IEnumerable<Error> errors) : this(status)
         {
-            Errors = errors;
+            Errors = errors.ToArray();
         }
         
         public ServiceResult(ServiceResultStatus status, Error error) : this(status, new List<Error>{error}){}

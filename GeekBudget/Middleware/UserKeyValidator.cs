@@ -20,7 +20,6 @@ namespace GeekBudget.Middleware
 
         public async Task Invoke(HttpContext context)
         {
-
             if (context.Request.Method != "OPTIONS") //Do not check if it is preflight cors request
             {
                 var userRepo = context.RequestServices.GetService(typeof(IUserRepository)) as IUserRepository;

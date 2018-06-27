@@ -15,8 +15,9 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace GeekBudget.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
+    [Produces("application/json")]
     public class TabController : ControllerBase
     {
         private readonly ITabService _tabService;
@@ -30,19 +31,23 @@ namespace GeekBudget.Controllers
             _mappingService = mappingService;
         }
 
-        // GET api/values
         [HttpGet("GetAll")]
-        public async Task<ActionResult<IEnumerable<TabViewModel>>> GetAll()
+        [ProducesResponseType(typeof(Error[]), 400)]
+        public async Task<ActionResult<TabViewModel[]>> GetAll()
         {
             var result = await _tabService.GetAll();
 
             if (!result.Failed)
-                return Ok(_mappingService.Map(result.Data));
+                return _mappingService
+                    .Map(result.Data)
+                    .ToArray();
             else
                 return BadRequest(result.Errors);
         }
 
         [HttpGet("Get/{id}")]
+        [ProducesResponseType(typeof(Error[]), 400)]
+        [ProducesResponseType(404)]
         public async Task<ActionResult<TabViewModel>> Get(int id)
         {
             var result = await _tabService.Get(id);
@@ -50,7 +55,7 @@ namespace GeekBudget.Controllers
             if (!result.Failed)
             {
                 if (result.Data != null)
-                    return Ok(_mappingService.Map(result.Data));
+                    return _mappingService.Map(result.Data);
                 else
                     return NotFound();
             }
@@ -62,6 +67,7 @@ namespace GeekBudget.Controllers
 
         // POST: api/values
         [HttpPost("Add")]
+        [ProducesResponseType(typeof(Error[]), 400)]
         public async Task<ActionResult<int>> Add([FromBody]TabViewModel vm)
         {
             var errors = await vm.Validate(
@@ -77,14 +83,15 @@ namespace GeekBudget.Controllers
             var result = await _tabService.Add(tab);
             
             if (!result.Failed)
-                return Ok(result.Data);
+                return result.Data;
             else
                 return BadRequest(result.Errors);
         }
 
         // DELETE api/values
         [HttpPost("Remove/{id}")]
-        public async Task<IActionResult> Remove(int id)
+        [ProducesResponseType(typeof(Error[]), 400)]
+        public async Task<ActionResult> Remove(int id)
         {
             var result = await _tabService.Remove(id);
             
@@ -95,7 +102,8 @@ namespace GeekBudget.Controllers
         }
 
         [HttpPost("Update")]
-        public async Task<IActionResult> Update([FromBody]TabViewModel vm)
+        [ProducesResponseType(typeof(Error[]), 400)]
+        public async Task<ActionResult> Update([FromBody]TabViewModel vm)
         {
             var errors = await vm.Validate(
                 _tabValidators.NotNull,
