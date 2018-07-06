@@ -8,11 +8,14 @@ using Microsoft.AspNetCore.Mvc;
 namespace GeekBudget.Controllers
 {
     [Route("api/[controller]")]
-    public class UserController : BaseController
+    public class UserController : ControllerBase
     {
-        private UserRepository _userRepository { get;}
+        private readonly IUserRepository _userRepository;
 
-        public UserController(GeekBudgetContext context) : base(context) => _userRepository = new UserRepository(context);
+        public UserController(IUserRepository userRepository)
+        {
+            _userRepository = userRepository;
+        } 
 
         [HttpPost("Add")]
         public IActionResult Add(string username)

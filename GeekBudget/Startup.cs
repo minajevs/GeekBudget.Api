@@ -95,9 +95,6 @@ namespace GeekBudget
             // Authentication
             app.UseMiddleware<UserKeyValidator>();
 
-            // Exception handling
-            // app.UseMiddleware<ErrorWrapper>(); // TODO: Is it still needed?!
-
             // Enable Swagger
             app.UseSwagger();
             app.UseSwaggerUI(c =>

@@ -6,6 +6,7 @@ using GeekBudget.Controllers;
 using GeekBudget.Models;
 using GeekBudget.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Moq;
 using Xunit;
 
 namespace GeekBudget.Tests.Controllers
@@ -13,49 +14,37 @@ namespace GeekBudget.Tests.Controllers
     public class UserControllerTests
     {
         [Fact]
-        public void CanAddNewUser()
+        public void Add_NewUser_ReturnsOk()
         {
-            using (var connection = new TestingConnection())
-            {
-                //Arrange
-                var context = connection.CreateNewContext();
+            //Arrange
+            var userRepo = new Mock<IUserRepository>();
+            userRepo.Setup(x => x.Add(It.IsAny<string>())).Returns("123");
 
-                context.Database.EnsureCreated();
-                context.SaveChanges();
+            //Act
+            var controller = new UserController(userRepo.Object);
 
-                //Act
-                context = connection.CreateNewContext();
-                var controller = new UserController(context);
+            var result = controller.Add("test-user");
 
-                var result = controller.Add("test-user");
-
-                //Assert
-                Assert.IsType<OkObjectResult>(result);
-                var data = ((OkObjectResult)result).Value as string;
-                Assert.NotNull(data);
-            }
+            //Assert
+            Assert.IsType<OkObjectResult>(result);
+            var data = ((OkObjectResult)result).Value as string;
+            Assert.NotNull(data);
         }
 
         [Fact]
         public void CantAddSameUserTwice()
         {
-            using (var connection = new TestingConnection())
-            {
-                //Arrange
-                var context = connection.CreateNewContext();
+            //Arrange
+            var userRepo = new Mock<IUserRepository>();
+            userRepo.Setup(x => x.Add(It.IsAny<string>())).Throws(new Exception());
 
-                context.Database.EnsureCreated();
-                context.Users.Add(new User() {Id = 1, Key = "test-key", Username = "test-user"});
-                context.SaveChanges();
+            //Act
+            var controller = new UserController(userRepo.Object);
 
-                //Act
-                var controller = new UserController(context);
+            var result = controller.Add("test-user");
 
-                var result = controller.Add("test-user");
-
-                //Assert
-                Assert.IsType<BadRequestObjectResult>(result);
-            }
+            //Assert
+            Assert.IsType<BadRequestObjectResult>(result);
         }
     }
 }

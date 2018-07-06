@@ -9,7 +9,6 @@ namespace GeekBudget.Models
 {
     public class GeekBudgetContext : DbContext, IGeekBudgetContext
     {
-        //public GeekBudgetContext() { }
         public GeekBudgetContext(DbContextOptions options)
             : base(options)
         {
