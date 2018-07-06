@@ -7,7 +7,9 @@ using System.Threading.Tasks;
 using GeekBudget.Entities;
 using GeekBudget.Helpers;
 using GeekBudget.Models;
+using GeekBudget.Models.Requests;
 using GeekBudget.Models.ViewModels;
+using GeekBudget.Validators;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,12 +17,6 @@ namespace GeekBudget.Services.Implementations
 {
     public class TabService : ITabService
     {
-        private static Error NoTabWithId(int id) =>
-            new Error {Id = 1101, Description = $"No Tab with id '{id}' was found!"};
-        
-        private static Error OperationAlreadyExists(int operationId, int tabId) =>
-            new Error {Id = 1102, Description = $"Operation with id '{operationId}' already exists on Tab with id '{tabId}'!"};
-
         private readonly IGeekBudgetContext _context;
 
         public TabService(IGeekBudgetContext context)
@@ -34,7 +30,7 @@ namespace GeekBudget.Services.Implementations
                 .AsNoTracking()
                 .ToListAsync();
 
-            return new ServiceResult<IEnumerable<Tab>>(tabs);
+            return tabs;
         }
 
         public async Task<ServiceResult<Tab>> Get(int id)
@@ -43,17 +39,22 @@ namespace GeekBudget.Services.Implementations
                 .AsNoTracking()
                 .SingleOrDefaultAsync(x => Equals(x.Id, id));
 
-            return new ServiceResult<Tab>(tab);
+            if (tab == null)
+                return Errors.TabWithIdDoesNotExist(id);
+
+            return tab;
         }
 
-        public async Task<ServiceResult<int>> Add(Tab tab)
+        public async Task<ServiceResult<int>> Add(AddTabRequest request)
         {
+            var tab = MappingFactory.Map(request);
+
             var addedTab = _context.Tabs
                 .Add(tab);
 
             await _context.SaveChangesAsync();
 
-            return new ServiceResult<int>(addedTab.Entity.Id);
+            return addedTab.Entity.Id;
         }
 
         public async Task<ServiceResult> Remove(int id)
@@ -63,42 +64,39 @@ namespace GeekBudget.Services.Implementations
                 .FirstOrDefaultAsync(t => Equals(t.Id, id));
 
             if (tab == null)
-                return new ServiceResult(ServiceResultStatus.Warning, NoTabWithId(id));
+                return new ServiceResult(ServiceResultStatus.Warning, Errors.TabWithIdDoesNotExist(id));
 
             _context.Tabs.Remove(tab);
 
             await _context.SaveChangesAsync();
 
-            return new ServiceResult(ServiceResultStatus.Success);
+            return null;
         }
 
-        public async Task<ServiceResult> Update(int id, Tab source)
+        public async Task<ServiceResult> Update(UpdateTabRequest request)
         {
-            var result = await Get(id);
-            
+            var result = await Get(request.Id);
             if(result.Failed)
                 return ServiceResult.From(result);
-            
+
             var tab = result.Data;
 
-            if (tab == null)
-                return new ServiceResult(ServiceResultStatus.Failure, NoTabWithId(id));
-
-            tab.MapNewValues(source,
-                x => x.Name,
-                x => x.Amount,
-                x => x.Currency,
-                x => x.Type);
+            tab.MapNewValues(request,
+                (x => x.Name, y => y.Name),
+                (x => x.Amount, y => y.Amount),
+                (x => x.Currency, y => y.Currency),
+                (x => x.Type, y => y.Type)
+                );
 
             await _context.SaveChangesAsync();
 
-            return new ServiceResult(ServiceResultStatus.Success);
+            return null;
         }
 
         public Task<ServiceResult<bool>> IsTabOperationAllowed(Tab tabFrom, Tab tabTo)
         {
             var tabOperationAllowed = Dictionaries.AllowedTabTypes[tabFrom.Type].Any(t => t == tabTo.Type);
-            return Task.FromResult(new ServiceResult<bool>(tabOperationAllowed));
+            return Task.FromResult((ServiceResult<bool>)tabOperationAllowed);
         }
         
         public async Task<ServiceResult> AddOperation(int id, Operation operation, TargetTabType targetType)
@@ -110,15 +108,12 @@ namespace GeekBudget.Services.Implementations
             
             var tab = result.Data;
 
-            if (tab == null)
-                return new ServiceResult(ServiceResultStatus.Failure, NoTabWithId(id));
-
             var tabOperations = targetType == TargetTabType.From
                 ? tab.OperationsFrom
                 : tab.OperationsTo;
             
             if(tabOperations.Any(o => o.Id == operation.Id))
-                return new ServiceResult(ServiceResultStatus.Failure, OperationAlreadyExists(operation.Id, tab.Id));
+                return Errors.OperationAlreadyExist(operation.Id, tab.Id);
             
             // TODO: implement currency check and adjust!
 
@@ -130,7 +125,7 @@ namespace GeekBudget.Services.Implementations
 
             await _context.SaveChangesAsync();
             
-            return new ServiceResult(ServiceResultStatus.Success);
+            return null;
         }
     }
 }

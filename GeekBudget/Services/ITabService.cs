@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using GeekBudget.Entities;
 using GeekBudget.Models;
+using GeekBudget.Models.Requests;
 using GeekBudget.Models.ViewModels;
 
 namespace GeekBudget.Services
@@ -11,9 +12,9 @@ namespace GeekBudget.Services
     {
         Task<ServiceResult<IEnumerable<Tab>>> GetAll();
         Task<ServiceResult<Tab>> Get(int id);
-        Task<ServiceResult<int>> Add(Tab tab);
+        Task<ServiceResult<int>> Add(AddTabRequest request);
         Task<ServiceResult> Remove(int id);
-        Task<ServiceResult> Update(int id, Tab source);
+        Task<ServiceResult> Update(UpdateTabRequest request);
         Task<ServiceResult<bool>> IsTabOperationAllowed(Tab tabFrom, Tab tabTo);
         Task<ServiceResult> AddOperation(int id, Operation operation, TargetTabType targetType);
     }

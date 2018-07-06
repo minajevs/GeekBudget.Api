@@ -26,7 +26,34 @@ namespace GeekBudget.Helpers
                     property.SetValue(target, newValue, null);
             }
         }
-        
+
+        public static void MapNewValues<T1, T2>(this T1 target, T2 source, params (Expression<Func<T1, object>> target, Expression<Func<T2, object>> source)[] expressions)
+        {
+            foreach (var expression in expressions)
+            {
+                var sourceMemberExpression = GetMemberExpression(expression.source);
+                if (sourceMemberExpression == null)
+                    throw new ArgumentException("Must be a property selector", nameof(expression.source));
+
+                var targetMemberExpression = GetMemberExpression(expression.target);
+                if (targetMemberExpression == null)
+                    throw new ArgumentException("Must be a property selector", nameof(expression.target));
+
+                var sourceProperty = sourceMemberExpression.Member as PropertyInfo;
+                if (sourceProperty == null)
+                    throw new ArgumentException("Expression refers to a field, not a property", nameof(expression.source));
+
+                var targetProperty = targetMemberExpression.Member as PropertyInfo;
+                if (targetProperty == null)
+                    throw new ArgumentException("Expression refers to a field, not a property", nameof(expression.target));
+
+                var newValue = sourceProperty.GetValue(source); // value from new object
+
+                if (newValue != null)
+                    targetProperty.SetValue(target, newValue, null);
+            }
+        }
+
         private static MemberExpression GetMemberExpression<T>(
             Expression<Func<T,object>> exp
         ) {

@@ -7,8 +7,10 @@ using GeekBudget.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using GeekBudget.Models;
+using GeekBudget.Models.Requests;
 using GeekBudget.Models.ViewModels;
 using GeekBudget.Services;
+using GeekBudget.Services.Implementations;
 using GeekBudget.Validators;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -21,26 +23,20 @@ namespace GeekBudget.Controllers
     public class TabController : ControllerBase
     {
         private readonly ITabService _tabService;
-        private readonly ITabValidators _tabValidators;
-        private readonly IMappingService _mappingService;
 
-        public TabController(ITabService tabService, ITabValidators tabValidators, IMappingService mappingService)
+        public TabController(ITabService tabService)
         {
             _tabService = tabService;
-            _tabValidators = tabValidators;
-            _mappingService = mappingService;
         }
 
         [HttpGet("GetAll")]
         [ProducesResponseType(typeof(Error[]), 400)]
-        public async Task<ActionResult<TabViewModel[]>> GetAll()
+        public async Task<ActionResult<TabVm[]>> GetAll()
         {
             var result = await _tabService.GetAll();
 
             if (!result.Failed)
-                return _mappingService
-                    .Map(result.Data)
-                    .ToArray();
+                return MappingFactory.Map(result.Data);
             else
                 return BadRequest(result.Errors);
         }
@@ -48,14 +44,14 @@ namespace GeekBudget.Controllers
         [HttpGet("Get/{id}")]
         [ProducesResponseType(typeof(Error[]), 400)]
         [ProducesResponseType(404)]
-        public async Task<ActionResult<TabViewModel>> Get(int id)
+        public async Task<ActionResult<TabVm>> Get(int id)
         {
             var result = await _tabService.Get(id);
 
             if (!result.Failed)
             {
                 if (result.Data != null)
-                    return _mappingService.Map(result.Data);
+                    return MappingFactory.Map(result.Data);
                 else
                     return NotFound();
             }
@@ -68,19 +64,16 @@ namespace GeekBudget.Controllers
         // POST: api/values
         [HttpPost("Add")]
         [ProducesResponseType(typeof(Error[]), 400)]
-        public async Task<ActionResult<int>> Add([FromBody]TabViewModel vm)
+        public async Task<ActionResult<int>> Add([FromBody]TabVm vm)
         {
-            var errors = await vm.Validate(
-                _tabValidators.NotNull,
-                _tabValidators.TabTypeRequired
-            );
+            var request = new AddTabRequest();
+
+            var errors = request.ValidateAndMap(vm);
 
             if (errors.Any())
                 return BadRequest(errors);
 
-            var tab = _mappingService.Map(vm);
-            
-            var result = await _tabService.Add(tab);
+            var result = await _tabService.Add(request);
             
             if (!result.Failed)
                 return result.Data;
@@ -101,21 +94,18 @@ namespace GeekBudget.Controllers
                 return BadRequest(result.Errors);
         }
 
-        [HttpPost("Update")]
+        [HttpPost("Update/{id}")]
         [ProducesResponseType(typeof(Error[]), 400)]
-        public async Task<ActionResult> Update([FromBody]TabViewModel vm)
+        public async Task<ActionResult> Update(int id, [FromBody]TabVm vm)
         {
-            var errors = await vm.Validate(
-                _tabValidators.NotNull,
-                _tabValidators.IdExists
-            );
+            var request = new UpdateTabRequest(id);
+
+            var errors = request.ValidateAndMap(vm);
 
             if (errors.Any())
                 return BadRequest(errors);
-            
-            var tab = _mappingService.Map(vm);
-            
-            var result = await _tabService.Update(vm.Id, tab);
+
+            var result = await _tabService.Update(request);
 
             if (!result.Failed)
                 return Ok();

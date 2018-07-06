@@ -5,11 +5,12 @@ using GeekBudget.Services.Implementations;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using GeekBudget.Models.Requests;
 using Xunit;
 
 namespace GeekBudget.Tests.Services
 {
-    public class MappingServiceTests
+    public class MappingFactoryTests
     {
         [Fact]
         public void Map_Tab_Vm()
@@ -23,34 +24,33 @@ namespace GeekBudget.Tests.Services
                 Currency = "test-currency",
                 Type = TabType.Income
             };
-            var service = new MappingService();
 
             // Act
-            var vm = service.Map(tab);
+            var vm = MappingFactory.Map(tab);
 
             // Assert
             Assert.Equal(1, vm.Id);
             Assert.Equal("test-name", vm.Name);
             Assert.Equal(10, vm.Amount);
             Assert.Equal("test-currency", vm.Currency);
-            Assert.Equal(TabType.Income, vm.Type);
+            Assert.Equal((int)TabType.Income, vm.Type);
         }
 
         [Fact]
-        public void Map_Vm_Tab()
+        public void Map_AddRequest_Tab()
         {
             // Arrange
-            var vm = new TabViewModel()
+            var request = new AddTabRequest();
+            request.ValidateAndMap(new TabVm
             {
                 Name = "test-name",
                 Amount = 10,
-                Currency = "test-currency",
-                Type = TabType.Income
-            };
-            var service = new MappingService();
+                Type = (int)TabType.Income,
+                Currency = "test-currency"
+            });
 
             // Act
-            var tab = service.Map(vm);
+            var tab = MappingFactory.Map(request);
 
             // Assert
             Assert.Equal("test-name", tab.Name);
@@ -69,14 +69,13 @@ namespace GeekBudget.Tests.Services
                 Comment = "test-comment",
                 Amount = 10,
                 Currency = "test-currency",
-                From = new Tab() { Id = 1},
-                To = new Tab() { Id = 2},
+                From = new Tab() { Id = 1 },
+                To = new Tab() { Id = 2 },
                 Date = new DateTime(2018, 1, 23)
             };
-            var service = new MappingService();
 
             // Act
-            var vm = service.Map(operation);
+            var vm = MappingFactory.Map(operation);
 
             // Assert
             Assert.Equal(1, vm.Id);
@@ -89,20 +88,22 @@ namespace GeekBudget.Tests.Services
         }
 
         [Fact]
-        public void Map_Vm_Operation()
+        public void Map_AddRequest_Operation()
         {
             // Arrange
-            var vm = new OperationViewModel()
+            var request = new AddOperationRequest();
+            request.ValidateAndMap(new OperationVm()
             {
                 Comment = "test-comment",
                 Amount = 10,
                 Currency = "test-currency",
-                Date = new DateTime(2018, 1, 23)
-            };
-            var service = new MappingService();
+                Date = new DateTime(2018, 1, 23),
+                From = 1,
+                To = 2
+            });
 
             // Act
-            var operation = service.Map(vm);
+            var operation = MappingFactory.Map(request);
 
             // Assert
             Assert.Equal("test-comment", operation.Comment);

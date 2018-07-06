@@ -18,8 +18,6 @@ using Microsoft.AspNetCore.Http;
 using System.Text;
 using GeekBudget.Services;
 using GeekBudget.Services.Implementations;
-using GeekBudget.Validators;
-using GeekBudget.Validators.Implementations;
 using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.Swagger;
 
@@ -75,12 +73,8 @@ namespace GeekBudget
             services.AddTransient<IUserRepository, UserRepository>();
             
             // register services
-            services.AddTransient<IMappingService, MappingService>();
             services.AddTransient<ITabService, TabService>();
             services.AddTransient<IOperationService, OperationService>();
-
-            services.AddTransient<ITabValidators, TabValidators>();
-            services.AddTransient<IOperationValidators, OperationValidators>();
 
             // register swagger generator
             // services.AddSwaggerGen()

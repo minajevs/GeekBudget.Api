@@ -7,13 +7,13 @@ namespace GeekBudget.Entities
 {
     public enum TargetTabType
     {
-        From,
+        From = 1,
         To
     }
     
     public enum TabType
     {
-        Income,
+        Income = 1,
         Account,
         Expense
     }

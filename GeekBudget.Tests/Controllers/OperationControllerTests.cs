@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using GeekBudget.Controllers;
 using GeekBudget.Entities;
 using GeekBudget.Models;
+using GeekBudget.Models.Requests;
 using GeekBudget.Models.ViewModels;
 using GeekBudget.Services;
 using GeekBudget.Services.Implementations;
@@ -32,9 +33,7 @@ namespace GeekBudget.Tests.Controllers
             };
             var service = new Mock<IOperationService>();
             service.Setup(x => x.GetAll()).ReturnsAsyncServiceResult(operations);
-            var validators = new Mock<IOperationValidators>();
-            var mapping = new MappingService();
-            var controller = new OperationController(service.Object, validators.Object, mapping);
+            var controller = new OperationController(service.Object);
 
             //Act
             var result = await controller.GetAll();
@@ -46,7 +45,7 @@ namespace GeekBudget.Tests.Controllers
         }
 
         [Fact]
-        public async Task Get_ReturnsFilteredOperations()
+        public async Task Get_OperationsExists_ReturnsOperations()
         {
             //Arrange
             var operations = new List<Operation>()
@@ -56,9 +55,7 @@ namespace GeekBudget.Tests.Controllers
             };
             var service = new Mock<IOperationService>();
             service.Setup(x => x.Get(It.IsAny<OperationFilter>())).ReturnsAsyncServiceResult(operations);
-            var validators = new Mock<IOperationValidators>();
-            var mapping = new MappingService();
-            var controller = new OperationController(service.Object, validators.Object, mapping);
+            var controller = new OperationController(service.Object);
 
             //Act
             var result = await controller.Get(new OperationFilter());
@@ -70,15 +67,13 @@ namespace GeekBudget.Tests.Controllers
         }
 
         [Fact]
-        public async Task Get_ReturnsNotFoundIfNoOperations()
+        public async Task Get_OperationsDoesNotExists_ReturnsNotFound()
         {
             //Arrange
             var operations = new List<Operation>();
             var service = new Mock<IOperationService>();
             service.Setup(x => x.Get(It.IsAny<OperationFilter>())).ReturnsAsyncServiceResult(operations);
-            var validators = new Mock<IOperationValidators>();
-            var mapping = new MappingService();
-            var controller = new OperationController(service.Object, validators.Object, mapping);
+            var controller = new OperationController(service.Object);
 
             //Act
             var result = await controller.Get(new OperationFilter());
@@ -88,47 +83,43 @@ namespace GeekBudget.Tests.Controllers
         }
 
         [Fact]
-        public async Task Add_OperationAdded()
+        public async Task Add_CorrectOperation_ReturnsOk()
         {
             //Arrange
+            var operation = new OperationVm()
+            {
+                From = 1,
+                To = 2,
+                Amount = 10
+            };
             var service = new Mock<IOperationService>();
-            service.Setup(x => x.Add(It.IsAny<Operation>(), It.IsAny<int>(), It.IsAny<int>())).ReturnsAsyncServiceResult(1);
-            var validators = new Mock<IOperationValidators>();
-            var mapping = new MappingService();
-            var controller = new OperationController(service.Object, validators.Object, mapping);
+            service.Setup(x => x.Add(It.IsAny<AddOperationRequest>())).ReturnsAsyncServiceResult(1);
+            var controller = new OperationController(service.Object);
 
             //Act
-            var result = await controller.Add(new OperationViewModel());
+            var result = await controller.Add(operation);
 
             //Assert
             Assert.Equal(1, result.Value);
         }
 
         [Fact]
-        public async Task Add_DoesNotAddIncorrectOperation()
+        public async Task Add_IncorrectOperation_ReturnsNok()
         {
             //Arrange
             var service = new Mock<IOperationService>();
-            service.Setup(x => x.Add(It.IsAny<Operation>(), It.IsAny<int>(), It.IsAny<int>())).ReturnsAsyncServiceResult(1);
-            var validators = new Mock<IOperationValidators>();
-            validators.Setup(x => x.NotNull(It.IsAny<OperationViewModel>())).ReturnsAsync(new List<Error>()
-            {
-                new Error() {Id = 999, Description = "testing-error"}
-            });
-            var mapping = new MappingService();
-            var controller = new OperationController(service.Object, validators.Object, mapping);
+            service.Setup(x => x.Add(It.IsAny<AddOperationRequest>())).ReturnsAsyncServiceResult(1);
+            var controller = new OperationController(service.Object);
 
             //Act
-            var result = await controller.Add(new OperationViewModel());
+            var result = await controller.Add(new OperationVm());
             var innerResult = result.Result as BadRequestObjectResult;
 
             // Assert
             Assert.NotNull(innerResult);
             var errors = innerResult.Value as List<Error>;
             Assert.NotNull(errors);
-            Assert.Single(errors);
-            Assert.Equal(999, errors.SingleOrDefault()?.Id);
-            Assert.Equal("testing-error", errors.SingleOrDefault()?.Description);
+            Assert.NotEmpty(errors);
         }
 
         [Fact]
@@ -137,9 +128,7 @@ namespace GeekBudget.Tests.Controllers
             //Arrange
             var service = new Mock<IOperationService>();
             service.Setup(x => x.Remove(It.IsAny<int>())).ReturnsAsyncServiceResult();
-            var validators = new Mock<IOperationValidators>();
-            var mapping = new MappingService();
-            var controller = new OperationController(service.Object, validators.Object, mapping);
+            var controller = new OperationController(service.Object);
 
             //Act
             var result = await controller.Remove(1) as OkResult;
@@ -149,37 +138,31 @@ namespace GeekBudget.Tests.Controllers
         }
 
         [Fact]
-        public async Task Update_UdpdatesCorrectOperation()
+        public async Task Update_CorrectOperation_ReturnsOk()
         {
             //Arrange
             var service = new Mock<IOperationService>();
-            service.Setup(x => x.Update(It.IsAny<int>(), It.IsAny<Operation>(), It.IsAny<OperationViewModel>())).ReturnsAsyncServiceResult();
-            var validators = new Mock<IOperationValidators>();
-            var mapping = new MappingService();
-            var controller = new OperationController(service.Object, validators.Object, mapping);
+            service.Setup(x => x.Update(It.IsAny<UpdateOperationRequest>())).ReturnsAsyncServiceResult();
+            var controller = new OperationController(service.Object);
 
             //Act
-            var result = await controller.Update(new OperationViewModel()) as OkResult;
+            var result = await controller.Update(1, new OperationVm()) as OkResult;
 
             //Assert
             Assert.NotNull(result);
         }
 
         [Fact]
-        public async Task Update_DoesNotUpdateIncorrectOperation()
+        public async Task Update_IncorrectOperation_ReturnsNok()
         {
             //Arrange
             var service = new Mock<IOperationService>();
-            var validators = new Mock<IOperationValidators>();
-            validators.Setup(x => x.NotNull(It.IsAny<OperationViewModel>())).ReturnsAsync(new List<Error>()
-            {
-                new Error() {Id = 999, Description = "testing-error"}
-            });
-            var mapping = new MappingService();
-            var controller = new OperationController(service.Object, validators.Object, mapping);
+            service.Setup(x => x.Update(It.IsAny<UpdateOperationRequest>()))
+                .ReturnsAsyncServiceResult(ServiceResultStatus.Failure);
+            var controller = new OperationController(service.Object);
 
             //Act
-            var result = await controller.Update(new OperationViewModel()) as BadRequestObjectResult;
+            var result = await controller.Update(1, new OperationVm()) as BadRequestObjectResult;
 
             //Assert
             Assert.NotNull(result);

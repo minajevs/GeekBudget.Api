@@ -7,6 +7,7 @@ using GeekBudget.Models;
 using GeekBudget.Models.ViewModels;
 using GeekBudget.Services;
 using GeekBudget.Entities;
+using GeekBudget.Models.Requests;
 using GeekBudget.Services.Implementations;
 using GeekBudget.Validators;
 using Microsoft.AspNetCore.Mvc;
@@ -29,9 +30,7 @@ namespace GeekBudget.Tests.Controllers
             };
             var service = new Mock<ITabService>();
             service.Setup(x => x.GetAll()).ReturnsAsyncServiceResult(tabs);
-            var validators = new Mock<ITabValidators>();
-            var mapping = new MappingService();
-            var controller = new TabController(service.Object, validators.Object, mapping);
+            var controller = new TabController(service.Object);
             
             // Act
             var result = await controller.GetAll();
@@ -43,15 +42,13 @@ namespace GeekBudget.Tests.Controllers
         }
 
         [Fact]
-        public async Task Get_ReturnsCorrectFoundTab()
+        public async Task Get_TabExist_ReturnsTab()
         {
             // Arrange
             var tab = new Tab(){Name = "testing-tab"};
             var service = new Mock<ITabService>();
             service.Setup(x => x.Get(It.IsAny<int>())).ReturnsAsyncServiceResult(tab);
-            var validators = new Mock<ITabValidators>();
-            var mapping = new MappingService();
-            var controller = new TabController(service.Object, validators.Object, mapping);
+            var controller = new TabController(service.Object);
 
             // Act
             var result = await controller.Get(1);
@@ -63,34 +60,31 @@ namespace GeekBudget.Tests.Controllers
         }
 
         [Fact]
-        public async Task Get_ReturnsNotFoundForNotFoundTab()
+        public async Task Get_TabDoesNotExist_ReturnsNotFound()
         {
             // Arrange
-            var tab = new TabViewModel(){Name = "testing-tab"};
+            var tab = new TabVm(){Name = "testing-tab"};
             var service = new Mock<ITabService>();
             service.Setup(x => x.Get(It.IsAny<int>())).ReturnsAsyncServiceResult(null);
-            var validators = new Mock<ITabValidators>();
-            var mapping = new MappingService();
-            var controller = new TabController(service.Object, validators.Object, mapping);
+            var controller = new TabController(service.Object);
 
             // Act
             var result = await controller.Get(1);
+            var innerResult = result.Result as NotFoundResult;
 
             // Assert
             Assert.Null(result.Value);
+            Assert.NotNull(innerResult);
         }
 
         [Fact]
-        public async Task Add_AddsCorrectTab()
+        public async Task Add_CorrectTab_ReturnsOk()
         {
             // Arrange
-            var tab = new TabViewModel(){Name = "testing-tab"};
+            var tab = new TabVm(){Name = "testing-tab", Type = 1};
             var service = new Mock<ITabService>();
-            service.Setup(x => x.Add(It.IsAny<Tab>())).ReturnsAsyncServiceResult(1);
-            var validators = new Mock<ITabValidators>();
-            validators.Setup(x => x.TabTypeRequired(It.IsAny<TabViewModel>())).ReturnsAsync(new Error[0]);
-            var mapping = new MappingService();
-            var controller = new TabController(service.Object, validators.Object, mapping);
+            service.Setup(x => x.Add(It.IsAny<AddTabRequest>())).ReturnsAsyncServiceResult(1);
+            var controller = new TabController(service.Object);
 
             // Act
             var result = await controller.Add(tab);
@@ -100,19 +94,13 @@ namespace GeekBudget.Tests.Controllers
         }
 
         [Fact]
-        public async Task Add_DoesNotAddIncorrectTab()
+        public async Task Add_IncorrectTab_ReturnsNok()
         {
             // Arrange
-            var tab = new TabViewModel(){Name = "testing-tab"};
+            var tab = new TabVm();
             var service = new Mock<ITabService>();
-            service.Setup(x => x.Add(It.IsAny<Tab>())).ReturnsAsyncServiceResult(1);
-            var validators = new Mock<ITabValidators>();
-            validators.Setup(x => x.TabTypeRequired(It.IsAny<TabViewModel>())).ReturnsAsync(new List<Error>()
-            {
-                new Error(){Id = 999, Description = "testing-error"}
-            });
-            var mapping = new MappingService();
-            var controller = new TabController(service.Object, validators.Object, mapping);
+            service.Setup(x => x.Add(It.IsAny<AddTabRequest>())).ReturnsAsyncServiceResult(1);
+            var controller = new TabController(service.Object);
 
             // Act
             var result = await controller.Add(tab);
@@ -122,8 +110,7 @@ namespace GeekBudget.Tests.Controllers
             Assert.NotNull(innerResult);
             var errors = innerResult.Value as List<Error>;
             Assert.NotNull(errors);
-            Assert.Equal(999, errors.SingleOrDefault()?.Id);
-            Assert.Equal("testing-error", errors.SingleOrDefault()?.Description);
+            Assert.NotEmpty(errors);
         }
 
         [Fact]
@@ -132,10 +119,7 @@ namespace GeekBudget.Tests.Controllers
             // Arrange
             var service = new Mock<ITabService>();
             service.Setup(x => x.Remove(It.IsAny<int>())).ReturnsAsyncServiceResult();
-            var validators = new Mock<ITabValidators>();
-            validators.Setup(x => x.IdExists(It.IsAny<TabViewModel>())).ReturnsAsync(new Error[0]);
-            var mapping = new MappingService();
-            var controller = new TabController(service.Object, validators.Object, mapping);
+            var controller = new TabController(service.Object);
 
             // Act
             var result = await controller.Remove(1) as OkResult;
@@ -145,48 +129,35 @@ namespace GeekBudget.Tests.Controllers
         }
 
         [Fact]
-        public async Task Update_UpdatesCorrectTab()
+        public async Task Update_CorrectTab_ReturnsOk()
         {
             // Arrange
-            var tab = new TabViewModel(){Id = 1};
+            var tab = new TabVm(){Id = 1};
             var service = new Mock<ITabService>();
-            service.Setup(x => x.Update(It.IsAny<int>(), It.IsAny<Tab>())).ReturnsAsyncServiceResult();
-            var validators = new Mock<ITabValidators>();
-            validators.Setup(x => x.IdExists(It.IsAny<TabViewModel>())).ReturnsAsync(new Error[0]);
-            var mapping = new MappingService();
-            var controller = new TabController(service.Object, validators.Object, mapping);
+            service.Setup(x => x.Update(It.IsAny<UpdateTabRequest>())).ReturnsAsyncServiceResult();
+            var controller = new TabController(service.Object);
 
             // Act
-            var result = await controller.Update(tab) as OkResult;
+            var result = await controller.Update(1, tab) as OkResult;
 
             // Assert
             Assert.NotNull(result);
         }
 
         [Fact]
-        public async Task Update_DoNotUpdateIfDoesNotExist()
+        public async Task Update_IncorrectTab_ReturnsNok()
         {
             // Arrange
-            var tab = new TabViewModel(){Name = "testing-tab"};
+            var tab = new TabVm();
             var service = new Mock<ITabService>();
-            service.Setup(x => x.Update(It.IsAny<int>(), It.IsAny<Tab>())).ReturnsAsyncServiceResult();
-            var validators = new Mock<ITabValidators>();
-            validators.Setup(x => x.IdExists(It.IsAny<TabViewModel>())).ReturnsAsync(new List<Error>()
-            {
-                new Error(){Id = 999, Description = "testing-error"}
-            });
-            var mapping = new MappingService();
-            var controller = new TabController(service.Object, validators.Object, mapping);
+            service.Setup(x => x.Update(It.IsAny<UpdateTabRequest>())).ReturnsAsyncServiceResult(ServiceResultStatus.Failure);
+            var controller = new TabController(service.Object);
 
             // Act
-            var result = await controller.Update(tab) as BadRequestObjectResult;
+            var result = await controller.Update(1, tab) as BadRequestObjectResult;
 
             // Assert
             Assert.NotNull(result);
-            var data = (List<Error>) result.Value;
-            Assert.Single(data);
-            Assert.Equal(999, data.SingleOrDefault()?.Id);
-            Assert.Equal("testing-error", data.SingleOrDefault()?.Description);
         }
     }
 }

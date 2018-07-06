@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GeekBudget.Models.ViewModels
 {
-    public class OperationViewModel
+    public class OperationVm
     {
         public int Id { get; set; }
         public string Comment { get; set; }

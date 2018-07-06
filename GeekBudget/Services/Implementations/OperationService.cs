@@ -1,12 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Transactions;
 using GeekBudget.Entities;
 using GeekBudget.Helpers;
 using GeekBudget.Models;
+using GeekBudget.Models.Requests;
 using GeekBudget.Models.ViewModels;
 using GeekBudget.Queries;
+using GeekBudget.Validators;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Extensions.Internal;
 
@@ -14,16 +17,9 @@ namespace GeekBudget.Services.Implementations
 {
     public class OperationService : IOperationService 
     {
-        private static Error AddOperationNotAllowed() =>
-            new Error {Id = 2201, Description = $"Can't add operation with that tab target types!"};
-        private static Error NoOperationWithId(int id) =>  
-            new Error{Id = 2202, Description = $"No Operation with id '{id}' was found!"};        
-        private static Error ChangeOperationNotAllowed() =>  
-            new Error{Id = 2203, Description = $"Can't add operation with that tab target types!"};        
-
         private readonly IGeekBudgetContext _context;
         private readonly ITabService _tabService;
-  
+
         public OperationService(IGeekBudgetContext context, ITabService tabService)
         {
             _context = context;
@@ -36,7 +32,7 @@ namespace GeekBudget.Services.Implementations
                 .AsNoTracking()
                 .ToListAsync();
             
-            return new ServiceResult<IEnumerable<Operation>>(operations);
+            return operations;
         }
 
         public async Task<ServiceResult<IEnumerable<Operation>>> Get(OperationFilter filter)
@@ -47,21 +43,24 @@ namespace GeekBudget.Services.Implementations
                 .Include(x => x.From)
                 .Include(x => x.To)
                 .ToListAsync();
-            
-            return new ServiceResult<IEnumerable<Operation>>(operations);
+
+            if (filter.Id != null && !operations.Any())
+                return Errors.OperationWithIdDoesNotExist(filter.Id ?? -1);
+
+            return operations;
         }
 
-        public async Task<ServiceResult<int>> Add(Operation operation, int from, int to)
+        public async Task<ServiceResult<int>> Add(AddOperationRequest request)
         {
             // Get 'From' tab
-            var resultFrom = await _tabService.Get(from);
+            var resultFrom = await _tabService.Get(request.From);
             if(resultFrom.Failed)
                 return ServiceResult<int>.From(resultFrom);
             
             var tabFrom = resultFrom.Data;
             
             // Get 'To' tab
-            var resultTo = await _tabService.Get(to);
+            var resultTo = await _tabService.Get(request.To);
             if(resultTo.Failed)
                 return ServiceResult<int>.From(resultFrom);
             
@@ -71,9 +70,11 @@ namespace GeekBudget.Services.Implementations
             var resultOperationAllowed = await _tabService.IsTabOperationAllowed(tabFrom, tabTo);
             if(resultOperationAllowed.Failed)
                 return ServiceResult<int>.From(resultOperationAllowed);
-            
-            if(!resultOperationAllowed.Data)
-                return new ServiceResult<int>(ServiceResultStatus.Failure, AddOperationNotAllowed());
+
+            if (!resultOperationAllowed.Data)
+                return Errors.OperationNotAllowed;
+
+            var operation = MappingFactory.Map(request);
 
             using (var scope = new TransactionScope())
             {
@@ -100,7 +101,7 @@ namespace GeekBudget.Services.Implementations
                 // Commit changes
                 scope.Complete();
 
-                return new ServiceResult<int>(newOperation.Id);
+                return newOperation.Id;
             }
         }
         
@@ -112,7 +113,7 @@ namespace GeekBudget.Services.Implementations
 
             var operation = resultGet.Data.FirstOrDefault();
             if(operation == null)
-                return new ServiceResult(ServiceResultStatus.Warning, NoOperationWithId(id));
+                return new ServiceResult(ServiceResultStatus.Warning, Errors.OperationWithIdDoesNotExist(id));
      
             using (var scope = new TransactionScope())
             {
@@ -130,27 +131,27 @@ namespace GeekBudget.Services.Implementations
                 scope.Complete();
             }
 
-            return new ServiceResult(ServiceResultStatus.Success);
+            return null;
         }
 
-        public async Task<ServiceResult> Update(int id, Operation source, OperationViewModel vm) // TODO: refactor not to use VM in service?
+        public async Task<ServiceResult> Update(UpdateOperationRequest request)
         {
-            var result = await Get(new OperationFilter {Id = id});
+            var result = await Get(new OperationFilter {Id = request.Id});
 
             if (result.Failed)
                 return ServiceResult.From(result);
 
             var operation = result.Data.FirstOrDefault();
-            if (operation == null)
-                return new ServiceResult(ServiceResultStatus.Failure, NoOperationWithId(id));
+
+            if(operation == null) throw new InvalidOperationException("Must never happen because condition is checked in 'Get' service!");
 
             using (var scope = new TransactionScope())
             {
                 // --- Amount update ---
                 
-                if (vm.Amount != null)
+                if (request.Amount != null)
                 {
-                    var newAmount = (decimal) vm.Amount;
+                    var newAmount = (decimal)request.Amount;
 
                     //difference with previous amount
                     var delta = newAmount - operation.Amount;
@@ -165,22 +166,22 @@ namespace GeekBudget.Services.Implementations
 
                 // --- New values ---
                 
-                operation.MapNewValues(source,
-                    x => x.Comment,
-                    x => x.Currency,
-                    x => x.Date);
+                operation.MapNewValues(request,
+                    (x => x.Comment, y => y.Comment),
+                    (x => x.Currency, y => y.Currency),
+                    (x => x.Date, y => y.Date));
                 
                 // --- Tab updates ---
 
-                var fromTabChange = vm.From != null && vm.From != operation.From.Id;
-                var toTabChange = vm.To != null && vm.To != operation.To.Id;
+                var fromTabChange = request.From != null && request.From != operation.From.Id;
+                var toTabChange = request.To != null && request.To != operation.To.Id;
 
                 var tabFrom = operation.From;
                 var tabTo = operation.From;
 
                 if (fromTabChange)
                 {
-                    var resultFrom = await _tabService.Get(vm.From ?? -1);
+                    var resultFrom = await _tabService.Get(request.From ?? -1);
                     if(resultFrom.Failed)
                         return ServiceResult.From(resultFrom);
             
@@ -189,7 +190,7 @@ namespace GeekBudget.Services.Implementations
                 
                 if (toTabChange)
                 {
-                    var resultTo = await _tabService.Get(vm.To ?? -1);
+                    var resultTo = await _tabService.Get(request.To ?? -1);
                     if(resultTo.Failed)
                         return ServiceResult.From(resultTo);
             
@@ -202,7 +203,7 @@ namespace GeekBudget.Services.Implementations
                     return ServiceResult.From(resultOperationAllowed);
             
                 if(!resultOperationAllowed.Data)
-                    return new ServiceResult(ServiceResultStatus.Failure, ChangeOperationNotAllowed());
+                    return Errors.OperationNotAllowed;
 
                 
                 if (fromTabChange)
@@ -214,14 +215,14 @@ namespace GeekBudget.Services.Implementations
                 if (toTabChange)
                 {
                     RemoveFromTab(operation);
-                    AddFromTab(tabFrom, operation);
+                    AddToTab(tabTo, operation);
                 }
 
                 await _context.SaveChangesAsync();
                 
                 scope.Complete();
 
-                return new ServiceResult(ServiceResultStatus.Success);
+                return null;
             }
         }
 

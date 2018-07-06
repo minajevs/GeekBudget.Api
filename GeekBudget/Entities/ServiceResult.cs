@@ -14,6 +14,21 @@ namespace GeekBudget.Entities
         
         public ServiceResult(ServiceResultStatus status, Error error) : this(status, new List<Error>{error}){}
 
+        public static implicit operator ServiceResult(ServiceResultStatus status)
+        {
+            return new ServiceResult(status);
+        }
+
+        public static implicit operator ServiceResult(List<Error> errors)
+        {
+            return new ServiceResult(ServiceResultStatus.Failure, errors);
+        }
+
+        public static implicit operator ServiceResult(Error error)
+        {
+            return new ServiceResult(ServiceResultStatus.Failure, error);
+        }
+
         public new static ServiceResult From<T>(ServiceResult<T> result)
         {
             return new ServiceResult(result.Status, result.Errors);
@@ -54,7 +69,22 @@ namespace GeekBudget.Entities
         }
         
         public ServiceResult(T data) : this(ServiceResultStatus.Success, data) {}
-        
+
+        public static implicit operator ServiceResult<T>(T data)
+        {
+            return new ServiceResult<T>(ServiceResultStatus.Success, data);
+        }
+
+        public static implicit operator ServiceResult<T>(List<Error> errors)
+        {
+            return new ServiceResult<T>(ServiceResultStatus.Failure, errors);
+        }
+
+        public static implicit operator ServiceResult<T>(Error error)
+        {
+            return new ServiceResult<T>(ServiceResultStatus.Failure, error);
+        }
+
         public static ServiceResult<T> From<TAny>(ServiceResult<TAny> result)
         {
             return new ServiceResult<T>(result.Status, result.Errors);

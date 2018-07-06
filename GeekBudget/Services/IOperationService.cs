@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using GeekBudget.Entities;
 using GeekBudget.Models;
+using GeekBudget.Models.Requests;
 using GeekBudget.Models.ViewModels;
 
 namespace GeekBudget.Services
@@ -10,8 +11,8 @@ namespace GeekBudget.Services
     {
         Task<ServiceResult<IEnumerable<Operation>>> GetAll();
         Task<ServiceResult<IEnumerable<Operation>>> Get(OperationFilter filter);
-        Task<ServiceResult<int>> Add(Operation operation, int from, int to);
+        Task<ServiceResult<int>> Add(AddOperationRequest request);
         Task<ServiceResult> Remove(int id);
-        Task<ServiceResult> Update(int id, Operation source, OperationViewModel vm);
+        Task<ServiceResult> Update(UpdateOperationRequest request);
      }
  }

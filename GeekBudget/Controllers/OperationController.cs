@@ -7,8 +7,10 @@ using GeekBudget.Helpers;
 using Microsoft.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 using GeekBudget.Models;
+using GeekBudget.Models.Requests;
 using GeekBudget.Models.ViewModels;
 using GeekBudget.Services;
+using GeekBudget.Services.Implementations;
 using GeekBudget.Validators;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,24 +22,20 @@ namespace GeekBudget.Controllers
     public class OperationController : ControllerBase
     {
         private readonly IOperationService _operationService;
-        private readonly IOperationValidators _operationValidators;
-        private readonly IMappingService _mappingService;
 
-        public OperationController(IOperationService operationService, IOperationValidators operationValidators, IMappingService mappingService)
+        public OperationController(IOperationService operationService)
         {
             _operationService = operationService;
-            _operationValidators = operationValidators;
-            _mappingService = mappingService;
         }
 
         [HttpGet("GetAll")]
         [ProducesResponseType(typeof(Error[]), 400)]
-        public async Task<ActionResult<OperationViewModel[]>> GetAll()
+        public async Task<ActionResult<OperationVm[]>> GetAll()
         {
             var result  = await _operationService.GetAll();
 
             if (!result.Failed)
-                return _mappingService
+                return MappingFactory
                     .Map(result.Data)
                     .ToArray();
             else
@@ -47,7 +45,7 @@ namespace GeekBudget.Controllers
         [HttpPost("Get")]
         [ProducesResponseType(typeof(Error[]), 400)]
         [ProducesResponseType(404)]
-        public async Task<ActionResult<OperationViewModel[]>> Get([FromBody] OperationFilter filter)
+        public async Task<ActionResult<OperationVm[]>> Get([FromBody] OperationFilter filter)
         {
             var result = await _operationService.Get(filter);
 
@@ -56,9 +54,7 @@ namespace GeekBudget.Controllers
                 if (!result.Data.Any())
                     return NotFound();
                 else
-                    return _mappingService
-                        .Map(result.Data)
-                        .ToArray();
+                    return MappingFactory.Map(result.Data);
             }
             else
                 return BadRequest(result.Errors);
@@ -66,23 +62,16 @@ namespace GeekBudget.Controllers
 
         [HttpPost("Add")]
         [ProducesResponseType(typeof(Error[]), 400)]
-        public async Task<ActionResult<int>> Add([FromBody] OperationViewModel vm)
+        public async Task<ActionResult<int>> Add([FromBody] OperationVm vm)
         {
-            var errors = await vm.Validate(
-                _operationValidators.NotNull,
-                _operationValidators.FromNotNull,
-                _operationValidators.ToNotNull,
-                _operationValidators.FromAndToAreNotEqual,
-                _operationValidators.FromTabExists,
-                _operationValidators.ToTabExists
-            );
+            var request = new AddOperationRequest();
+
+            var errors = request.ValidateAndMap(vm);
 
             if (errors.Any())
                 return BadRequest(errors);
 
-            var operation = _mappingService.Map(vm);
-
-            var result = await _operationService.Add(operation, vm.From ?? -1, vm.To ?? -1); // not null should be validated before
+            var result = await _operationService.Add(request);
             
             if (!result.Failed)
                 return result.Data;
@@ -103,22 +92,18 @@ namespace GeekBudget.Controllers
                 return BadRequest(result.Errors);
         }
 
-        [HttpPost("Update")]
+        [HttpPost("Update/{id}")]
         [ProducesResponseType(typeof(Error[]), 400)]
-        public async Task<ActionResult> Update([FromBody] OperationViewModel vm)
+        public async Task<ActionResult> Update(int id, [FromBody] OperationVm vm)
         {
-            var errors = await vm.Validate(
-                _operationValidators.NotNull,
-                _operationValidators.IdExists,
-                _operationValidators.FromAndToAreNotEqual
-            );
+            var request = new UpdateOperationRequest(id);
+
+            var errors = request.ValidateAndMap(vm);
 
             if (errors.Any())
                 return BadRequest(errors);
 
-            var operation = _mappingService.Map(vm);
-
-            var result = await _operationService.Update(vm.Id, operation, vm);
+            var result = await _operationService.Update(request);
             
             if (!result.Failed)
                 return Ok();
