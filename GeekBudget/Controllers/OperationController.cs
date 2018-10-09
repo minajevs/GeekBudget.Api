@@ -13,12 +13,14 @@ using GeekBudget.Services;
 using GeekBudget.Services.Implementations;
 using GeekBudget.Validators;
 using Microsoft.AspNetCore.Mvc;
+using NSwag.Annotations;
 
 namespace GeekBudget.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
     [Produces("application/json")]
+    [SwaggerDefaultResponse]
     public class OperationController : ControllerBase
     {
         private readonly IOperationService _operationService;

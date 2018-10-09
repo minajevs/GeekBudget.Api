@@ -19,7 +19,8 @@ using System.Text;
 using GeekBudget.Services;
 using GeekBudget.Services.Implementations;
 using Newtonsoft.Json;
-using Swashbuckle.AspNetCore.Swagger;
+using NJsonSchema;
+using NSwag.AspNetCore;
 
 namespace GeekBudget
 {
@@ -45,11 +46,7 @@ namespace GeekBudget
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             // Add swagger
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new Info {Title = "GeekBudget API", Version = "v1"});
-            });
-            services.ConfigureSwaggerGen(x => x.CustomSchemaIds(y => y.FullName));
+            services.AddSwagger();
 
             // register cors
             services.AddCors();
@@ -96,11 +93,10 @@ namespace GeekBudget
             app.UseMiddleware<UserKeyValidator>();
 
             // Enable Swagger
-            app.UseSwagger();
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "GeekBudget API v1");
-            });
+            app.UseSwaggerUi3WithApiExplorer(settings =>
+                {
+                    settings.GeneratorSettings.DefaultPropertyNameHandling = PropertyNameHandling.CamelCase;
+                });
 
             // Enable CORS
             app.UseCors(builder => builder

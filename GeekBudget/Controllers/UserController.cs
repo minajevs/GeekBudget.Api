@@ -4,10 +4,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using GeekBudget.Models;
 using Microsoft.AspNetCore.Mvc;
+using NSwag.Annotations;
 
 namespace GeekBudget.Controllers
 {
     [Route("api/[controller]")]
+    [SwaggerDefaultResponse]
     public class UserController : ControllerBase
     {
         private readonly IUserRepository _userRepository;

@@ -14,12 +14,14 @@ using GeekBudget.Services.Implementations;
 using GeekBudget.Validators;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using NSwag.Annotations;
 
 namespace GeekBudget.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
     [Produces("application/json")]
+    [SwaggerDefaultResponse]
     public class TabController : ControllerBase
     {
         private readonly ITabService _tabService;
