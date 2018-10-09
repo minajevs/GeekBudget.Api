@@ -36,7 +36,7 @@ namespace GeekBudget.Tests.Controllers
         {
             //Arrange
             var userRepo = new Mock<IUserRepository>();
-            userRepo.Setup(x => x.Add(It.IsAny<string>())).Throws(new Exception());
+            userRepo.Setup(x => x.Add(It.IsAny<string>())).Throws(new InvalidOperationException());
 
             //Act
             var controller = new UserController(userRepo.Object);
