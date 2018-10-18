@@ -70,7 +70,7 @@ namespace GeekBudget.Services.Implementations
 
             await _context.SaveChangesAsync();
 
-            return null;
+            return ServiceResultStatus.Success;
         }
 
         public async Task<ServiceResult> Update(UpdateTabRequest request)
@@ -90,7 +90,7 @@ namespace GeekBudget.Services.Implementations
 
             await _context.SaveChangesAsync();
 
-            return null;
+            return ServiceResultStatus.Success;
         }
 
         public Task<ServiceResult<bool>> IsTabOperationAllowed(Tab tabFrom, Tab tabTo)
@@ -125,7 +125,7 @@ namespace GeekBudget.Services.Implementations
 
             await _context.SaveChangesAsync();
             
-            return null;
+            return ServiceResultStatus.Success;
         }
     }
 }

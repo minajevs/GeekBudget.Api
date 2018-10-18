@@ -131,7 +131,7 @@ namespace GeekBudget.Services.Implementations
                 scope.Complete();
             }
 
-            return null;
+            return ServiceResultStatus.Success;
         }
 
         public async Task<ServiceResult> Update(UpdateOperationRequest request)
@@ -222,7 +222,7 @@ namespace GeekBudget.Services.Implementations
                 
                 scope.Complete();
 
-                return null;
+                return ServiceResultStatus.Success;
             }
         }
 
