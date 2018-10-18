@@ -214,9 +214,12 @@ namespace GeekBudget.Services.Implementations
                 
                 if (toTabChange)
                 {
-                    RemoveFromTab(operation);
+                    RemoveToTab(operation);
                     AddToTab(tabTo, operation);
+                    _context.SetModified(tabTo);
                 }
+
+                _context.SetModified(operation);
 
                 await _context.SaveChangesAsync();
                 
@@ -226,32 +229,36 @@ namespace GeekBudget.Services.Implementations
             }
         }
 
-        private static void RemoveFromTab(Operation operation)
+        private void RemoveFromTab(Operation operation)
         {
             var tab = operation.From;
             tab.Amount += operation.Amount;
             tab.OperationsFrom.Remove(operation);
+            _context.SetModified(tab);
         }
-        
-        private static void RemoveToTab(Operation operation)
+
+        private void RemoveToTab(Operation operation)
         {
             var tab = operation.To;
             tab.Amount -= operation.Amount;
             tab.OperationsTo.Remove(operation);
+            _context.SetModified(tab);
         }
 
-        private static void AddFromTab(Tab tab, Operation operation)
+        private void AddFromTab(Tab tab, Operation operation)
         {
             tab.Amount -= operation.Amount;
             operation.From = tab;
             tab.OperationsFrom.Add(operation);
+            _context.SetModified(tab);
         }
         
-        private static void AddToTab(Tab tab, Operation operation)
+        private void AddToTab(Tab tab, Operation operation)
         {
             tab.Amount += operation.Amount;
             operation.To = tab;
             tab.OperationsTo.Add(operation);
+            _context.SetModified(tab);
         }
     }
 }

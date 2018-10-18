@@ -88,6 +88,8 @@ namespace GeekBudget.Services.Implementations
                 (x => x.Type, y => y.Type)
                 );
 
+            _context.SetModified(tab);
+
             await _context.SaveChangesAsync();
 
             return ServiceResultStatus.Success;
@@ -122,6 +124,8 @@ namespace GeekBudget.Services.Implementations
                 : operation.Amount;
 
             tab.Amount += amount;
+
+            _context.SetModified(tab);
 
             await _context.SaveChangesAsync();
             

@@ -12,5 +12,6 @@ namespace GeekBudget.Models
         DbSet<Tab> Tabs { get; set; }
         DbSet<Operation> Operations { get; set; }
         Task<int> SaveChangesAsync();
+        void SetModified(object entity);
     }
 }

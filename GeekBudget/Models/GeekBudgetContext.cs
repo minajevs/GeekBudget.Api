@@ -24,6 +24,11 @@ namespace GeekBudget.Models
             return this.SaveChangesAsync();
         }
 
+        public void SetModified(object entity)
+        {
+            Entry(entity).State = EntityState.Modified;
+        }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
