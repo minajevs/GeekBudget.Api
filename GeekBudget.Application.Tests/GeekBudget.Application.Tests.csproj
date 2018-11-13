@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\GeekBudget.Application\GeekBudget.Application.csproj" />
+    <ProjectReference Include="..\GeekBudget.DataAccess.Tests\GeekBudget.DataAccess.Tests.csproj" />
+    <ProjectReference Include="..\GeekBudget.Domain\GeekBudget.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Moq">
+      <HintPath>..\..\..\..\.nuget\packages\moq\4.10.0\lib\netstandard1.3\Moq.dll</HintPath>
+    </Reference>
+    <Reference Include="xunit.assert">
+      <HintPath>..\..\..\..\.nuget\packages\xunit.assert\2.4.0\lib\netstandard2.0\xunit.assert.dll</HintPath>
+    </Reference>
+    <Reference Include="xunit.core">
+      <HintPath>..\..\..\..\.nuget\packages\xunit.extensibility.core\2.4.0\lib\netstandard2.0\xunit.core.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

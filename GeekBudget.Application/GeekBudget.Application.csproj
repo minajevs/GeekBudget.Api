@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\GeekBudget.Core\GeekBudget.Core.csproj" />
+    <ProjectReference Include="..\GeekBudget.DataAccess\GeekBudget.DataAccess.csproj" />
+    <ProjectReference Include="..\GeekBudget.Domain\GeekBudget.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

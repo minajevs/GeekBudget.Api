@@ -1,19 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using GeekBudget.Entities;
-using GeekBudget.Helpers;
-using Microsoft.AspNetCore;
-using Microsoft.EntityFrameworkCore;
-using GeekBudget.Models;
-using GeekBudget.Models.Requests;
-using GeekBudget.Models.ViewModels;
-using GeekBudget.Services;
-using GeekBudget.Services.Implementations;
-using GeekBudget.Validators;
+﻿using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
+using System.Threading.Tasks;
+using GeekBudget.Application;
+using GeekBudget.Application.Operations;
+using GeekBudget.Application.Operations.Requests;
+using GeekBudget.Core;
+using GeekBudget.Domain.Operations;
 
 namespace GeekBudget.Controllers
 {
@@ -34,7 +27,7 @@ namespace GeekBudget.Controllers
         [ProducesResponseType(typeof(Error[]), 400)]
         public async Task<ActionResult<OperationVm[]>> GetAll()
         {
-            var result  = await _operationService.GetAll();
+            var result = await _operationService.GetAll();
 
             if (!result.Failed)
                 return MappingFactory

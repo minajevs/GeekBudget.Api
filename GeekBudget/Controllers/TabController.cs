@@ -1,19 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
-using GeekBudget.Entities;
-using GeekBudget.Helpers;
+using GeekBudget.Application;
+using GeekBudget.Application.Tabs;
+using GeekBudget.Application.Tabs.Requests;
+using GeekBudget.Core;
+using GeekBudget.Domain.Tabs;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using GeekBudget.Models;
-using GeekBudget.Models.Requests;
-using GeekBudget.Models.ViewModels;
-using GeekBudget.Services;
-using GeekBudget.Services.Implementations;
-using GeekBudget.Validators;
-using Microsoft.AspNetCore.Cors;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using NSwag.Annotations;
 
 namespace GeekBudget.Controllers

@@ -1,10 +1,6 @@
-﻿using GeekBudget.Models;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
+using GeekBudget.DataAccess.Users;
 
 namespace GeekBudget.Middleware
 {

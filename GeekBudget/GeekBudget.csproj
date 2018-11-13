@@ -4,7 +4,6 @@
     <UserSecretsId>2b85ba32-3cc5-41f7-99ed-70ce5401bfd8</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
-    <Folder Include="Migrations\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
   <ItemGroup>
@@ -14,5 +13,10 @@
     <PackageReference Include="NSwag.AspNetCore" Version="11.20.1" />
     <PackageReference Include="NSwag.Core" Version="11.20.1" />
     <PackageReference Include="NSwag.SwaggerGeneration.AspNetCore" Version="11.20.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GeekBudget.Application\GeekBudget.Application.csproj" />
+    <ProjectReference Include="..\GeekBudget.Core\GeekBudget.Core.csproj" />
+    <ProjectReference Include="..\GeekBudget.Domain\GeekBudget.Domain.csproj" />
   </ItemGroup>
 </Project>
