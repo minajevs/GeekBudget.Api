@@ -2,6 +2,8 @@
 using GeekBudget.Application.Operations;
 using GeekBudget.Application.Tabs;
 using GeekBudget.DataAccess;
+using GeekBudget.DataAccess.Operations;
+using GeekBudget.DataAccess.Tabs;
 using GeekBudget.DataAccess.Users;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -50,19 +52,18 @@ namespace GeekBudget
 
             // Dependency injection
 
-            // enable postgres
-            services.AddEntityFrameworkNpgsql();
-
             // register dbcontext as a singleton
-            services.AddDbContext<GeekBudgetContext>(
-                options => options.UseNpgsql(this.GetConnectionString()));
+            services
+                .AddEntityFrameworkSqlite()
+                .AddDbContext<GeekBudgetContext>(
+                    options => options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
 
             // register geekcontext
             services.AddTransient<IGeekBudgetContext, GeekBudgetContext>();
 
-            // register contact repo
+            // register repositories
             services.AddTransient<IUserRepository, UserRepository>();
-            
+
             // register services
             services.AddTransient<ITabService, TabService>();
             services.AddTransient<IOperationService, OperationService>();
@@ -99,26 +100,6 @@ namespace GeekBudget
                 .WithHeaders("user-key", "Content-Type"));  //Allow only authorized cors requests
 
             app.UseMvc();
-        }
-
-        private string GetConnectionString()
-        {
-            if (_appHost.IsDevelopment())
-            {
-                // Use local DB
-                return Configuration.GetConnectionString("DefaultConnection");
-            }
-            else
-            {
-                // Use Heroku
-                var url = new Uri(Environment.GetEnvironmentVariable("DATABASE_URL"), UriKind.Absolute);
-                var host = url.Host;
-                var username = url.UserInfo.Split(':')[0];
-                var password = url.UserInfo.Split(':')[1];
-                var database = url.LocalPath.Substring(1);
-
-                return $"host={host};username={username};password={password};database={database};pooling=true;";
-            }       
         }
 
         private void InitializeDatabase(IServiceProvider serviceProvider)

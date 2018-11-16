@@ -6,6 +6,7 @@ using GeekBudget.Application.Tabs.Requests;
 using GeekBudget.Core;
 using GeekBudget.Core.Helpers;
 using GeekBudget.DataAccess;
+using GeekBudget.DataAccess.Tabs;
 using GeekBudget.Domain.Operations;
 using GeekBudget.Domain.Tabs;
 using Microsoft.EntityFrameworkCore;
@@ -42,28 +43,25 @@ namespace GeekBudget.Application.Tabs
             return tab;
         }
 
-        public async Task<ServiceResult<int>> Add(AddTabRequest request)
+        public async Task<ServiceResult> Add(AddTabRequest request)
         {
             var tab = MappingFactory.Map(request);
 
-            var addedTab = _context.Tabs
-                .Add(tab);
+            _context.Tabs.Add(tab);
 
             await _context.SaveChangesAsync();
 
-            return addedTab.Entity.Id;
+            return ServiceResultStatus.Success;
         }
 
         public async Task<ServiceResult> Remove(int id)
         {
-            var tab = await _context.Tabs
-                .AsNoTracking()
-                .FirstOrDefaultAsync(t => Equals(t.Id, id));
+            var tabResult = await Get(id);
 
-            if (tab == null)
-                return new ServiceResult(ServiceResultStatus.Warning, TabErrors.TabWithIdDoesNotExist(id));
+            if (tabResult.Failed)
+                return ServiceResult.From(tabResult);
 
-            _context.Tabs.Remove(tab);
+            _context.Tabs.Remove(tabResult.Data);
 
             await _context.SaveChangesAsync();
 
@@ -72,11 +70,12 @@ namespace GeekBudget.Application.Tabs
 
         public async Task<ServiceResult> Update(UpdateTabRequest request)
         {
-            var result = await Get(request.Id);
-            if(result.Failed)
-                return ServiceResult.From(result);
+            var tabResult = await Get(request.Id);
 
-            var tab = result.Data;
+            if(tabResult.Failed)
+                return ServiceResult.From(tabResult);
+
+            var tab = tabResult.Data;
 
             tab.MapNewValues(request,
                 (x => x.Name, y => y.Name),
@@ -96,37 +95,6 @@ namespace GeekBudget.Application.Tabs
         {
             var tabOperationAllowed = Dictionaries.AllowedTabTypes[tabFrom.Type].Any(t => t == tabTo.Type);
             return Task.FromResult((ServiceResult<bool>)tabOperationAllowed);
-        }
-        
-        public async Task<ServiceResult> AddOperation(int id, Operation operation, TargetTabType targetType)
-        {
-            var result = await Get(id);
-            
-            if(result.Failed)
-                return ServiceResult.From(result);
-            
-            var tab = result.Data;
-
-            var tabOperations = targetType == TargetTabType.From
-                ? tab.OperationsFrom
-                : tab.OperationsTo;
-            
-            if(tabOperations.Any(o => o.Id == operation.Id))
-                return OperationErrors.OperationAlreadyExist(operation.Id, tab.Id);
-            
-            // TODO: implement currency check and adjust!
-
-            var amount = targetType == TargetTabType.From
-                ? -operation.Amount
-                : operation.Amount;
-
-            tab.Amount += amount;
-
-            _context.SetModified(tab);
-
-            await _context.SaveChangesAsync();
-            
-            return ServiceResultStatus.Success;
         }
     }
 }

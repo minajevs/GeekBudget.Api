@@ -13,8 +13,5 @@ namespace GeekBudget.DataAccess
         DbSet<Operation> Operations { get; set; }
         Task<int> SaveChangesAsync();
         void SetModified(object entity);
-        void BeginTransaction();
-        void CommitTransaction(bool nested = false);
-        void RollbackTransaction(bool nested = false);
     }
 }

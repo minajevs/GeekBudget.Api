@@ -8,6 +8,7 @@ using GeekBudget.Core;
 using GeekBudget.Core.Helpers;
 using GeekBudget.DataAccess;
 using GeekBudget.DataAccess.Operations;
+using GeekBudget.DataAccess.Tabs;
 using GeekBudget.Domain.Operations;
 using GeekBudget.Domain.Tabs;
 using Microsoft.EntityFrameworkCore;
@@ -29,6 +30,8 @@ namespace GeekBudget.Application.Operations
         {
             var operations = await _context.Operations
                 .AsNoTracking()
+                .Include(x => x.From)
+                .Include(x => x.To)
                 .ToListAsync();
 
             return operations;
@@ -49,58 +52,46 @@ namespace GeekBudget.Application.Operations
             return operations;
         }
 
-        public async Task<ServiceResult<int>> Add(AddOperationRequest request)
+        public async Task<ServiceResult> Add(AddOperationRequest request)
         {
             // Get 'From' tab
             var resultFrom = await _tabService.Get(request.From);
             if (resultFrom.Failed)
-                return ServiceResult<int>.From(resultFrom);
+                return ServiceResult.From(resultFrom);
 
             var tabFrom = resultFrom.Data;
-
+            
             // Get 'To' tab
             var resultTo = await _tabService.Get(request.To);
             if (resultTo.Failed)
-                return ServiceResult<int>.From(resultFrom);
+                return ServiceResult.From(resultFrom);
 
             var tabTo = resultTo.Data;
 
             // Check if operation from tab to tab is allowed
             var resultOperationAllowed = await _tabService.IsTabOperationAllowed(tabFrom, tabTo);
             if (resultOperationAllowed.Failed)
-                return ServiceResult<int>.From(resultOperationAllowed);
+                return ServiceResult.From(resultOperationAllowed);
 
             if (!resultOperationAllowed.Data)
                 return OperationErrors.OperationNotAllowed;
 
+            // Create domain model
             var operation = MappingFactory.Map(request);
 
-            _context.BeginTransaction();
-
             // Add operation to 'From' tab
-            operation.From = tabFrom;
-
-            var resultAddFrom = await _tabService.AddOperation(tabFrom.Id, operation, TargetTabType.From);
-            if (resultAddFrom.Failed)
-                return ServiceResult<int>.From(resultAddFrom);
+            AddFromTab(tabFrom,  operation);
 
             // Add operation to 'To' tab
-            operation.To = tabTo;
+            AddToTab(tabTo, operation);
 
-            var resultAddTo = await _tabService.AddOperation(tabTo.Id, operation, TargetTabType.To);
-            if (resultAddTo.Failed)
-                return ServiceResult<int>.From(resultAddTo);
-
-            // Add operation to context
-            var newOperation = _context.Operations.Add(operation).Entity;
+            // Add operation
+            _context.Operations.Add(operation);
 
             // Save changes
             await _context.SaveChangesAsync();
 
-            // Commit changes
-            _context.CommitTransaction();
-
-            return newOperation.Id;
+            return ServiceResultStatus.Success;
         }
 
         public async Task<ServiceResult> Remove(int id)
@@ -110,10 +101,7 @@ namespace GeekBudget.Application.Operations
                 return ServiceResult.From(resultGet);
 
             var operation = resultGet.Data.FirstOrDefault();
-            if (operation == null)
-                return new ServiceResult(ServiceResultStatus.Warning, OperationErrors.OperationWithIdDoesNotExist(id));
-
-            _context.BeginTransaction();
+            if (operation == null) throw new InvalidOperationException("Must never happen because condition is checked in 'Get' service!");
 
             // Update from tab
             RemoveFromTab(operation);
@@ -125,28 +113,22 @@ namespace GeekBudget.Application.Operations
 
             await _context.SaveChangesAsync();
 
-            // Commit changes
-            _context.CommitTransaction();
-
             return ServiceResultStatus.Success;
         }
 
         public async Task<ServiceResult> Update(UpdateOperationRequest request)
         {
-            var result = await Get(new OperationFilter { Id = request.Id });
+            var resultGet = await Get(new OperationFilter { Id = request.Id });
 
-            if (result.Failed)
-                return ServiceResult.From(result);
+            if (resultGet.Failed)
+                return ServiceResult.From(resultGet);
 
-            var operation = result.Data.FirstOrDefault();
-
+            var operation = resultGet.Data.FirstOrDefault();
             if (operation == null) throw new InvalidOperationException("Must never happen because condition is checked in 'Get' service!");
-
-            _context.BeginTransaction();
 
             // --- Amount update ---
 
-            if (request.Amount != null)
+            if (request.Amount.HasValue)
             {
                 var newAmount = (decimal)request.Amount;
 
@@ -218,16 +200,7 @@ namespace GeekBudget.Application.Operations
 
             _context.SetModified(operation);
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (Exception e)
-            {
-                var a = e;
-            }
-
-            _context.CommitTransaction();
+            await _context.SaveChangesAsync();
 
             return ServiceResultStatus.Success;
         }

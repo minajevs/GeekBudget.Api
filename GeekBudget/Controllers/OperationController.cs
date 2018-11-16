@@ -69,7 +69,7 @@ namespace GeekBudget.Controllers
             var result = await _operationService.Add(request);
             
             if (!result.Failed)
-                return result.Data;
+                return Ok();
             else
                 return BadRequest(result.Errors);
         }

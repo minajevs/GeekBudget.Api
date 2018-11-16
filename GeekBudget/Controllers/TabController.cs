@@ -68,9 +68,9 @@ namespace GeekBudget.Controllers
                 return BadRequest(errors);
 
             var result = await _tabService.Add(request);
-            
+
             if (!result.Failed)
-                return result.Data;
+                return Ok();
             else
                 return BadRequest(result.Errors);
         }
