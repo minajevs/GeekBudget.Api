@@ -156,7 +156,7 @@ namespace GeekBudget.Application.Operations
             var toTabChange = request.To != null && request.To != operation.To.Id;
 
             var tabFrom = operation.From;
-            var tabTo = operation.From;
+            var tabTo = operation.To;
 
             if (fromTabChange)
             {
