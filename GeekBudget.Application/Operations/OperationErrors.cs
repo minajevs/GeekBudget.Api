@@ -14,5 +14,6 @@ namespace GeekBudget.Application.Operations
         public static Error OperationNotAllowed => new Error { Id = 204, Description = $"Can't add operation with that tab target types!" };
         public static Error OperationWithIdDoesNotExist(int id) => new Error { Id = 205, Description = $"No Operation with id '{id}' was found!" };
         public static Error OperationAlreadyExist(int operationId, int tabId) => new Error { Id = 206, Description = $"Operation with id '{operationId}' already exists on Tab with id '{tabId}'!" };
+        public static Error OperationTabsAreTheSame => new Error { Id = 207, Description = $"Can't add operation from and to the same tab!" };
     }
 }

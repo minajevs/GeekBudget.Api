@@ -141,6 +141,9 @@ namespace GeekBudget.Application.Operations
 
                 // Update amount
                 operation.Amount = newAmount;
+
+                _context.SetModified(operation.From);
+                _context.SetModified(operation.To);
             }
 
             // --- New values ---
@@ -176,19 +179,26 @@ namespace GeekBudget.Application.Operations
                 tabTo = resultTo.Data;
             }
 
-            // Check if operation from tab to tab is allowed
-            var resultOperationAllowed = await _tabService.IsTabOperationAllowed(tabFrom, tabTo);
-            if (resultOperationAllowed.Failed)
-                return ServiceResult.From(resultOperationAllowed);
+            if (fromTabChange || toTabChange)
+            {
+                if (tabFrom.Id == tabTo.Id)
+                    return OperationErrors.OperationTabsAreTheSame;
 
-            if (!resultOperationAllowed.Data)
-                return OperationErrors.OperationNotAllowed;
+                // Check if operation from tab to tab is allowed
+                var resultOperationAllowed = await _tabService.IsTabOperationAllowed(tabFrom, tabTo);
+                if (resultOperationAllowed.Failed)
+                    return ServiceResult.From(resultOperationAllowed);
+
+                if (!resultOperationAllowed.Data)
+                    return OperationErrors.OperationNotAllowed;
+            }
 
 
             if (fromTabChange)
             {
                 RemoveFromTab(operation);
                 AddFromTab(tabFrom, operation);
+                _context.SetModified(tabFrom);
             }
 
             if (toTabChange)
